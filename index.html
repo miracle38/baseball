@@ -1018,6 +1018,10 @@ function switchLeague(league) {
 
   // Load new league data
   loadData();
+
+  // Rankings와 Calendar는 Firebase 콜백과 별개로 즉시 갱신
+  renderRankings();
+  renderCalendar();
 }
 
 function updateLeagueUI() {
