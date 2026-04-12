@@ -1799,33 +1799,22 @@ function renderTeamStats() {
 // ===== RENDER RANKINGS =====
 function renderRankings() {
   const container = document.getElementById('tab-rankings');
-  const sectionHeader = container.querySelector('.section-header');
 
-  // Remove any previously created combined ranking wrappers
+  // 이전에 동적 생성된 섹션 모두 제거
   container.querySelectorAll('.rankings-section').forEach(el => el.remove());
+  // 기본 wrapper 숨김
   const defaultWrapper = container.querySelector('.rankings-wrapper');
+  if (defaultWrapper) defaultWrapper.style.display = 'none';
 
   if (isCombinedView()) {
-    // Hide default wrapper and show all three groups stacked
-    defaultWrapper.style.display = 'none';
-    renderRankingsSection('토요4부_A조', defaultData.sejong.rankingsA, container);
-    renderRankingsSection('토요4부_B조', defaultData.sejong.rankingsB, container);
+    renderRankingsSection('세종 토요4부_A조', defaultData.sejong.rankingsA, container);
+    renderRankingsSection('세종 토요4부_B조', defaultData.sejong.rankingsB, container);
     renderRankingsSection('동구리그 토요리그', defaultData.donggu.rankings, container);
   } else if (currentLeague === 'sejong') {
-    // Sejong has two groups — hide default single table, show both
-    defaultWrapper.style.display = 'none';
     renderRankingsSection('토요4부_A조', defaultData.sejong.rankingsA, container);
     renderRankingsSection('토요4부_B조', defaultData.sejong.rankingsB, container);
   } else {
-    // Donggu — single table
-    defaultWrapper.style.display = '';
-    const tbody = document.getElementById('rankingsBody');
-    const rankings = defaultData.donggu.rankings;
-    if (!rankings || rankings.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="9" style="padding:30px;color:var(--gray)">순위 데이터가 없습니다.</td></tr>';
-      return;
-    }
-    tbody.innerHTML = buildRankingsHtml(rankings);
+    renderRankingsSection('동구리그 토요리그', defaultData.donggu.rankings, container);
   }
 }
 
