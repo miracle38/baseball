@@ -1,0 +1,45 @@
+name: 야구 데이터 자동 업데이트
+
+on:
+  schedule:
+    # 매주 일요일 21시(UTC) = 월요일 06시(KST) - 주말 경기 후 갱신
+    - cron: '0 21 * * 0'
+  workflow_dispatch: # 수동 실행 가능 (GitHub Actions 탭에서 Run workflow 클릭)
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Playwright 설치
+        run: |
+          npm install playwright
+          npx playwright install chromium --with-deps
+
+      - name: 2026 시즌 데이터 스크래핑
+        run: node scripts/update-2026.js
+
+      - name: 변경사항 커밋 & 푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --staged --quiet; then
+            echo "변경사항 없음"
+          else
+            git commit -m "🤖 자동 데이터 업데이트 $(TZ=Asia/Seoul date +'%Y-%m-%d %H:%M KST')"
+            git push
+            echo "✅ 푸시 완료"
+          fi

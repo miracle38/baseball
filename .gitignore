@@ -1,0 +1,7 @@
+# 스크래핑 임시 파일
+*.json
+!package.json
+scrape_*.js
+gameone_*.txt
+scrape_log.txt
+data.json
