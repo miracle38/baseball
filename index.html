@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Windup - 사회인 야구팀</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23fff' stroke='%23e94560' stroke-width='4'/%3E%3Cpath d='M30 25 Q50 45 30 75' fill='none' stroke='%23e94560' stroke-width='3'/%3E%3Cpath d='M70 25 Q50 45 70 75' fill='none' stroke='%23e94560' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23c0282e'/%3E%3Ctext x='50' y='58' text-anchor='middle' font-family='Georgia,serif' font-size='26' font-weight='700' font-style='italic' fill='%23fff'%3EW%3C/text%3E%3C/svg%3E">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -54,14 +54,14 @@ button{cursor:pointer;font-family:inherit}
 
 /* ===== HEADER ===== */
 .header{
-  background:linear-gradient(135deg, #0d0d1a 0%, var(--navy) 40%, var(--navy-light) 100%);
-  border-bottom:3px solid var(--red);
+  background:linear-gradient(135deg, #8b1a1a 0%, #c0282e 50%, #a02020 100%);
+  border-bottom:3px solid #ffd700;
   position:sticky;top:0;z-index:100;
-  box-shadow:0 4px 30px rgba(0,0,0,0.5), 0 1px 0 rgba(233,69,96,0.3);
+  box-shadow:0 4px 20px rgba(140,20,20,0.4);
 }
 .header::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 30% 50%, rgba(233,69,96,0.06) 0%, transparent 60%);
+  background:radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.05) 0%, transparent 60%);
   pointer-events:none;
 }
 .header-inner{
@@ -74,21 +74,19 @@ button{cursor:pointer;font-family:inherit}
 .brand{display:flex;align-items:center;gap:16px}
 .brand svg{
   width:54px;height:54px;flex-shrink:0;
-  filter:drop-shadow(0 0 12px rgba(233,69,96,0.35));
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3));
   transition:var(--transition);
 }
-.brand:hover svg{filter:drop-shadow(0 0 18px rgba(233,69,96,0.5))}
+.brand:hover svg{filter:drop-shadow(0 2px 10px rgba(0,0,0,0.5))}
 .brand-text h1{
   font-size:32px;font-weight:800;letter-spacing:3px;
-  background:linear-gradient(135deg, #ffffff 0%, #f0f0f5 40%, var(--red) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-  text-shadow:none;
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  color:#fff;
+  -webkit-text-fill-color:#fff;
+  text-shadow:0 2px 4px rgba(0,0,0,0.3);
 }
 .brand-text p{
-  font-size:13px;color:var(--gray-light);letter-spacing:4px;text-transform:uppercase;
-  opacity:0.8;
+  font-size:13px;color:#ffd700;letter-spacing:4px;text-transform:uppercase;
+  opacity:0.9;
 }
 .header-actions{display:flex;align-items:center;gap:12px}
 .btn-login{
@@ -143,7 +141,7 @@ button{cursor:pointer;font-family:inherit}
 /* ===== NAV TABS ===== */
 .nav-tabs{
   display:flex;justify-content:center;
-  background:linear-gradient(135deg, #0d0d1a 0%, #1e293b 40%, #334155 100%);
+  background:linear-gradient(135deg, #6b1515 0%, #8b1a1a 50%, #7a1818 100%);
   border-bottom:1px solid rgba(0,0,0,0.2);
   overflow-x:auto;
   position:relative;
@@ -158,9 +156,9 @@ button{cursor:pointer;font-family:inherit}
 .nav-tab.active::after{
   content:'';position:absolute;bottom:0;left:20%;right:20%;
   height:3px;
-  background:linear-gradient(90deg, var(--red), #ff6b8a);
+  background:linear-gradient(90deg, #ffd700, #ffed4a);
   border-radius:3px 3px 0 0;
-  box-shadow:0 0 12px rgba(233,69,96,0.4);
+  box-shadow:0 0 8px rgba(255,215,0,0.3);
 }
 .nav-tab + .nav-tab::before{
   content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
@@ -216,7 +214,7 @@ button{cursor:pointer;font-family:inherit}
   pointer-events:none;z-index:1;
 }
 table{width:100%;border-collapse:collapse;min-width:1100px;font-size:14px;line-height:1.7}
-thead{background:linear-gradient(135deg, #0a1225, var(--navy-mid), var(--navy-light))}
+thead{background:linear-gradient(135deg, #8b1a1a, #c0282e, #a02020)}
 th{
   padding:14px 10px;text-align:center;font-weight:700;font-size:12px;
   color:#cbd5e1;text-transform:uppercase;letter-spacing:0.8px;
@@ -502,13 +500,13 @@ tr.highlight-row:hover{
 .calendar-nav{
   display:flex;align-items:center;justify-content:space-between;
   padding:18px 28px;
-  background:linear-gradient(135deg, #0a1225, var(--navy-mid), var(--navy-light));
-  border-bottom:2px solid var(--red);
+  background:linear-gradient(135deg, #8b1a1a, #c0282e, #a02020);
+  border-bottom:2px solid #ffd700;
   position:relative;
 }
 .calendar-nav::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg, transparent, rgba(233,69,96,0.5), transparent);
+  background:linear-gradient(90deg, transparent, rgba(255,215,0,0.4), transparent);
 }
 .calendar-nav button{
   background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);
@@ -650,9 +648,9 @@ tr.highlight-row:hover{
 /* Combined rankings header */
 .rankings-league-header{
   padding:18px 24px;
-  background:linear-gradient(135deg, #0a1225, var(--navy-mid), var(--navy-light));
-  border-bottom:2px solid var(--red);
-  font-size:16px;font-weight:700;color:#f0f0f5;
+  background:linear-gradient(135deg, #8b1a1a, #c0282e, #a02020);
+  border-bottom:2px solid #ffd700;
+  font-size:16px;font-weight:700;color:#fff;
   display:flex;align-items:center;gap:10px;
   position:relative;
 }
@@ -745,24 +743,12 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 <header class="header">
   <div class="header-inner">
     <div class="brand">
-      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="44" fill="#ffffff" stroke="#e94560" stroke-width="5"/>
-        <path d="M32 20 Q28 35 32 50 Q36 65 32 80" stroke="#e94560" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M68 20 Q72 35 68 50 Q64 65 68 80" stroke="#e94560" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <line x1="29" y1="24" x2="25" y2="22" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="28" y1="32" x2="23" y2="31" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="28" y1="40" x2="23" y2="40" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="29" y1="48" x2="24" y2="49" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="31" y1="56" x2="26" y2="58" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="33" y1="64" x2="28" y2="67" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="33" y1="72" x2="28" y2="75" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="71" y1="24" x2="75" y2="22" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="72" y1="32" x2="77" y2="31" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="72" y1="40" x2="77" y2="40" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="71" y1="48" x2="76" y2="49" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="69" y1="56" x2="74" y2="58" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="67" y1="64" x2="72" y2="67" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
-        <line x1="67" y1="72" x2="72" y2="75" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="#c0282e"/>
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#fff" stroke-width="2" opacity="0.3"/>
+        <text x="50" y="56" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" font-style="italic" fill="#fff" letter-spacing="0.5">Windup</text>
+        <path d="M20 70 Q30 62 40 70" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.4"/>
+        <path d="M60 70 Q70 62 80 70" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.4"/>
       </svg>
       <div class="brand-text">
         <h1>WINDUP</h1>
