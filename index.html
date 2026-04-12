@@ -313,6 +313,139 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
   .league-btn{padding:7px 14px;font-size:12px}
 }
 
+/* ===== TOTALS ROW ===== */
+tr.totals-row{
+  background:rgba(233,69,96,0.12)!important;
+  border-top:2px solid var(--red);
+  font-weight:700;
+}
+tr.totals-row td{
+  border-bottom:none;
+  padding:12px 10px;
+  color:var(--white);
+}
+tr.totals-row td.name-cell{
+  color:var(--red);
+  font-weight:800;
+}
+tr.totals-row:hover{
+  background:rgba(233,69,96,0.18)!important;
+}
+
+/* ===== RANKINGS TABLE ===== */
+.rankings-wrapper{
+  overflow-x:auto;border-radius:12px;
+  background:var(--card);
+  box-shadow:0 4px 16px rgba(0,0,0,0.3);
+  border:1px solid var(--border);
+}
+.rankings-wrapper table{min-width:700px}
+.rankings-wrapper th{cursor:default}
+.rankings-wrapper th:hover{color:var(--gray)}
+.rank-icon{font-size:18px;margin-right:4px}
+tr.highlight-row{
+  background:rgba(233,69,96,0.15)!important;
+  border-left:3px solid var(--red);
+}
+tr.highlight-row td{
+  color:var(--white);
+  font-weight:700;
+}
+tr.highlight-row:hover{
+  background:rgba(233,69,96,0.22)!important;
+}
+
+/* ===== CALENDAR ===== */
+.calendar-container{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3);
+}
+.calendar-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 24px;
+  background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));
+  border-bottom:2px solid var(--red);
+}
+.calendar-nav button{
+  background:var(--navy);border:1px solid var(--border);
+  color:var(--gray);padding:8px 16px;border-radius:8px;
+  font-size:14px;font-weight:600;cursor:pointer;
+  transition:var(--transition);font-family:inherit;
+}
+.calendar-nav button:hover{color:var(--white);border-color:var(--red)}
+.calendar-nav .cal-month-title{
+  font-size:20px;font-weight:700;color:var(--white);
+}
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+}
+.calendar-grid .cal-header{
+  padding:12px 4px;text-align:center;
+  font-size:13px;font-weight:700;color:var(--gray);
+  text-transform:uppercase;letter-spacing:1px;
+  border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,0.02);
+}
+.calendar-grid .cal-header.sun{color:#ff6b6b}
+.calendar-grid .cal-header.sat{color:#74b9ff}
+.calendar-grid .cal-day{
+  min-height:80px;padding:6px 8px;
+  border-bottom:1px solid var(--border);
+  border-right:1px solid var(--border);
+  position:relative;
+  transition:var(--transition);
+}
+.calendar-grid .cal-day:nth-child(7n){border-right:none}
+.calendar-grid .cal-day:hover{background:rgba(255,255,255,0.03)}
+.calendar-grid .cal-day .day-num{
+  font-size:13px;font-weight:600;color:var(--gray);
+  margin-bottom:4px;
+}
+.calendar-grid .cal-day .day-num.sun{color:#ff6b6b}
+.calendar-grid .cal-day .day-num.sat{color:#74b9ff}
+.calendar-grid .cal-day .day-num.today{
+  background:var(--red);color:var(--white);
+  border-radius:50%;width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;
+}
+.calendar-grid .cal-day.empty{background:rgba(0,0,0,0.1)}
+.calendar-grid .cal-day .game-info{
+  font-size:11px;line-height:1.4;
+}
+.calendar-grid .cal-day .game-opponent{
+  color:var(--white);font-weight:600;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-bottom:2px;
+}
+.calendar-grid .cal-day .game-score{
+  font-weight:700;font-size:12px;
+}
+.game-badge{
+  display:inline-block;padding:1px 6px;border-radius:4px;
+  font-size:10px;font-weight:700;color:#fff;margin-left:2px;
+}
+.game-badge.win{background:#4ecdc4}
+.game-badge.loss{background:var(--red)}
+.game-badge.draw{background:var(--gray)}
+.calendar-grid .cal-day.has-game{
+  background:rgba(233,69,96,0.05);
+}
+@media(max-width:768px){
+  .calendar-grid .cal-day{min-height:60px;padding:4px}
+  .calendar-grid .cal-day .game-opponent{font-size:10px}
+  .calendar-grid .cal-day .game-score{font-size:10px}
+  .calendar-nav .cal-month-title{font-size:16px}
+}
+@media(max-width:480px){
+  .calendar-grid .cal-day{min-height:50px;padding:3px}
+  .calendar-grid .cal-header{padding:8px 2px;font-size:11px}
+  .calendar-grid .cal-day .day-num{font-size:11px}
+  .calendar-grid .cal-day .game-opponent{font-size:9px}
+}
+
 /* Toast */
 .toast{
   position:fixed;bottom:24px;right:24px;
@@ -376,6 +509,8 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
   <button class="nav-tab active" data-tab="players" onclick="switchTab('players')">선수 기록</button>
   <button class="nav-tab" data-tab="pitchers" onclick="switchTab('pitchers')">투수 기록</button>
   <button class="nav-tab" data-tab="games" onclick="switchTab('games')">경기 기록</button>
+  <button class="nav-tab" data-tab="rankings" onclick="switchTab('rankings')">팀 순위</button>
+  <button class="nav-tab" data-tab="schedule" onclick="switchTab('schedule')">일정</button>
   <button class="nav-tab" data-tab="teamstats" onclick="switchTab('teamstats')">팀 통계</button>
 </nav>
 
@@ -484,6 +619,46 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
         </thead>
         <tbody id="gameBody"></tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- RANKINGS TAB -->
+  <div class="tab-content" id="tab-rankings">
+    <div class="section-header">
+      <div class="section-title">팀 순위</div>
+    </div>
+    <div class="rankings-wrapper">
+      <table id="rankingsTable">
+        <thead>
+          <tr>
+            <th>순위</th>
+            <th style="text-align:left;padding-left:16px">팀명</th>
+            <th>승점</th>
+            <th>경기</th>
+            <th>승</th>
+            <th>패</th>
+            <th>무</th>
+            <th>득점</th>
+            <th>실점</th>
+          </tr>
+        </thead>
+        <tbody id="rankingsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SCHEDULE TAB -->
+  <div class="tab-content" id="tab-schedule">
+    <div class="section-header">
+      <div class="section-title">일정</div>
+    </div>
+    <div class="calendar-container">
+      <div class="calendar-nav">
+        <button onclick="changeMonth(-1)">&#9664; 이전</button>
+        <span class="cal-month-title" id="calMonthTitle"></span>
+        <button onclick="changeMonth(1)">다음 &#9654;</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
     </div>
   </div>
 
@@ -678,7 +853,25 @@ const defaultData = {
       g1: { date:'2026-03-14', opponent:'INCOURSE',       ourScore:4,  theirScore:13, location:'중앙공원 야구장' },
       g2: { date:'2026-03-28', opponent:'금강 옥시전스',   ourScore:11, theirScore:2,  location:'부강생활체육공원 야구장' },
       g3: { date:'2026-04-04', opponent:'KBSI 어벤져스',   ourScore:14, theirScore:11, location:'부강생활체육공원 야구장' }
-    }
+    },
+    rankings: [
+      { rank:1,  team:'백룡 워리어스',       pts:12, G:4, W:4, L:0, D:0, RS:43, RA:16 },
+      { rank:2,  team:'UNDERDOGS',           pts:9,  G:3, W:3, L:0, D:0, RS:46, RA:14 },
+      { rank:2,  team:'세종파이어스',         pts:9,  G:4, W:3, L:1, D:0, RS:35, RA:26 },
+      { rank:2,  team:'Black Belt',          pts:9,  G:5, W:3, L:2, D:0, RS:59, RA:27 },
+      { rank:5,  team:'여보, 야구하고올게',   pts:7,  G:4, W:2, L:1, D:1, RS:41, RA:32 },
+      { rank:6,  team:'램스(DSCJ)',           pts:6,  G:4, W:2, L:2, D:0, RS:34, RA:28 },
+      { rank:6,  team:'TEAM J',              pts:6,  G:3, W:2, L:1, D:0, RS:18, RA:21 },
+      { rank:6,  team:'Shadow Rangers',      pts:6,  G:4, W:2, L:2, D:0, RS:26, RA:44 },
+      { rank:6,  team:'와인드업',             pts:6,  G:3, W:2, L:1, D:0, RS:29, RA:26 },
+      { rank:9,  team:'세종 쌔먼즈',          pts:3,  G:2, W:1, L:1, D:0, RS:19, RA:16 },
+      { rank:9,  team:'레드불스',             pts:3,  G:2, W:1, L:1, D:0, RS:15, RA:31 },
+      { rank:9,  team:'세종피닉스',           pts:3,  G:4, W:1, L:3, D:0, RS:32, RA:53 },
+      { rank:12, team:'숑사탕',               pts:1,  G:2, W:0, L:1, D:1, RS:22, RA:23 },
+      { rank:13, team:'화이트타이거즈',       pts:0,  G:4, W:0, L:4, D:0, RS:11, RA:45 },
+      { rank:13, team:'세종 신나고',          pts:0,  G:3, W:0, L:3, D:0, RS:13, RA:32 },
+      { rank:13, team:'세종 히어로즈',        pts:0,  G:2, W:0, L:2, D:0, RS:11, RA:17 }
+    ]
   },
   donggu: {
     players: {
@@ -712,7 +905,14 @@ const defaultData = {
     games: {
       g1: { date:'2026-03-07', opponent:'ONE TOP',       ourScore:10, theirScore:9, location:'한밭야구장(이글스파크)' },
       g2: { date:'2026-03-21', opponent:'송림스터너즈',   ourScore:10, theirScore:8, location:'대전고' }
-    }
+    },
+    rankings: [
+      { rank:1, team:'와인드업',       pts:6, G:2, W:2, L:0, D:0, RS:20, RA:17 },
+      { rank:2, team:'DJ빠따스',       pts:3, G:2, W:1, L:1, D:0, RS:15, RA:12 },
+      { rank:3, team:'스트롱타이거즈', pts:3, G:2, W:1, L:1, D:0, RS:14, RA:18 },
+      { rank:4, team:'넉다운',         pts:3, G:2, W:1, L:1, D:0, RS:12, RA:14 },
+      { rank:5, team:'송림스터너즈',   pts:0, G:2, W:0, L:2, D:0, RS:10, RA:14 }
+    ]
   }
 };
 
@@ -819,6 +1019,7 @@ function loadFromFirebase() {
     if (currentLeague !== league) return;
     gamesData = snap.val() || defaults.games;
     renderGames();
+    renderCalendar();
     renderTeamStats();
   }, () => { loadFromLocal(); });
 
@@ -849,6 +1050,8 @@ function renderAll() {
   renderPlayers();
   renderPitchers();
   renderGames();
+  renderRankings();
+  renderCalendar();
   renderTeamStats();
 }
 
@@ -970,6 +1173,33 @@ function renderPlayers() {
     });
     html += '</tr>';
   });
+
+  // ===== TOTALS ROW =====
+  const totals = { G:0, PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:0 };
+  computed.forEach(p => {
+    ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => {
+      totals[k] += (p[k] || 0);
+    });
+  });
+  const tAVG = totals.AB > 0 ? (totals.H / totals.AB) : 0;
+  const tOBP = (totals.AB + totals.BB + totals.HBP) > 0 ? ((totals.H + totals.BB + totals.HBP) / (totals.AB + totals.BB + totals.HBP)) : 0;
+  const tSingles = totals.H - totals['2B'] - totals['3B'] - totals.HR;
+  const tTB = tSingles + totals['2B'] * 2 + totals['3B'] * 3 + totals.HR * 4;
+  const tSLG = totals.AB > 0 ? (tTB / totals.AB) : 0;
+  const tOPS = tOBP + tSLG;
+
+  html += '<tr class="totals-row">';
+  html += '<td class="name-cell">합계</td>';
+  html += '<td></td>';
+  html += `<td>${fmtRate(tAVG)}</td>`;
+  ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => {
+    html += `<td>${totals[k]}</td>`;
+  });
+  html += `<td>${fmtRate(tOBP)}</td>`;
+  html += `<td>${fmtRate(tSLG)}</td>`;
+  html += `<td>${fmtRate(tOPS)}</td>`;
+  html += '</tr>';
+
   tbody.innerHTML = html;
 }
 
@@ -1028,6 +1258,41 @@ function renderPitchers() {
     html += `<td>${pt.NP || 0}</td>`;
     html += '</tr>';
   });
+
+  // ===== PITCHER TOTALS ROW =====
+  const ptTotals = { G:0, W:0, L:0, SV:0, HD:0, IP:0, pH:0, pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:0, ER:0, BF:0, NP:0 };
+  computed.forEach(pt => {
+    ['G','W','L','SV','HD','pH','pHR','K','pBB','pIBB','pHBP','R','ER','BF','NP'].forEach(k => {
+      ptTotals[k] += (pt[k] || 0);
+    });
+    ptTotals.IP += (pt.IP || 0);
+  });
+  const ptERA = ptTotals.IP > 0 ? (ptTotals.ER * 7 / ptTotals.IP) : 0;
+  const ptWPCT = (ptTotals.W + ptTotals.L) > 0 ? (ptTotals.W / (ptTotals.W + ptTotals.L)) : 0;
+
+  html += '<tr class="totals-row">';
+  html += '<td class="name-cell">합계</td>';
+  html += '<td></td>';
+  html += `<td>${ptTotals.IP > 0 ? fmtERA(ptERA) : '-'}</td>`;
+  html += `<td>${ptTotals.G}</td>`;
+  html += `<td>${ptTotals.W}</td>`;
+  html += `<td>${ptTotals.L}</td>`;
+  html += `<td>${ptTotals.SV}</td>`;
+  html += `<td>${ptTotals.HD}</td>`;
+  html += `<td>${ptTotals.IP}</td>`;
+  html += `<td>${ptTotals.pH}</td>`;
+  html += `<td>${ptTotals.pHR}</td>`;
+  html += `<td>${ptTotals.K}</td>`;
+  html += `<td>${ptTotals.pBB}</td>`;
+  html += `<td>${ptTotals.pIBB}</td>`;
+  html += `<td>${ptTotals.pHBP}</td>`;
+  html += `<td>${ptTotals.R}</td>`;
+  html += `<td>${ptTotals.ER}</td>`;
+  html += `<td>${fmtRate(ptWPCT)}</td>`;
+  html += `<td>${ptTotals.BF}</td>`;
+  html += `<td>${ptTotals.NP}</td>`;
+  html += '</tr>';
+
   tbody.innerHTML = html;
 }
 
@@ -1204,6 +1469,122 @@ function renderTeamStats() {
   `;
 }
 
+// ===== RENDER RANKINGS =====
+function renderRankings() {
+  const tbody = document.getElementById('rankingsBody');
+  const rankings = defaultData[currentLeague].rankings;
+  if (!rankings || rankings.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" style="padding:30px;color:var(--gray)">순위 데이터가 없습니다.</td></tr>';
+    return;
+  }
+
+  let html = '';
+  rankings.forEach(r => {
+    const isWindup = r.team === '와인드업';
+    const cls = isWindup ? 'highlight-row' : '';
+    let rankIcon = '';
+    if (r.rank === 1) rankIcon = '<span class="rank-icon">&#127942;</span>';
+    else if (r.rank === 2) rankIcon = '<span class="rank-icon">&#129352;</span>';
+    else if (r.rank === 3) rankIcon = '<span class="rank-icon">&#129353;</span>';
+
+    html += `<tr class="${cls}">`;
+    html += `<td>${rankIcon}${r.rank}</td>`;
+    html += `<td style="text-align:left;padding-left:16px;font-weight:${isWindup ? '800' : '600'}">${escHtml(r.team)}</td>`;
+    html += `<td>${r.pts}</td>`;
+    html += `<td>${r.G}</td>`;
+    html += `<td>${r.W}</td>`;
+    html += `<td>${r.L}</td>`;
+    html += `<td>${r.D}</td>`;
+    html += `<td>${r.RS}</td>`;
+    html += `<td>${r.RA}</td>`;
+    html += '</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+// ===== CALENDAR =====
+let calendarYear = 2026;
+let calendarMonth = 3; // March
+
+function changeMonth(delta) {
+  calendarMonth += delta;
+  if (calendarMonth > 12) { calendarMonth = 1; calendarYear++; }
+  if (calendarMonth < 1) { calendarMonth = 12; calendarYear--; }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const titleEl = document.getElementById('calMonthTitle');
+  const gridEl = document.getElementById('calendarGrid');
+
+  const monthNames = ['', '1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+  titleEl.textContent = `${calendarYear}년 ${monthNames[calendarMonth]}`;
+
+  // Build game lookup from gamesData
+  const gameLookup = {};
+  Object.values(gamesData).forEach(g => {
+    gameLookup[g.date] = g;
+  });
+
+  // Calendar calculations
+  const firstDay = new Date(calendarYear, calendarMonth - 1, 1);
+  const lastDay = new Date(calendarYear, calendarMonth, 0);
+  const startDow = firstDay.getDay(); // 0=Sun
+  const daysInMonth = lastDay.getDate();
+
+  const today = new Date();
+  const todayStr = today.getFullYear() + '-' +
+    String(today.getMonth() + 1).padStart(2, '0') + '-' +
+    String(today.getDate()).padStart(2, '0');
+
+  // Day headers
+  const dayHeaders = ['일', '월', '화', '수', '목', '금', '토'];
+  let html = '';
+  dayHeaders.forEach((d, i) => {
+    const cls = i === 0 ? 'cal-header sun' : i === 6 ? 'cal-header sat' : 'cal-header';
+    html += `<div class="${cls}">${d}</div>`;
+  });
+
+  // Empty cells before first day
+  for (let i = 0; i < startDow; i++) {
+    html += '<div class="cal-day empty"></div>';
+  }
+
+  // Day cells
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = calendarYear + '-' +
+      String(calendarMonth).padStart(2, '0') + '-' +
+      String(day).padStart(2, '0');
+    const dow = (startDow + day - 1) % 7;
+    const game = gameLookup[dateStr];
+    const isToday = dateStr === todayStr;
+    const hasGame = !!game;
+
+    html += `<div class="cal-day${hasGame ? ' has-game' : ''}">`;
+
+    // Day number
+    const dayNumCls = isToday ? 'day-num today' : dow === 0 ? 'day-num sun' : dow === 6 ? 'day-num sat' : 'day-num';
+    html += `<div class="${dayNumCls}">${day}</div>`;
+
+    // Game info
+    if (game) {
+      let result, badgeCls;
+      if (game.ourScore > game.theirScore) { result = '승'; badgeCls = 'win'; }
+      else if (game.ourScore < game.theirScore) { result = '패'; badgeCls = 'loss'; }
+      else { result = '무'; badgeCls = 'draw'; }
+
+      html += '<div class="game-info">';
+      html += `<div class="game-opponent">vs ${escHtml(game.opponent)}</div>`;
+      html += `<div class="game-score">${game.ourScore}-${game.theirScore} <span class="game-badge ${badgeCls}">${result}</span></div>`;
+      html += '</div>';
+    }
+
+    html += '</div>';
+  }
+
+  gridEl.innerHTML = html;
+}
+
 // ===== MODALS =====
 function closeModal(id) {
   document.getElementById(id).classList.remove('open');
@@ -1348,6 +1729,7 @@ function saveGame() {
   }
   saveLocal();
   renderGames();
+  renderCalendar();
   renderTeamStats();
   closeModal('gameModal');
   showToast(document.getElementById('gameId').value ? '경기 정보가 수정되었습니다.' : '경기가 추가되었습니다.', 'success');
@@ -1385,6 +1767,7 @@ function deleteGame() {
   if (firebaseReady && db) db.ref('baseball/' + currentLeague + '/games/' + id).remove();
   saveLocal();
   renderGames();
+  renderCalendar();
   renderTeamStats();
   closeModal('gameModal');
   showToast('경기가 삭제되었습니다.', 'success');
