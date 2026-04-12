@@ -1384,6 +1384,15 @@ function switchTab(tabName) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
   document.getElementById(`tab-${tabName}`).classList.add('active');
+  // 현재 리그 기준으로 해당 탭 다시 렌더링
+  switch(tabName) {
+    case 'players': renderPlayers(); break;
+    case 'pitchers': renderPitchers(); break;
+    case 'games': renderGames(); break;
+    case 'rankings': renderRankings(); break;
+    case 'schedule': renderCalendar(); break;
+    case 'teamstats': renderTeamStats(); break;
+  }
 }
 
 // ===== CALCULATED STATS =====
