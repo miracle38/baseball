@@ -110,7 +110,7 @@ button{cursor:pointer;font-family:inherit}
   box-shadow:0 4px 16px rgba(0,0,0,0.3);
   border:1px solid var(--border);
 }
-table{width:100%;border-collapse:collapse;min-width:900px;font-size:14px}
+table{width:100%;border-collapse:collapse;min-width:1100px;font-size:14px}
 thead{background:linear-gradient(135deg,var(--navy-mid),var(--navy-light))}
 th{
   padding:12px 10px;text-align:center;font-weight:700;font-size:13px;
@@ -331,7 +331,7 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
       </svg>
       <div class="brand-text">
         <h1>WINDUP</h1>
-        <p>사회인 야구팀</p>
+        <p>2026 토요리그 토요4부_A조</p>
       </div>
     </div>
     <div class="header-actions">
@@ -366,6 +366,8 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
         <thead>
           <tr>
             <th data-key="name" data-type="string">선수명 <span class="sort-arrow">▲</span></th>
+            <th data-key="number" data-type="number">등번호 <span class="sort-arrow">▲</span></th>
+            <th data-key="AVG" data-type="number">타율 <span class="sort-arrow">▲</span></th>
             <th data-key="G" data-type="number">G <span class="sort-arrow">▲</span></th>
             <th data-key="PA" data-type="number">타석 <span class="sort-arrow">▲</span></th>
             <th data-key="AB" data-type="number">타수 <span class="sort-arrow">▲</span></th>
@@ -374,10 +376,11 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
             <th data-key="3B" data-type="number">3B <span class="sort-arrow">▲</span></th>
             <th data-key="HR" data-type="number">HR <span class="sort-arrow">▲</span></th>
             <th data-key="RBI" data-type="number">타점 <span class="sort-arrow">▲</span></th>
-            <th data-key="BB" data-type="number">볼넷 <span class="sort-arrow">▲</span></th>
-            <th data-key="SO" data-type="number">삼진 <span class="sort-arrow">▲</span></th>
+            <th data-key="R" data-type="number">득점 <span class="sort-arrow">▲</span></th>
             <th data-key="SB" data-type="number">도루 <span class="sort-arrow">▲</span></th>
-            <th data-key="AVG" data-type="number">타율 <span class="sort-arrow">▲</span></th>
+            <th data-key="BB" data-type="number">볼넷 <span class="sort-arrow">▲</span></th>
+            <th data-key="HBP" data-type="number">사구 <span class="sort-arrow">▲</span></th>
+            <th data-key="SO" data-type="number">삼진 <span class="sort-arrow">▲</span></th>
             <th data-key="OBP" data-type="number">출루율 <span class="sort-arrow">▲</span></th>
             <th data-key="SLG" data-type="number">장타율 <span class="sort-arrow">▲</span></th>
             <th data-key="OPS" data-type="number">OPS <span class="sort-arrow">▲</span></th>
@@ -402,17 +405,25 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
         <thead>
           <tr>
             <th data-key="name" data-type="string">선수명 <span class="sort-arrow">▲</span></th>
+            <th data-key="number" data-type="number">등번호 <span class="sort-arrow">▲</span></th>
+            <th data-key="ERA" data-type="number">ERA <span class="sort-arrow">▲</span></th>
             <th data-key="G" data-type="number">G <span class="sort-arrow">▲</span></th>
             <th data-key="W" data-type="number">승 <span class="sort-arrow">▲</span></th>
             <th data-key="L" data-type="number">패 <span class="sort-arrow">▲</span></th>
+            <th data-key="SV" data-type="number">세 <span class="sort-arrow">▲</span></th>
+            <th data-key="HD" data-type="number">홀드 <span class="sort-arrow">▲</span></th>
             <th data-key="IP" data-type="number">이닝 <span class="sort-arrow">▲</span></th>
             <th data-key="pH" data-type="number">피안타 <span class="sort-arrow">▲</span></th>
             <th data-key="pHR" data-type="number">피홈런 <span class="sort-arrow">▲</span></th>
             <th data-key="K" data-type="number">삼진 <span class="sort-arrow">▲</span></th>
             <th data-key="pBB" data-type="number">볼넷 <span class="sort-arrow">▲</span></th>
+            <th data-key="pIBB" data-type="number">고4 <span class="sort-arrow">▲</span></th>
+            <th data-key="pHBP" data-type="number">사구 <span class="sort-arrow">▲</span></th>
             <th data-key="R" data-type="number">실점 <span class="sort-arrow">▲</span></th>
             <th data-key="ER" data-type="number">자책 <span class="sort-arrow">▲</span></th>
-            <th data-key="ERA" data-type="number">ERA <span class="sort-arrow">▲</span></th>
+            <th data-key="WPCT" data-type="number">승률 <span class="sort-arrow">▲</span></th>
+            <th data-key="BF" data-type="number">타자 <span class="sort-arrow">▲</span></th>
+            <th data-key="NP" data-type="number">투구수 <span class="sort-arrow">▲</span></th>
           </tr>
         </thead>
         <tbody id="pitcherBody"></tbody>
@@ -458,7 +469,8 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
-  <strong>Windup Baseball Club</strong> &copy; 2026
+  <strong>Windup Baseball Club</strong> &copy; 2026<br>
+  <a href="https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:inline-block">KSBSA 데이터 출처 - 세종특별자치시 야구소프트볼협회</a>
 </footer>
 
 <!-- ===== PLAYER MODAL ===== -->
@@ -467,10 +479,11 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
     <h2 id="playerModalTitle">선수 추가</h2>
     <input type="hidden" id="playerId">
     <div class="form-grid">
-      <div class="form-group full">
+      <div class="form-group">
         <label>선수명</label>
         <input type="text" id="pName" placeholder="이름 입력">
       </div>
+      <div class="form-group"><label>등번호</label><input type="number" id="pNumber" min="0" value="0"></div>
       <div class="form-group"><label>경기수 (G)</label><input type="number" id="pG" min="0" value="0"></div>
       <div class="form-group"><label>타석 (PA)</label><input type="number" id="pPA" min="0" value="0"></div>
       <div class="form-group"><label>타수 (AB)</label><input type="number" id="pAB" min="0" value="0"></div>
@@ -479,9 +492,11 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
       <div class="form-group"><label>3루타 (3B)</label><input type="number" id="p3B" min="0" value="0"></div>
       <div class="form-group"><label>홈런 (HR)</label><input type="number" id="pHR" min="0" value="0"></div>
       <div class="form-group"><label>타점 (RBI)</label><input type="number" id="pRBI" min="0" value="0"></div>
-      <div class="form-group"><label>볼넷 (BB)</label><input type="number" id="pBB" min="0" value="0"></div>
-      <div class="form-group"><label>삼진 (SO)</label><input type="number" id="pSO" min="0" value="0"></div>
+      <div class="form-group"><label>득점 (R)</label><input type="number" id="pR" min="0" value="0"></div>
       <div class="form-group"><label>도루 (SB)</label><input type="number" id="pSB" min="0" value="0"></div>
+      <div class="form-group"><label>볼넷 (BB)</label><input type="number" id="pBB" min="0" value="0"></div>
+      <div class="form-group"><label>사구 (HBP)</label><input type="number" id="pHBP" min="0" value="0"></div>
+      <div class="form-group"><label>삼진 (SO)</label><input type="number" id="pSO" min="0" value="0"></div>
     </div>
     <div class="modal-actions">
       <button class="btn-delete hidden" id="btnDeletePlayer" onclick="deletePlayer()">삭제</button>
@@ -497,20 +512,27 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
     <h2 id="pitcherModalTitle">투수 추가</h2>
     <input type="hidden" id="pitcherId">
     <div class="form-grid">
-      <div class="form-group full">
+      <div class="form-group">
         <label>선수명</label>
         <input type="text" id="ptName" placeholder="이름 입력">
       </div>
+      <div class="form-group"><label>등번호</label><input type="number" id="ptNumber" min="0" value="0"></div>
       <div class="form-group"><label>경기수 (G)</label><input type="number" id="ptG" min="0" value="0"></div>
       <div class="form-group"><label>승 (W)</label><input type="number" id="ptW" min="0" value="0"></div>
       <div class="form-group"><label>패 (L)</label><input type="number" id="ptL" min="0" value="0"></div>
+      <div class="form-group"><label>세이브 (SV)</label><input type="number" id="ptSV" min="0" value="0"></div>
+      <div class="form-group"><label>홀드 (HD)</label><input type="number" id="ptHD" min="0" value="0"></div>
       <div class="form-group"><label>이닝 (IP)</label><input type="number" id="ptIP" min="0" step="0.1" value="0"></div>
       <div class="form-group"><label>피안타 (H)</label><input type="number" id="ptH" min="0" value="0"></div>
       <div class="form-group"><label>피홈런 (HR)</label><input type="number" id="ptHR" min="0" value="0"></div>
       <div class="form-group"><label>삼진 (K)</label><input type="number" id="ptK" min="0" value="0"></div>
       <div class="form-group"><label>볼넷 (BB)</label><input type="number" id="ptBB" min="0" value="0"></div>
+      <div class="form-group"><label>고의4구 (IBB)</label><input type="number" id="ptIBB" min="0" value="0"></div>
+      <div class="form-group"><label>사구 (HBP)</label><input type="number" id="ptHBP" min="0" value="0"></div>
       <div class="form-group"><label>실점 (R)</label><input type="number" id="ptR" min="0" value="0"></div>
       <div class="form-group"><label>자책점 (ER)</label><input type="number" id="ptER" min="0" value="0"></div>
+      <div class="form-group"><label>대면타자 (BF)</label><input type="number" id="ptBF" min="0" value="0"></div>
+      <div class="form-group"><label>투구수 (NP)</label><input type="number" id="ptNP" min="0" value="0"></div>
     </div>
     <div class="modal-actions">
       <button class="btn-delete hidden" id="btnDeletePitcher" onclick="deletePitcher()">삭제</button>
@@ -576,31 +598,35 @@ function escHtml(str) {
   return d.innerHTML;
 }
 
-// ===== SAMPLE DATA =====
+// ===== KSBSA REAL DATA (teamSeq=93, 와인드업) =====
 const samplePlayers = {
-  p1: { name:'김태윤', G:12, PA:48, AB:42, H:15, '2B':4, '3B':1, HR:2, RBI:10, BB:5, SO:6, SB:3 },
-  p2: { name:'박준혁', G:12, PA:50, AB:44, H:16, '2B':3, '3B':0, HR:3, RBI:12, BB:4, SO:8, SB:1 },
-  p3: { name:'이승우', G:11, PA:44, AB:38, H:12, '2B':2, '3B':1, HR:1, RBI:7, BB:5, SO:5, SB:4 },
-  p4: { name:'정민수', G:12, PA:46, AB:40, H:14, '2B':5, '3B':0, HR:0, RBI:8, BB:4, SO:7, SB:2 },
-  p5: { name:'최현우', G:10, PA:40, AB:35, H:10, '2B':2, '3B':0, HR:1, RBI:5, BB:3, SO:9, SB:0 },
-  p6: { name:'한동진', G:12, PA:47, AB:41, H:13, '2B':3, '3B':1, HR:2, RBI:9, BB:4, SO:6, SB:5 },
-  p7: { name:'윤성호', G:11, PA:43, AB:37, H:11, '2B':1, '3B':0, HR:0, RBI:4, BB:5, SO:4, SB:2 },
-  p8: { name:'서진우', G:10, PA:38, AB:33, H:9, '2B':2, '3B':0, HR:1, RBI:6, BB:3, SO:7, SB:1 },
-  p9: { name:'임재영', G:12, PA:49, AB:43, H:17, '2B':4, '3B':2, HR:1, RBI:11, BB:5, SO:5, SB:6 },
-  p10:{ name:'오준서', G:9, PA:34, AB:30, H:8, '2B':1, '3B':0, HR:0, RBI:3, BB:3, SO:8, SB:1 }
+  p1:  { name:'허지욱', number:98, G:2,  PA:6, AB:2, H:2, '2B':1, '3B':0, HR:0, RBI:1, R:4, SB:2, BB:4, HBP:0, SO:0, kOBP:1.000, kSLG:1.500, kOPS:2.500 },
+  p2:  { name:'이형석', number:33, G:1,  PA:1, AB:1, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:0, SB:0, BB:0, HBP:0, SO:0, kOBP:1.000, kSLG:1.000, kOPS:2.000 },
+  p3:  { name:'한민기', number:28, G:3,  PA:9, AB:7, H:5, '2B':2, '3B':1, HR:1, RBI:6, R:4, SB:3, BB:1, HBP:0, SO:1, kOBP:0.889, kSLG:1.429, kOPS:2.318 },
+  p4:  { name:'고석봉', number:14, G:3,  PA:9, AB:9, H:6, '2B':1, '3B':0, HR:2, RBI:4, R:6, SB:1, BB:0, HBP:0, SO:0, kOBP:0.667, kSLG:1.444, kOPS:2.111 },
+  p5:  { name:'김해성', number:38, G:2,  PA:4, AB:3, H:2, '2B':1, '3B':0, HR:0, RBI:2, R:2, SB:0, BB:1, HBP:0, SO:0, kOBP:0.750, kSLG:1.000, kOPS:1.750 },
+  p6:  { name:'김종원', number:21, G:3,  PA:8, AB:7, H:4, '2B':1, '3B':1, HR:0, RBI:4, R:4, SB:0, BB:1, HBP:0, SO:0, kOBP:0.625, kSLG:1.000, kOPS:1.625 },
+  p7:  { name:'김경필', number:44, G:1,  PA:3, AB:2, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:2, SB:0, BB:1, HBP:0, SO:0, kOBP:0.667, kSLG:0.500, kOPS:1.167 },
+  p8:  { name:'정교수', number:23, G:3,  PA:7, AB:5, H:2, '2B':1, '3B':0, HR:0, RBI:0, R:2, SB:2, BB:1, HBP:1, SO:2, kOBP:0.571, kSLG:0.600, kOPS:1.171 },
+  p9:  { name:'박철우', number:8,  G:3,  PA:9, AB:6, H:2, '2B':0, '3B':0, HR:0, RBI:1, R:3, SB:3, BB:2, HBP:0, SO:4, kOBP:0.444, kSLG:0.333, kOPS:0.778 },
+  p10: { name:'문영익', number:11, G:3,  PA:5, AB:5, H:1, '2B':0, '3B':1, HR:0, RBI:2, R:1, SB:0, BB:0, HBP:0, SO:0, kOBP:0.200, kSLG:0.600, kOPS:0.800 },
+  p11: { name:'변우동', number:27, G:3,  PA:5, AB:5, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:0, BB:0, HBP:0, SO:3, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+  p12: { name:'서현민', number:19, G:2,  PA:4, AB:3, H:0, '2B':0, '3B':0, HR:0, RBI:1, R:0, SB:0, BB:0, HBP:0, SO:2, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+  p13: { name:'김시현', number:55, G:3,  PA:3, AB:2, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:1, HBP:0, SO:0, kOBP:0.333, kSLG:0.000, kOPS:0.333 },
+  p14: { name:'추혜승', number:16, G:2,  PA:2, AB:2, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:1, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+  p15: { name:'남상민', number:7,  G:1,  PA:1, AB:1, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:0, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+  p16: { name:'한재윤', number:36, G:1,  PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:0, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+  p17: { name:'박경순', number:22, G:1,  PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:0, BB:0, HBP:0, SO:0, kOBP:0.000, kSLG:0.000, kOPS:0.000 }
 };
 const samplePitchers = {
-  pt1: { name:'강민재', G:8, W:5, L:2, IP:42, pH:35, pHR:3, K:38, pBB:12, R:15, ER:12 },
-  pt2: { name:'조현석', G:6, W:3, L:2, IP:30, pH:28, pHR:2, K:25, pBB:10, R:13, ER:10 },
-  pt3: { name:'배성준', G:10, W:2, L:1, IP:18, pH:15, pHR:1, K:16, pBB:8, R:7, ER:5 },
-  pt4: { name:'류지훈', G:5, W:1, L:2, IP:22, pH:24, pHR:3, K:18, pBB:9, R:14, ER:11 }
+  pt1: { name:'김시현', number:55, G:3, W:2, L:0, SV:0, HD:0, IP:6.0, pH:5,  pHR:0, K:9, pBB:7, pIBB:0, pHBP:1, R:7,  ER:4,  WPCT:1.000, BF:32, NP:135 },
+  pt2: { name:'문영익', number:11, G:3, W:0, L:1, SV:0, HD:0, IP:7.0, pH:20, pHR:0, K:5, pBB:1, pIBB:0, pHBP:0, R:15, ER:13, WPCT:0.000, BF:42, NP:127 },
+  pt3: { name:'고석봉', number:14, G:1, W:0, L:0, SV:0, HD:0, IP:0,   pH:0,  pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:0,  ER:0,  WPCT:0.000, BF:0,  NP:0 }
 };
 const sampleGames = {
-  g1: { date:'2026-03-15', opponent:'스톰 야구단', ourScore:8, theirScore:5, location:'잠실 야구장 C구장' },
-  g2: { date:'2026-03-22', opponent:'블루레인', ourScore:3, theirScore:7, location:'목동 야구장' },
-  g3: { date:'2026-03-29', opponent:'레드썬더', ourScore:6, theirScore:6, location:'잠실 야구장 A구장' },
-  g4: { date:'2026-04-05', opponent:'이글스 클럽', ourScore:10, theirScore:3, location:'고척 야구장 B구장' },
-  g5: { date:'2026-04-12', opponent:'나이트호크', ourScore:5, theirScore:4, location:'잠실 야구장 C구장' }
+  g1: { date:'2026-03-14', opponent:'INCOURSE',       ourScore:4,  theirScore:13, location:'중앙공원 야구장' },
+  g2: { date:'2026-03-28', opponent:'금강 옥시전스',   ourScore:11, theirScore:2,  location:'부강생활체육공원 야구장' },
+  g3: { date:'2026-04-04', opponent:'KBSI 어벤져스',   ourScore:14, theirScore:11, location:'부강생활체육공원 야구장' }
 };
 
 // ===== INIT FIREBASE =====
@@ -738,16 +764,22 @@ function switchTab(tabName) {
 // ===== CALCULATED STATS =====
 function calcAVG(p) { return p.AB > 0 ? (p.H / p.AB) : 0; }
 function calcOBP(p) {
-  const denom = p.AB + p.BB;
-  return denom > 0 ? ((p.H + p.BB) / denom) : 0;
+  if (p.kOBP != null) return p.kOBP;
+  const hbp = p.HBP || 0;
+  const denom = p.AB + (p.BB || 0) + hbp;
+  return denom > 0 ? ((p.H + (p.BB || 0) + hbp) / denom) : 0;
 }
 function calcSLG(p) {
+  if (p.kSLG != null) return p.kSLG;
   if (p.AB === 0) return 0;
   const singles = p.H - (p['2B'] || 0) - (p['3B'] || 0) - (p.HR || 0);
   const tb = singles + (p['2B'] || 0) * 2 + (p['3B'] || 0) * 3 + (p.HR || 0) * 4;
   return tb / p.AB;
 }
-function calcOPS(p) { return calcOBP(p) + calcSLG(p); }
+function calcOPS(p) {
+  if (p.kOPS != null) return p.kOPS;
+  return calcOBP(p) + calcSLG(p);
+}
 function calcERA(pt) { return pt.IP > 0 ? (pt.ER * 7 / pt.IP) : 0; }
 
 function fmtRate(val) { return val === 0 ? '.000' : (val >= 1 ? val.toFixed(3) : val.toFixed(3).substring(1)); }
@@ -758,7 +790,7 @@ function renderPlayers() {
   const tbody = document.getElementById('playerBody');
   const entries = Object.entries(playersData);
   if (entries.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="16" style="padding:30px;color:var(--gray)">등록된 선수가 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="19" style="padding:30px;color:var(--gray)">등록된 선수가 없습니다.</td></tr>';
     return;
   }
 
@@ -769,7 +801,7 @@ function renderPlayers() {
   }));
 
   // find leaders (max in each numeric category, min SO is not highlighted)
-  const numKeys = ['G','PA','AB','H','2B','3B','HR','RBI','BB','SB','AVG','OBP','SLG','OPS'];
+  const numKeys = ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','AVG','OBP','SLG','OPS'];
   const leaders = {};
   numKeys.forEach(k => {
     const maxVal = Math.max(...computed.map(p => p[k] || 0));
@@ -782,12 +814,14 @@ function renderPlayers() {
     const click = isLoggedIn() ? `onclick="editPlayer('${escHtml(p.id)}')"` : '';
     html += `<tr class="${cls}" ${click}>`;
     html += `<td class="name-cell">${escHtml(p.name)}</td>`;
-    ['G','PA','AB','H','2B','3B','HR','RBI','BB','SO','SB'].forEach(k => {
+    html += `<td>${p.number || ''}</td>`;
+    html += `<td class="${(leaders['AVG'] !== undefined && Math.abs(p.AVG - leaders['AVG']) < 0.0001 && p.AVG > 0) ? ' stat-leader' : ''}">${fmtRate(p.AVG)}</td>`;
+    ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => {
       const val = p[k] || 0;
-      const isLeader = (k !== 'SO' && leaders[k] !== undefined && val === leaders[k] && val > 0) ? ' stat-leader' : '';
+      const isLeader = (!['SO','HBP'].includes(k) && leaders[k] !== undefined && val === leaders[k] && val > 0) ? ' stat-leader' : '';
       html += `<td class="${isLeader}">${val}</td>`;
     });
-    ['AVG','OBP','SLG','OPS'].forEach(k => {
+    ['OBP','SLG','OPS'].forEach(k => {
       const val = p[k];
       const isLeader = (leaders[k] !== undefined && Math.abs(val - leaders[k]) < 0.0001 && val > 0) ? ' stat-leader' : '';
       html += `<td class="${isLeader}">${fmtRate(val)}</td>`;
@@ -802,7 +836,7 @@ function renderPitchers() {
   const tbody = document.getElementById('pitcherBody');
   const entries = Object.entries(pitchersData);
   if (entries.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="12" style="padding:30px;color:var(--gray)">등록된 투수가 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="20" style="padding:30px;color:var(--gray)">등록된 투수가 없습니다.</td></tr>';
     return;
   }
 
@@ -812,7 +846,6 @@ function renderPitchers() {
 
   // leaders
   const highKeys = ['G','W','IP','K'];
-  const lowKeys = ['ERA'];
   const highLeaders = {};
   highKeys.forEach(k => {
     const maxVal = Math.max(...computed.map(p => p[k] || 0));
@@ -827,11 +860,16 @@ function renderPitchers() {
     const click = isLoggedIn() ? `onclick="editPitcher('${escHtml(pt.id)}')"` : '';
     html += `<tr class="${cls}" ${click}>`;
     html += `<td class="name-cell">${escHtml(pt.name)}</td>`;
+    html += `<td>${pt.number || ''}</td>`;
+    const eraLeader = (minERA !== null && pt.IP > 0 && Math.abs(pt.ERA - minERA) < 0.001) ? ' stat-leader-low' : '';
+    html += `<td class="${eraLeader}">${pt.IP > 0 ? fmtERA(pt.ERA) : '-'}</td>`;
     ['G','W','L'].forEach(k => {
       const val = pt[k] || 0;
       const isLeader = (k !== 'L' && highLeaders[k] !== undefined && val === highLeaders[k] && val > 0) ? ' stat-leader' : '';
       html += `<td class="${isLeader}">${val}</td>`;
     });
+    html += `<td>${pt.SV || 0}</td>`;
+    html += `<td>${pt.HD || 0}</td>`;
     const ipLeader = (highLeaders['IP'] !== undefined && pt.IP === highLeaders['IP'] && pt.IP > 0) ? ' stat-leader' : '';
     html += `<td class="${ipLeader}">${pt.IP}</td>`;
     html += `<td>${pt.pH || 0}</td>`;
@@ -839,10 +877,13 @@ function renderPitchers() {
     const kLeader = (highLeaders['K'] !== undefined && pt.K === highLeaders['K'] && pt.K > 0) ? ' stat-leader' : '';
     html += `<td class="${kLeader}">${pt.K || 0}</td>`;
     html += `<td>${pt.pBB || 0}</td>`;
+    html += `<td>${pt.pIBB || 0}</td>`;
+    html += `<td>${pt.pHBP || 0}</td>`;
     html += `<td>${pt.R || 0}</td>`;
     html += `<td>${pt.ER || 0}</td>`;
-    const eraLeader = (minERA !== null && pt.IP > 0 && Math.abs(pt.ERA - minERA) < 0.001) ? ' stat-leader-low' : '';
-    html += `<td class="${eraLeader}">${fmtERA(pt.ERA)}</td>`;
+    html += `<td>${pt.WPCT != null ? fmtRate(pt.WPCT) : '-'}</td>`;
+    html += `<td>${pt.BF || 0}</td>`;
+    html += `<td>${pt.NP || 0}</td>`;
     html += '</tr>';
   });
   tbody.innerHTML = html;
@@ -913,24 +954,28 @@ function renderTeamStats() {
   });
 
   // Team batting
-  let totalH = 0, totalAB = 0, totalBB = 0, totalHR = 0, totalRBI = 0, totalSB = 0, totalSO = 0;
+  let totalH = 0, totalAB = 0, totalBB = 0, totalHBP = 0, totalHR = 0, totalRBI = 0, totalSB = 0, totalSO = 0, totalR = 0;
   players.forEach(p => {
     totalH += (p.H || 0);
     totalAB += (p.AB || 0);
     totalBB += (p.BB || 0);
+    totalHBP += (p.HBP || 0);
     totalHR += (p.HR || 0);
     totalRBI += (p.RBI || 0);
     totalSB += (p.SB || 0);
     totalSO += (p.SO || 0);
+    totalR += (p.R || 0);
   });
   const teamAVG = totalAB > 0 ? (totalH / totalAB) : 0;
+  const teamOBP = (totalAB + totalBB + totalHBP) > 0 ? ((totalH + totalBB + totalHBP) / (totalAB + totalBB + totalHBP)) : 0;
 
   // Team pitching
-  let totalER = 0, totalIP = 0, totalK = 0;
+  let totalER = 0, totalIP = 0, totalK = 0, totalPR = 0;
   pitchers.forEach(pt => {
     totalER += (pt.ER || 0);
     totalIP += (pt.IP || 0);
     totalK += (pt.K || 0);
+    totalPR += (pt.R || 0);
   });
   const teamERA = totalIP > 0 ? (totalER * 7 / totalIP) : 0;
 
@@ -947,7 +992,7 @@ function renderTeamStats() {
     <div class="stat-card">
       <div class="stat-label">시즌 성적</div>
       <div class="stat-value accent">${wins}승 ${losses}패 ${draws}무</div>
-      <div class="stat-sub">총 ${games.length}경기</div>
+      <div class="stat-sub">총 ${games.length}경기 (승점 ${wins * 3})</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">승률</div>
@@ -960,6 +1005,11 @@ function renderTeamStats() {
       <div class="stat-sub">${totalH}안타 / ${totalAB}타수</div>
     </div>
     <div class="stat-card">
+      <div class="stat-label">팀 출루율</div>
+      <div class="stat-value">${fmtRate(teamOBP)}</div>
+      <div class="stat-sub">(안타+볼넷+사구) / (타수+볼넷+사구)</div>
+    </div>
+    <div class="stat-card">
       <div class="stat-label">팀 ERA</div>
       <div class="stat-value">${fmtERA(teamERA)}</div>
       <div class="stat-sub">자책 ${totalER} / ${totalIP}이닝</div>
@@ -967,11 +1017,16 @@ function renderTeamStats() {
     <div class="stat-card">
       <div class="stat-label">팀 홈런</div>
       <div class="stat-value accent">${totalHR}</div>
-      <div class="stat-sub">선수 ${players.length}명</div>
+      <div class="stat-sub">시즌 합계</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">팀 타점</div>
       <div class="stat-value">${totalRBI}</div>
+      <div class="stat-sub">시즌 합계</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">팀 득점</div>
+      <div class="stat-value">${totalR}</div>
       <div class="stat-sub">시즌 합계</div>
     </div>
     <div class="stat-card">
@@ -1001,8 +1056,8 @@ function renderTeamStats() {
     </div>
     <div class="stat-card">
       <div class="stat-label">등록 선수</div>
-      <div class="stat-value accent">${players.length + pitchers.length}</div>
-      <div class="stat-sub">타자 ${players.length} / 투수 ${pitchers.length}</div>
+      <div class="stat-value accent">${players.length}</div>
+      <div class="stat-sub">타자 ${players.length}명 / 투수 ${pitchers.length}명</div>
     </div>
   `;
 }
@@ -1016,7 +1071,8 @@ function openPlayerModal(data, id) {
   document.getElementById('playerModalTitle').textContent = data ? '선수 수정' : '선수 추가';
   document.getElementById('playerId').value = id || '';
   document.getElementById('pName').value = data ? data.name : '';
-  ['G','PA','AB','H','2B','3B','HR','RBI','BB','SO','SB'].forEach(k => {
+  document.getElementById('pNumber').value = data ? (data.number || 0) : 0;
+  ['G','PA','AB','H','2B','3B','HR','RBI','R','BB','HBP','SO','SB'].forEach(k => {
     const elId = k === '2B' ? 'p2B' : k === '3B' ? 'p3B' : 'p' + k;
     document.getElementById(elId).value = data ? (data[k] || 0) : 0;
   });
@@ -1029,9 +1085,10 @@ function openPitcherModal(data, id) {
   document.getElementById('pitcherModalTitle').textContent = data ? '투수 수정' : '투수 추가';
   document.getElementById('pitcherId').value = id || '';
   document.getElementById('ptName').value = data ? data.name : '';
-  ['G','W','L','IP','H','HR','K','BB','R','ER'].forEach(k => {
+  document.getElementById('ptNumber').value = data ? (data.number || 0) : 0;
+  ['G','W','L','SV','HD','IP','H','HR','K','BB','IBB','HBP','R','ER','BF','NP'].forEach(k => {
     const elId = 'pt' + k;
-    const dataKey = ['H','HR','BB'].includes(k) ? 'p' + k : k;
+    const dataKey = ['H','HR','BB','IBB','HBP'].includes(k) ? 'p' + k : k;
     document.getElementById(elId).value = data ? (data[dataKey] || 0) : 0;
   });
   document.getElementById('btnDeletePitcher').classList.toggle('hidden', !data);
@@ -1071,7 +1128,8 @@ function savePlayer() {
   if (!name) { showToast('선수명을 입력해주세요.', 'error'); return; }
 
   const data = { name };
-  ['G','PA','AB','H','RBI','BB','SO','SB'].forEach(k => {
+  data.number = parseInt(document.getElementById('pNumber').value) || 0;
+  ['G','PA','AB','H','RBI','R','BB','HBP','SO','SB'].forEach(k => {
     data[k] = parseInt(document.getElementById('p' + k).value) || 0;
   });
   data['2B'] = parseInt(document.getElementById('p2B').value) || 0;
@@ -1096,16 +1154,24 @@ function savePitcher() {
   if (!name) { showToast('선수명을 입력해주세요.', 'error'); return; }
 
   const data = { name };
+  data.number = parseInt(document.getElementById('ptNumber').value) || 0;
   data.G = parseInt(document.getElementById('ptG').value) || 0;
   data.W = parseInt(document.getElementById('ptW').value) || 0;
   data.L = parseInt(document.getElementById('ptL').value) || 0;
+  data.SV = parseInt(document.getElementById('ptSV').value) || 0;
+  data.HD = parseInt(document.getElementById('ptHD').value) || 0;
   data.IP = parseFloat(document.getElementById('ptIP').value) || 0;
   data.pH = parseInt(document.getElementById('ptH').value) || 0;
   data.pHR = parseInt(document.getElementById('ptHR').value) || 0;
   data.K = parseInt(document.getElementById('ptK').value) || 0;
   data.pBB = parseInt(document.getElementById('ptBB').value) || 0;
+  data.pIBB = parseInt(document.getElementById('ptIBB').value) || 0;
+  data.pHBP = parseInt(document.getElementById('ptHBP').value) || 0;
   data.R = parseInt(document.getElementById('ptR').value) || 0;
   data.ER = parseInt(document.getElementById('ptER').value) || 0;
+  data.BF = parseInt(document.getElementById('ptBF').value) || 0;
+  data.NP = parseInt(document.getElementById('ptNP').value) || 0;
+  data.WPCT = (data.W + data.L) > 0 ? data.W / (data.W + data.L) : 0;
 
   const id = document.getElementById('pitcherId').value || ('pt' + Date.now());
   pitchersData[id] = data;
