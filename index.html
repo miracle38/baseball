@@ -1708,6 +1708,7 @@ function calcERA(pt) { return pt.IP > 0 ? (pt.ER * 7 / pt.IP) : 0; }
 
 function fmtRate(val) { return val === 0 ? '.000' : (val >= 1 ? val.toFixed(3) : val.toFixed(3).substring(1)); }
 function fmtERA(val) { return val.toFixed(2); }
+function fmtIP(val) { return Math.round(val * 10) / 10; }
 
 // ===== RENDER PLAYERS =====
 function renderPlayers() {
@@ -1896,7 +1897,7 @@ function renderPitchers() {
   html += '<tr class="totals-row"><td class="name-cell">합계</td><td></td>';
   html += `<td>${ptTotals.IP > 0 ? fmtERA(ptERA) : '-'}</td>`;
   html += `<td>${ptTotals.G}</td><td>${ptTotals.W}</td><td>${ptTotals.L}</td>`;
-  html += `<td>${ptTotals.SV}</td><td>${ptTotals.HD}</td><td>${ptTotals.IP}</td>`;
+  html += `<td>${ptTotals.SV}</td><td>${ptTotals.HD}</td><td>${fmtIP(ptTotals.IP)}</td>`;
   html += `<td>${ptTotals.pH}</td><td>${ptTotals.pHR}</td><td>${ptTotals.K}</td>`;
   html += `<td>${ptTotals.pBB}</td><td>${ptTotals.pIBB}</td><td>${ptTotals.pHBP}</td>`;
   html += `<td>${ptTotals.R}</td><td>${ptTotals.ER}</td>`;
@@ -2140,7 +2141,7 @@ function renderTeamStats() {
     <div class="stat-card"><div class="stat-label">승률</div><div class="stat-value">${(wins + losses > 0) ? fmtRate(wins / (wins + losses)) : '-'}</div><div class="stat-sub">${wins + losses + draws}경기 기준</div></div>
     <div class="stat-card"><div class="stat-label">팀 타율</div><div class="stat-value">${fmtRate(teamAVG)}</div><div class="stat-sub">${totalH}안타 / ${totalAB}타수</div></div>
     <div class="stat-card"><div class="stat-label">팀 출루율</div><div class="stat-value">${fmtRate(teamOBP)}</div><div class="stat-sub">(안타+볼넷+사구) / (타수+볼넷+사구)</div></div>
-    <div class="stat-card"><div class="stat-label">팀 ERA</div><div class="stat-value">${fmtERA(teamERA)}</div><div class="stat-sub">자책 ${totalER} / ${totalIP}이닝</div></div>
+    <div class="stat-card"><div class="stat-label">팀 ERA</div><div class="stat-value">${fmtERA(teamERA)}</div><div class="stat-sub">자책 ${totalER} / ${fmtIP(totalIP)}이닝</div></div>
     <div class="stat-card"><div class="stat-label">팀 홈런</div><div class="stat-value accent">${totalHR}</div><div class="stat-sub">시즌 합계</div></div>
     <div class="stat-card"><div class="stat-label">팀 타점</div><div class="stat-value">${totalRBI}</div><div class="stat-sub">시즌 합계</div></div>
     <div class="stat-card"><div class="stat-label">팀 득점</div><div class="stat-value">${totalScored}</div><div class="stat-sub">시즌 합계</div></div>
