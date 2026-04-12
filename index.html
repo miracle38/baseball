@@ -109,60 +109,138 @@ button{cursor:pointer;font-family:inherit}
 }
 .user-email{font-size:12px;color:var(--gray);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* ===== LEAGUE SELECTOR ===== */
-.league-selector{
-  display:flex;justify-content:center;
+/* ===== SEASON SELECTOR ===== */
+.season-selector{
+  display:flex;flex-direction:column;align-items:center;
   background:#ffffff;
   padding:12px 0 0;
-  gap:0;
   box-shadow:0 2px 8px rgba(0,0,0,0.06);
 }
-.league-btn{
+.season-tabs{
+  display:flex;gap:0;
+}
+.season-btn{
   background:#f8fafc;
   border:1px solid #e2e8f0;
   color:#64748b;padding:9px 28px;font-size:14px;font-weight:600;
   cursor:pointer;transition:var(--transition);
   font-family:inherit;
 }
-.league-btn:first-child{border-radius:24px 0 0 24px}
-.league-btn:nth-child(2){border-radius:0;border-left:none;border-right:none}
-.league-btn:last-child{border-radius:0 24px 24px 0}
-.league-btn:hover{color:#1e293b;background:#f1f5f9;border-color:#cbd5e1}
-.league-btn.active{
+.season-btn:first-child{border-radius:24px 0 0 24px}
+.season-btn:last-child{border-radius:0 24px 24px 0;border-left:none}
+.season-btn:hover{color:#1e293b;background:#f1f5f9;border-color:#cbd5e1}
+.season-btn.active{
   background:linear-gradient(135deg, var(--red), #ff6b8a);
   color:#ffffff;
   border-color:transparent;
   box-shadow:0 4px 16px rgba(233,69,96,0.3);
 }
-@media(max-width:480px){
-  .league-btn{padding:7px 14px;font-size:12px}
-}
 
-/* ===== YEAR SELECTOR ===== */
-.year-selector{
-  display:flex;justify-content:center;
-  background:#ffffff;
-  padding:0 0 12px;
-  gap:0;
+/* League pills */
+.league-pills{
+  display:flex;gap:0;padding:8px 0 12px;
 }
-.year-btn{
+.league-pill{
   background:#f8fafc;
   border:1px solid #e2e8f0;
   color:#64748b;padding:5px 18px;font-size:12px;font-weight:600;
   cursor:pointer;transition:var(--transition);
   font-family:inherit;
 }
-.year-btn:first-child{border-radius:16px 0 0 16px}
-.year-btn:last-child{border-radius:0 16px 16px 0;border-left:none}
-.year-btn:hover{color:#1e293b;background:#f1f5f9;border-color:#cbd5e1}
-.year-btn.active{
+.league-pill:first-child{border-radius:16px 0 0 16px}
+.league-pill:last-child{border-radius:0 16px 16px 0;border-left:none}
+.league-pill:only-child{border-radius:16px}
+.league-pill:not(:first-child):not(:last-child){border-left:none}
+.league-pill:hover{color:#1e293b;background:#f1f5f9;border-color:#cbd5e1}
+.league-pill.active{
   background:linear-gradient(135deg, var(--red), #ff6b8a);
   color:#ffffff;
   border-color:transparent;
   box-shadow:0 2px 8px rgba(233,69,96,0.25);
 }
 @media(max-width:480px){
-  .year-btn{padding:4px 12px;font-size:11px}
+  .season-btn{padding:7px 14px;font-size:12px}
+  .league-pill{padding:4px 12px;font-size:11px}
+}
+
+/* ===== HISTORY TABLE ===== */
+.history-container{
+  background:#ffffff;
+  border:1px solid #e2e8f0;
+  border-radius:14px;overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom:24px;
+}
+.history-table{
+  width:100%;border-collapse:collapse;font-size:14px;line-height:1.7;
+}
+.history-table thead{background:linear-gradient(135deg, #8b1a1a, #c0282e, #a02020)}
+.history-table th{
+  padding:14px 12px;text-align:center;font-weight:700;font-size:12px;
+  color:#cbd5e1;text-transform:uppercase;letter-spacing:0.8px;
+  border-bottom:2px solid var(--red);white-space:nowrap;
+}
+.history-table td{
+  padding:12px 12px;text-align:center;
+  border-bottom:1px solid #e2e8f0;
+  color:#334155;font-variant-numeric:tabular-nums;
+}
+.history-table tbody tr{transition:var(--transition)}
+.history-table tbody tr:nth-child(even){background:#f8fafc}
+.history-table tbody tr:nth-child(odd){background:#ffffff}
+.history-table tbody tr.clickable-row{cursor:pointer}
+.history-table tbody tr.clickable-row:hover{
+  background:rgba(233,69,96,0.06);
+  border-left:3px solid var(--red);
+}
+.history-table tbody tr.history-totals{
+  background:rgba(233,69,96,0.06)!important;
+  border-top:2px solid var(--red);
+  font-weight:700;
+}
+.history-table tbody tr.history-totals td{
+  border-bottom:none;color:#1e293b;font-weight:800;
+}
+.history-table tbody tr.expanded-row{
+  background:#fff7ed!important;
+}
+.history-table .year-cell{font-weight:700;color:#1e293b}
+.history-table .league-cell{text-align:left;padding-left:16px;font-weight:600}
+.history-table .record-cell{white-space:nowrap}
+.history-table .winrate-bar{
+  display:inline-block;height:8px;border-radius:4px;
+  background:linear-gradient(90deg, #4ecdc4, #44b5ad);
+  vertical-align:middle;margin-left:6px;min-width:2px;
+}
+.source-badge{
+  display:inline-block;padding:2px 8px;border-radius:6px;
+  font-size:10px;font-weight:700;color:#fff;
+  text-decoration:none;letter-spacing:0.3px;
+  transition:var(--transition);
+}
+.source-badge:hover{opacity:0.8;color:#fff;transform:scale(1.05)}
+.source-badge.ksbsa{background:linear-gradient(135deg, #3b82f6, #60a5fa)}
+.source-badge.dbsa{background:linear-gradient(135deg, #22c55e, #4ade80)}
+.source-badge.gameone{background:linear-gradient(135deg, #f59e0b, #fbbf24)}
+.source-badge.daedeok{background:linear-gradient(135deg, #8b5cf6, #a78bfa)}
+.history-detail{padding:0 16px 16px}
+.history-detail-inner{
+  background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
+  padding:16px;margin-top:8px;
+}
+.history-detail-tabs{
+  display:flex;gap:8px;margin-bottom:12px;
+}
+.history-detail-tab{
+  background:#e2e8f0;border:none;color:#64748b;
+  padding:6px 16px;border-radius:8px;font-size:12px;font-weight:600;
+  cursor:pointer;transition:var(--transition);font-family:inherit;
+}
+.history-detail-tab.active{
+  background:var(--red);color:#fff;
+}
+.history-no-data{
+  color:#94a3b8;font-size:13px;padding:12px;text-align:center;
 }
 
 /* ===== NAV TABS ===== */
@@ -649,6 +727,8 @@ tr.highlight-row:hover{
 }
 .league-tag.sejong{background:linear-gradient(135deg, #3b82f6, #60a5fa);box-shadow:0 2px 6px rgba(59,130,246,0.25)}
 .league-tag.donggu{background:linear-gradient(135deg, #22c55e, #4ade80);box-shadow:0 2px 6px rgba(34,197,94,0.25)}
+.league-tag.geumgang{background:linear-gradient(135deg, #f59e0b, #fbbf24);box-shadow:0 2px 6px rgba(245,158,11,0.25)}
+.league-tag.daedeok{background:linear-gradient(135deg, #8b5cf6, #a78bfa);box-shadow:0 2px 6px rgba(139,92,246,0.25)}
 
 /* ===== FUTURE GAME STYLES ===== */
 .game-row.future-game{
@@ -731,6 +811,8 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
   .modal{padding:24px;width:95%}
   .form-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
   .stats-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .history-table{font-size:12px}
+  .history-table th,.history-table td{padding:8px 6px}
 }
 @media(max-width:480px){
   .brand-text h1{font-size:20px}
@@ -743,7 +825,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 
 /* ===== PRINT ===== */
 @media print{
-  .header,.nav-tabs,.league-selector,.year-selector,.btn-add,.btn-login,.header-actions,.footer{display:none!important}
+  .header,.nav-tabs,.season-selector,.btn-add,.btn-login,.header-actions,.footer{display:none!important}
   body{background:#fff;color:#000}
   .main{padding:0}
   .table-wrapper{box-shadow:none;border:1px solid #ccc}
@@ -779,7 +861,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
       </svg>
       <div class="brand-text">
         <h1>WINDUP</h1>
-        <p id="leagueSubtitle">2026 토요리그 토요4부_A조</p>
+        <p id="leagueSubtitle">2026 시즌</p>
       </div>
     </div>
     <div class="header-actions">
@@ -789,21 +871,17 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
   </div>
 </header>
 
-<!-- ===== LEAGUE SELECTOR ===== -->
-<div class="league-selector">
-  <button class="league-btn" data-league="all" onclick="switchLeague('all')">전체</button>
-  <button class="league-btn active" data-league="sejong" onclick="switchLeague('sejong')">세종 토요리그</button>
-  <button class="league-btn" data-league="donggu" onclick="switchLeague('donggu')">대전 동구리그</button>
-</div>
-
-<!-- ===== YEAR SELECTOR ===== -->
-<div class="year-selector">
-  <button class="year-btn active" data-year="2026" onclick="switchYear(2026)">2026</button>
-  <button class="year-btn" data-year="2025" onclick="switchYear(2025)">2025</button>
+<!-- ===== SEASON SELECTOR ===== -->
+<div class="season-selector" id="seasonSelector">
+  <div class="season-tabs">
+    <button class="season-btn active" data-mode="current" onclick="switchMode('current')">2026 시즌</button>
+    <button class="season-btn" data-mode="history" onclick="switchMode('history')">역대 기록</button>
+  </div>
+  <div class="league-pills" id="leaguePills"></div>
 </div>
 
 <!-- ===== NAV ===== -->
-<nav class="nav-tabs">
+<nav class="nav-tabs" id="navTabs">
   <button class="nav-tab active" data-tab="players" onclick="switchTab('players')">선수 기록</button>
   <button class="nav-tab" data-tab="pitchers" onclick="switchTab('pitchers')">투수 기록</button>
   <button class="nav-tab" data-tab="games" onclick="switchTab('games')">경기 기록</button>
@@ -814,6 +892,30 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 
 <!-- ===== MAIN ===== -->
 <main class="main">
+
+  <!-- HISTORY VIEW (hidden by default) -->
+  <div id="historyView" style="display:none">
+    <div class="section-header">
+      <div class="section-title">역대 기록</div>
+    </div>
+    <div class="history-container">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>연도</th>
+            <th style="text-align:left;padding-left:16px">리그</th>
+            <th>성적</th>
+            <th>승률</th>
+            <th>경기</th>
+            <th>출처</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+    <!-- Detail area for expanded season -->
+    <div id="historyDetail" style="display:none"></div>
+  </div>
 
   <!-- PLAYER STATS TAB -->
   <div class="tab-content active" id="tab-players">
@@ -828,25 +930,25 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
       <table id="playerTable">
         <thead>
           <tr>
-            <th data-key="name" data-type="string">선수명 <span class="sort-arrow">▲</span></th>
-            <th data-key="number" data-type="number">등번호 <span class="sort-arrow">▲</span></th>
-            <th data-key="AVG" data-type="number">타율 <span class="sort-arrow">▲</span></th>
-            <th data-key="G" data-type="number">G <span class="sort-arrow">▲</span></th>
-            <th data-key="PA" data-type="number">타석 <span class="sort-arrow">▲</span></th>
-            <th data-key="AB" data-type="number">타수 <span class="sort-arrow">▲</span></th>
-            <th data-key="H" data-type="number">안타 <span class="sort-arrow">▲</span></th>
-            <th data-key="2B" data-type="number">2B <span class="sort-arrow">▲</span></th>
-            <th data-key="3B" data-type="number">3B <span class="sort-arrow">▲</span></th>
-            <th data-key="HR" data-type="number">HR <span class="sort-arrow">▲</span></th>
-            <th data-key="RBI" data-type="number">타점 <span class="sort-arrow">▲</span></th>
-            <th data-key="R" data-type="number">득점 <span class="sort-arrow">▲</span></th>
-            <th data-key="SB" data-type="number">도루 <span class="sort-arrow">▲</span></th>
-            <th data-key="BB" data-type="number">볼넷 <span class="sort-arrow">▲</span></th>
-            <th data-key="HBP" data-type="number">사구 <span class="sort-arrow">▲</span></th>
-            <th data-key="SO" data-type="number">삼진 <span class="sort-arrow">▲</span></th>
-            <th data-key="OBP" data-type="number">출루율 <span class="sort-arrow">▲</span></th>
-            <th data-key="SLG" data-type="number">장타율 <span class="sort-arrow">▲</span></th>
-            <th data-key="OPS" data-type="number">OPS <span class="sort-arrow">▲</span></th>
+            <th data-key="name" data-type="string">선수명 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="number" data-type="number">등번호 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="AVG" data-type="number">타율 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="G" data-type="number">G <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="PA" data-type="number">타석 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="AB" data-type="number">타수 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="H" data-type="number">안타 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="2B" data-type="number">2B <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="3B" data-type="number">3B <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="HR" data-type="number">HR <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="RBI" data-type="number">타점 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="R" data-type="number">득점 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="SB" data-type="number">도루 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="BB" data-type="number">볼넷 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="HBP" data-type="number">사구 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="SO" data-type="number">삼진 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="OBP" data-type="number">출루율 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="SLG" data-type="number">장타율 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="OPS" data-type="number">OPS <span class="sort-arrow">&#9650;</span></th>
           </tr>
         </thead>
         <tbody id="playerBody"></tbody>
@@ -867,26 +969,26 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
       <table id="pitcherTable">
         <thead>
           <tr>
-            <th data-key="name" data-type="string">선수명 <span class="sort-arrow">▲</span></th>
-            <th data-key="number" data-type="number">등번호 <span class="sort-arrow">▲</span></th>
-            <th data-key="ERA" data-type="number">ERA <span class="sort-arrow">▲</span></th>
-            <th data-key="G" data-type="number">G <span class="sort-arrow">▲</span></th>
-            <th data-key="W" data-type="number">승 <span class="sort-arrow">▲</span></th>
-            <th data-key="L" data-type="number">패 <span class="sort-arrow">▲</span></th>
-            <th data-key="SV" data-type="number">세 <span class="sort-arrow">▲</span></th>
-            <th data-key="HD" data-type="number">홀드 <span class="sort-arrow">▲</span></th>
-            <th data-key="IP" data-type="number">이닝 <span class="sort-arrow">▲</span></th>
-            <th data-key="pH" data-type="number">피안타 <span class="sort-arrow">▲</span></th>
-            <th data-key="pHR" data-type="number">피홈런 <span class="sort-arrow">▲</span></th>
-            <th data-key="K" data-type="number">삼진 <span class="sort-arrow">▲</span></th>
-            <th data-key="pBB" data-type="number">볼넷 <span class="sort-arrow">▲</span></th>
-            <th data-key="pIBB" data-type="number">고4 <span class="sort-arrow">▲</span></th>
-            <th data-key="pHBP" data-type="number">사구 <span class="sort-arrow">▲</span></th>
-            <th data-key="R" data-type="number">실점 <span class="sort-arrow">▲</span></th>
-            <th data-key="ER" data-type="number">자책 <span class="sort-arrow">▲</span></th>
-            <th data-key="WPCT" data-type="number">승률 <span class="sort-arrow">▲</span></th>
-            <th data-key="BF" data-type="number">타자 <span class="sort-arrow">▲</span></th>
-            <th data-key="NP" data-type="number">투구수 <span class="sort-arrow">▲</span></th>
+            <th data-key="name" data-type="string">선수명 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="number" data-type="number">등번호 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="ERA" data-type="number">ERA <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="G" data-type="number">G <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="W" data-type="number">승 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="L" data-type="number">패 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="SV" data-type="number">세 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="HD" data-type="number">홀드 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="IP" data-type="number">이닝 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="pH" data-type="number">피안타 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="pHR" data-type="number">피홈런 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="K" data-type="number">삼진 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="pBB" data-type="number">볼넷 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="pIBB" data-type="number">고4 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="pHBP" data-type="number">사구 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="R" data-type="number">실점 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="ER" data-type="number">자책 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="WPCT" data-type="number">승률 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="BF" data-type="number">타자 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="NP" data-type="number">투구수 <span class="sort-arrow">&#9650;</span></th>
           </tr>
         </thead>
         <tbody id="pitcherBody"></tbody>
@@ -908,11 +1010,11 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
       <table id="gameTable">
         <thead>
           <tr>
-            <th data-key="date" data-type="string">날짜 <span class="sort-arrow">▲</span></th>
-            <th data-key="opponent" data-type="string">상대팀 <span class="sort-arrow">▲</span></th>
+            <th data-key="date" data-type="string">날짜 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="opponent" data-type="string">상대팀 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="score" data-type="string">스코어</th>
-            <th data-key="result" data-type="string">결과 <span class="sort-arrow">▲</span></th>
-            <th data-key="location" data-type="string">장소 <span class="sort-arrow">▲</span></th>
+            <th data-key="result" data-type="string">결과 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="location" data-type="string">장소 <span class="sort-arrow">&#9650;</span></th>
           </tr>
         </thead>
         <tbody id="gameBody"></tbody>
@@ -973,11 +1075,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <strong>Windup Baseball Club</strong> &copy; 2026<br>
-  <span id="footerSourceWrap">
-    <a id="footerSource" href="https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:inline-block">KSBSA 데이터 출처 - 세종특별자치시 야구소프트볼협회</a>
-    <a id="footerSource2" href="https://donggu.dbsa.kr/teamPage/main/getMain.hs?teamSeq=70" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:none;margin-left:12px">DBSA 데이터 출처 - 대전광역시 야구소프트볼협회 동구리그</a>
-    <a id="footerSource3" href="https://www.gameone.kr/club/?club_idx=7734" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:none;margin-left:12px">게임원 데이터</a>
-  </span>
+  <span id="footerSourceWrap"></span>
 </footer>
 
 <!-- ===== PLAYER MODAL ===== -->
@@ -1060,6 +1158,10 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
       <div class="form-group"><label>우리 점수</label><input type="number" id="gOurScore" min="0" value="0"></div>
       <div class="form-group"><label>상대 점수</label><input type="number" id="gTheirScore" min="0" value="0"></div>
       <div class="form-group full"><label>장소</label><input type="text" id="gLocation" placeholder="경기 장소"></div>
+      <div class="form-group full" id="gameLeagueGroup" style="display:none">
+        <label>리그</label>
+        <select id="gLeague"></select>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn-delete hidden" id="btnDeleteGame" onclick="deleteGame()">삭제</button>
@@ -1092,84 +1194,49 @@ let currentUser = null;
 let firebaseReady = false;
 const ALLOWED_EMAILS = ['miracle0938@gmail.com', 'miracle38@jiran.com'];
 
-// ===== LEAGUE & YEAR CONFIG =====
-let currentLeague = localStorage.getItem('bb_current_league') || 'sejong';
-let currentYear = parseInt(localStorage.getItem('bb_current_year')) || 2026;
+// ===== CURRENT YEAR (for "current season") =====
+const CURRENT_YEAR = 2026;
 
-function getLeagueConfig(year) {
-  return {
-    sejong: {
-      subtitle: year + ' 토요4부_A조',
-      sourceUrl: 'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93',
-      sourceLabel: 'KSBSA 데이터 출처 - 세종특별자치시 야구소프트볼협회'
+// ===== ALL DATA =====
+const ALL_DATA = [
+  // === 2026 ===
+  {
+    id: '2026_sejong', year: 2026, league: '세종 토요4부_A조', leagueKey: 'sejong',
+    source: 'ksbsa.or.kr', sourceUrl: 'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93',
+    record: '2승 1패', W:2, L:1, D:0, G:3,
+    players: {
+      p1:  { name:'허지욱', number:98, G:2,  PA:6, AB:2, H:2, '2B':1, '3B':0, HR:0, RBI:1, R:4, SB:2, BB:4, HBP:0, SO:0, kOBP:1.000, kSLG:1.500, kOPS:2.500 },
+      p2:  { name:'이형석', number:33, G:1,  PA:1, AB:1, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:0, SB:0, BB:0, HBP:0, SO:0, kOBP:1.000, kSLG:1.000, kOPS:2.000 },
+      p3:  { name:'한민기', number:28, G:3,  PA:9, AB:7, H:5, '2B':2, '3B':1, HR:1, RBI:6, R:4, SB:3, BB:1, HBP:0, SO:1, kOBP:0.889, kSLG:1.429, kOPS:2.318 },
+      p4:  { name:'고석봉', number:14, G:3,  PA:9, AB:9, H:6, '2B':1, '3B':0, HR:2, RBI:4, R:6, SB:1, BB:0, HBP:0, SO:0, kOBP:0.667, kSLG:1.444, kOPS:2.111 },
+      p5:  { name:'김해성', number:38, G:2,  PA:4, AB:3, H:2, '2B':1, '3B':0, HR:0, RBI:2, R:2, SB:0, BB:1, HBP:0, SO:0, kOBP:0.750, kSLG:1.000, kOPS:1.750 },
+      p6:  { name:'김종원', number:21, G:3,  PA:8, AB:7, H:4, '2B':1, '3B':1, HR:0, RBI:4, R:4, SB:0, BB:1, HBP:0, SO:0, kOBP:0.625, kSLG:1.000, kOPS:1.625 },
+      p7:  { name:'김경필', number:44, G:1,  PA:3, AB:2, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:2, SB:0, BB:1, HBP:0, SO:0, kOBP:0.667, kSLG:0.500, kOPS:1.167 },
+      p8:  { name:'정교수', number:23, G:3,  PA:7, AB:5, H:2, '2B':1, '3B':0, HR:0, RBI:0, R:2, SB:2, BB:1, HBP:1, SO:2, kOBP:0.571, kSLG:0.600, kOPS:1.171 },
+      p9:  { name:'박철우', number:8,  G:3,  PA:9, AB:6, H:2, '2B':0, '3B':0, HR:0, RBI:1, R:3, SB:3, BB:2, HBP:0, SO:4, kOBP:0.444, kSLG:0.333, kOPS:0.778 },
+      p10: { name:'문영익', number:11, G:3,  PA:5, AB:5, H:1, '2B':0, '3B':1, HR:0, RBI:2, R:1, SB:0, BB:0, HBP:0, SO:0, kOBP:0.200, kSLG:0.600, kOPS:0.800 },
+      p11: { name:'변우동', number:27, G:3,  PA:5, AB:5, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:0, BB:0, HBP:0, SO:3, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+      p12: { name:'서현민', number:19, G:2,  PA:4, AB:3, H:0, '2B':0, '3B':0, HR:0, RBI:1, R:0, SB:0, BB:0, HBP:0, SO:2, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+      p13: { name:'김시현', number:55, G:3,  PA:3, AB:2, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:1, HBP:0, SO:0, kOBP:0.333, kSLG:0.000, kOPS:0.333 },
+      p14: { name:'추혜승', number:16, G:2,  PA:2, AB:2, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:1, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+      p15: { name:'남상민', number:7,  G:1,  PA:1, AB:1, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:0, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+      p16: { name:'한재윤', number:36, G:1,  PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:0, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+      p17: { name:'박경순', number:22, G:1,  PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:0, BB:0, HBP:0, SO:0, kOBP:0.000, kSLG:0.000, kOPS:0.000 }
     },
-    donggu: {
-      subtitle: year + ' 동구리그',
-      sourceUrl: 'https://donggu.dbsa.kr/teamPage/main/getMain.hs?teamSeq=70',
-      sourceLabel: 'DBSA 데이터 출처 - 대전광역시 야구소프트볼협회 동구리그'
+    pitchers: {
+      pt1: { name:'김시현', number:55, G:3, W:2, L:0, SV:0, HD:0, IP:6.0, pH:5,  pHR:0, K:9, pBB:7, pIBB:0, pHBP:1, R:7,  ER:4,  WPCT:1.000, BF:32, NP:135 },
+      pt2: { name:'문영익', number:11, G:3, W:0, L:1, SV:0, HD:0, IP:7.0, pH:20, pHR:0, K:5, pBB:1, pIBB:0, pHBP:0, R:15, ER:13, WPCT:0.000, BF:42, NP:127 },
+      pt3: { name:'고석봉', number:14, G:1, W:0, L:0, SV:0, HD:0, IP:0,   pH:0,  pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:0,  ER:0,  WPCT:0.000, BF:0,  NP:0 }
     },
-    all: {
-      subtitle: year + ' 시즌 통합',
-      sourceUrl: '',
-      sourceLabel: ''
-    }
-  };
-}
-
-let LEAGUE_CONFIG = getLeagueConfig(currentYear);
-
-// ===== DATA STORES =====
-let playersData = {};
-let pitchersData = {};
-let gamesData = {};
-
-// Firebase listener unsubscribers
-let fbUnsubs = [];
-
-// ===== XSS PREVENTION =====
-function escHtml(str) {
-  if (str == null) return '';
-  const d = document.createElement('div');
-  d.appendChild(document.createTextNode(String(str)));
-  return d.innerHTML;
-}
-
-// ===== DEFAULT DATA PER YEAR AND LEAGUE =====
-const defaultData = {
-  2026: {
-    sejong: {
-      players: {
-        p1:  { name:'허지욱', number:98, G:2,  PA:6, AB:2, H:2, '2B':1, '3B':0, HR:0, RBI:1, R:4, SB:2, BB:4, HBP:0, SO:0, kOBP:1.000, kSLG:1.500, kOPS:2.500 },
-        p2:  { name:'이형석', number:33, G:1,  PA:1, AB:1, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:0, SB:0, BB:0, HBP:0, SO:0, kOBP:1.000, kSLG:1.000, kOPS:2.000 },
-        p3:  { name:'한민기', number:28, G:3,  PA:9, AB:7, H:5, '2B':2, '3B':1, HR:1, RBI:6, R:4, SB:3, BB:1, HBP:0, SO:1, kOBP:0.889, kSLG:1.429, kOPS:2.318 },
-        p4:  { name:'고석봉', number:14, G:3,  PA:9, AB:9, H:6, '2B':1, '3B':0, HR:2, RBI:4, R:6, SB:1, BB:0, HBP:0, SO:0, kOBP:0.667, kSLG:1.444, kOPS:2.111 },
-        p5:  { name:'김해성', number:38, G:2,  PA:4, AB:3, H:2, '2B':1, '3B':0, HR:0, RBI:2, R:2, SB:0, BB:1, HBP:0, SO:0, kOBP:0.750, kSLG:1.000, kOPS:1.750 },
-        p6:  { name:'김종원', number:21, G:3,  PA:8, AB:7, H:4, '2B':1, '3B':1, HR:0, RBI:4, R:4, SB:0, BB:1, HBP:0, SO:0, kOBP:0.625, kSLG:1.000, kOPS:1.625 },
-        p7:  { name:'김경필', number:44, G:1,  PA:3, AB:2, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:2, SB:0, BB:1, HBP:0, SO:0, kOBP:0.667, kSLG:0.500, kOPS:1.167 },
-        p8:  { name:'정교수', number:23, G:3,  PA:7, AB:5, H:2, '2B':1, '3B':0, HR:0, RBI:0, R:2, SB:2, BB:1, HBP:1, SO:2, kOBP:0.571, kSLG:0.600, kOPS:1.171 },
-        p9:  { name:'박철우', number:8,  G:3,  PA:9, AB:6, H:2, '2B':0, '3B':0, HR:0, RBI:1, R:3, SB:3, BB:2, HBP:0, SO:4, kOBP:0.444, kSLG:0.333, kOPS:0.778 },
-        p10: { name:'문영익', number:11, G:3,  PA:5, AB:5, H:1, '2B':0, '3B':1, HR:0, RBI:2, R:1, SB:0, BB:0, HBP:0, SO:0, kOBP:0.200, kSLG:0.600, kOPS:0.800 },
-        p11: { name:'변우동', number:27, G:3,  PA:5, AB:5, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:0, BB:0, HBP:0, SO:3, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
-        p12: { name:'서현민', number:19, G:2,  PA:4, AB:3, H:0, '2B':0, '3B':0, HR:0, RBI:1, R:0, SB:0, BB:0, HBP:0, SO:2, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
-        p13: { name:'김시현', number:55, G:3,  PA:3, AB:2, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:1, HBP:0, SO:0, kOBP:0.333, kSLG:0.000, kOPS:0.333 },
-        p14: { name:'추혜승', number:16, G:2,  PA:2, AB:2, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:1, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
-        p15: { name:'남상민', number:7,  G:1,  PA:1, AB:1, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:0, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
-        p16: { name:'한재윤', number:36, G:1,  PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:0, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
-        p17: { name:'박경순', number:22, G:1,  PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:0, BB:0, HBP:0, SO:0, kOBP:0.000, kSLG:0.000, kOPS:0.000 }
-      },
-      pitchers: {
-        pt1: { name:'김시현', number:55, G:3, W:2, L:0, SV:0, HD:0, IP:6.0, pH:5,  pHR:0, K:9, pBB:7, pIBB:0, pHBP:1, R:7,  ER:4,  WPCT:1.000, BF:32, NP:135 },
-        pt2: { name:'문영익', number:11, G:3, W:0, L:1, SV:0, HD:0, IP:7.0, pH:20, pHR:0, K:5, pBB:1, pIBB:0, pHBP:0, R:15, ER:13, WPCT:0.000, BF:42, NP:127 },
-        pt3: { name:'고석봉', number:14, G:1, W:0, L:0, SV:0, HD:0, IP:0,   pH:0,  pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:0,  ER:0,  WPCT:0.000, BF:0,  NP:0 }
-      },
-      games: {
-        g1: { date:'2026-03-14', opponent:'INCOURSE',       ourScore:4,  theirScore:13, result:'패', location:'중앙공원 야구장' },
-        g2: { date:'2026-03-28', opponent:'금강 옥시전스',   ourScore:11, theirScore:2,  result:'승', location:'부강생활체육공원 야구장' },
-        g3: { date:'2026-04-04', opponent:'KBSI 어벤져스',   ourScore:14, theirScore:11, result:'승', location:'부강생활체육공원 야구장' },
-        g4: { date:'2026-04-18', opponent:'CRI 챌린저스',    ourScore:null, theirScore:null, result:'예정', location:'금강스포츠공원 야구장' },
-        g5: { date:'2026-04-25', opponent:'야수들',          ourScore:null, theirScore:null, result:'예정', location:'미정' }
-      },
-      rankingsA: [
+    games: {
+      g1: { date:'2026-03-14', opponent:'INCOURSE',       ourScore:4,  theirScore:13, result:'패', location:'중앙공원 야구장' },
+      g2: { date:'2026-03-28', opponent:'금강 옥시전스',   ourScore:11, theirScore:2,  result:'승', location:'부강생활체육공원 야구장' },
+      g3: { date:'2026-04-04', opponent:'KBSI 어벤져스',   ourScore:14, theirScore:11, result:'승', location:'부강생활체육공원 야구장' },
+      g4: { date:'2026-04-18', opponent:'CRI 챌린저스',    ourScore:null, theirScore:null, result:'예정', location:'금강스포츠공원 야구장' },
+      g5: { date:'2026-04-25', opponent:'야수들',          ourScore:null, theirScore:null, result:'예정', location:'미정' }
+    },
+    rankings: {
+      A: [
         { rank:1, team:'한밭 플렉스',                pts:9, G:3, W:3, L:0, D:0, RS:41, RA:24 },
         { rank:1, team:'슈프림 베이스볼',            pts:9, G:3, W:3, L:0, D:0, RS:30, RA:14 },
         { rank:3, team:'CRI 챌린저스',               pts:6, G:3, W:2, L:1, D:0, RS:21, RA:19 },
@@ -1180,7 +1247,7 @@ const defaultData = {
         { rank:7, team:'KBSI 어벤져스',              pts:0, G:3, W:0, L:3, D:0, RS:23, RA:28 },
         { rank:7, team:'야수들',                     pts:0, G:3, W:0, L:3, D:0, RS:29, RA:46 }
       ],
-      rankingsB: [
+      B: [
         { rank:1, team:'중흥S-CLASS야구단',                    pts:9, G:3, W:3, L:0, D:0, RS:35, RA:19 },
         { rank:1, team:'INCOURSE',                             pts:9, G:3, W:3, L:0, D:0, RS:38, RA:13 },
         { rank:1, team:'대성OBS',                              pts:9, G:3, W:3, L:0, D:0, RS:46, RA:18 },
@@ -1191,128 +1258,205 @@ const defaultData = {
         { rank:5, team:'고용노동부 The Wizards of OZE',        pts:3, G:3, W:1, L:2, D:0, RS:13, RA:21 },
         { rank:9, team:'금강 옥시전스',                        pts:0, G:3, W:0, L:3, D:0, RS:6,  RA:37 }
       ]
-    },
-    donggu: {
-      players: {
-        p1:  { name:'허지욱', number:98, G:1, PA:3, AB:1, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:1, SB:2, BB:2, HBP:0, SO:0, kOBP:1.000, kSLG:1.000, kOPS:2.000 },
-        p2:  { name:'박철우', number:8,  G:1, PA:1, AB:1, H:1, '2B':1, '3B':0, HR:0, RBI:2, R:0, SB:1, BB:0, HBP:0, SO:0, kOBP:2.000, kSLG:2.000, kOPS:4.000 },
-        p3:  { name:'김경필', number:44, G:1, PA:3, AB:3, H:2, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:1, BB:0, HBP:0, SO:0, kOBP:0.667, kSLG:0.667, kOPS:1.334 },
-        p4:  { name:'차화진', number:25, G:1, PA:3, AB:3, H:2, '2B':0, '3B':0, HR:0, RBI:1, R:1, SB:2, BB:0, HBP:0, SO:0, kOBP:0.667, kSLG:0.667, kOPS:1.334 },
-        p5:  { name:'고석봉', number:14, G:2, PA:7, AB:7, H:4, '2B':1, '3B':0, HR:0, RBI:4, R:3, SB:3, BB:0, HBP:0, SO:1, kOBP:0.571, kSLG:0.714, kOPS:1.285 },
-        p6:  { name:'이준태', number:86, G:1, PA:2, AB:2, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:0, SB:2, BB:0, HBP:0, SO:0, kOBP:0.500, kSLG:0.500, kOPS:1.000 },
-        p7:  { name:'이형석', number:33, G:2, PA:5, AB:5, H:2, '2B':1, '3B':0, HR:0, RBI:1, R:2, SB:2, BB:0, HBP:0, SO:1, kOBP:0.400, kSLG:0.600, kOPS:1.000 },
-        p8:  { name:'김시현', number:55, G:2, PA:6, AB:6, H:2, '2B':0, '3B':0, HR:0, RBI:1, R:3, SB:0, BB:0, HBP:0, SO:0, kOBP:0.333, kSLG:0.333, kOPS:0.666 },
-        p9:  { name:'한재윤', number:36, G:2, PA:4, AB:3, H:1, '2B':0, '3B':0, HR:0, RBI:0, R:2, SB:0, BB:1, HBP:0, SO:0, kOBP:0.500, kSLG:0.333, kOPS:0.833 },
-        p10: { name:'이성진', number:10, G:2, PA:3, AB:3, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:1, SB:1, BB:0, HBP:0, SO:0, kOBP:0.333, kSLG:0.333, kOPS:0.666 },
-        p11: { name:'문영익', number:11, G:1, PA:4, AB:4, H:1, '2B':0, '3B':0, HR:0, RBI:3, R:1, SB:0, BB:0, HBP:0, SO:1, kOBP:0.250, kSLG:0.250, kOPS:0.500 },
-        p12: { name:'김종원', number:21, G:2, PA:6, AB:6, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:2, SB:2, BB:0, HBP:0, SO:2, kOBP:0.167, kSLG:0.167, kOPS:0.334 },
-        p13: { name:'김해성', number:38, G:2, PA:6, AB:5, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:1, SO:3, kOBP:0.167, kSLG:0.000, kOPS:0.167 },
-        p14: { name:'추혜승', number:16, G:2, PA:4, AB:3, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:0, BB:1, HBP:0, SO:0, kOBP:0.250, kSLG:0.000, kOPS:0.250 },
-        p15: { name:'정교수', number:23, G:1, PA:2, AB:2, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:1, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
-        p16: { name:'남상민', number:7,  G:1, PA:2, AB:1, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:1, BB:1, HBP:0, SO:1, kOBP:0.500, kSLG:0.000, kOPS:0.500 },
-        p17: { name:'변우동', number:27, G:1, PA:1, AB:1, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:1, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
-        p18: { name:'서현민', number:19, G:1, PA:1, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:0, BB:1, HBP:0, SO:0, kOBP:1.000, kSLG:0.000, kOPS:1.000 },
-        p19: { name:'박경순', number:22, G:1, PA:1, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:1, HBP:0, SO:0, kOBP:1.000, kSLG:0.000, kOPS:1.000 }
-      },
-      pitchers: {
-        pt1: { name:'허지욱', number:98, G:1, W:0, L:0, SV:0, HD:0, IP:0.1, pH:0, pHR:0, K:0, pBB:2, pIBB:0, pHBP:0, R:0, ER:0, WPCT:0.000, BF:0, NP:0 },
-        pt2: { name:'고석봉', number:14, G:1, W:0, L:0, SV:0, HD:0, IP:0.1, pH:1, pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:0, ER:0, WPCT:0.000, BF:0, NP:0 },
-        pt3: { name:'김시현', number:55, G:2, W:2, L:0, SV:0, HD:0, IP:4.2, pH:6, pHR:0, K:8, pBB:4, pIBB:0, pHBP:2, R:7, ER:2, WPCT:1.000, BF:0, NP:0 },
-        pt4: { name:'문영익', number:11, G:2, W:0, L:0, SV:0, HD:0, IP:4.2, pH:12,pHR:0, K:4, pBB:0, pIBB:0, pHBP:0, R:8, ER:3, WPCT:0.000, BF:0, NP:0 },
-        pt5: { name:'홍기훈', number:4,  G:1, W:0, L:0, SV:0, HD:0, IP:0.2, pH:3, pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:2, ER:1, WPCT:0.000, BF:0, NP:0 }
-      },
-      games: {
-        g1: { date:'2026-03-07', opponent:'ONE TOP',       ourScore:10, theirScore:9, result:'승', location:'한밭야구장(이글스파크)' },
-        g2: { date:'2026-03-21', opponent:'송림스터너즈',   ourScore:10, theirScore:8, result:'승', location:'대전고' },
-        g3: { date:'2026-04-25', opponent:'송림스터너즈',   ourScore:null, theirScore:null, result:'예정', location:'미정' }
-      },
-      rankings: [
-        { rank:1, team:'와인드업',       pts:6, G:2, W:2, L:0, D:0, RS:20, RA:17 },
-        { rank:2, team:'DJ빠따스',       pts:3, G:2, W:1, L:1, D:0, RS:15, RA:12 },
-        { rank:3, team:'스트롱타이거즈', pts:3, G:2, W:1, L:1, D:0, RS:14, RA:18 },
-        { rank:4, team:'넉다운',         pts:3, G:2, W:1, L:1, D:0, RS:12, RA:14 },
-        { rank:5, team:'송림스터너즈',   pts:0, G:2, W:0, L:2, D:0, RS:10, RA:14 }
-      ]
     }
   },
-  2025: {
-    sejong: {
-      players: {
-        p1:  { name:'한민기',     number:28,  G:12, PA:34, AB:27, H:15, '2B':4, '3B':1, HR:1, RBI:15, R:14, SB:6,  BB:5, HBP:2, SO:5,  kOBP:0.647, kSLG:0.889, kOPS:1.536 },
-        p2:  { name:'고석봉',     number:14,  G:13, PA:39, AB:33, H:18, '2B':4, '3B':2, HR:2, RBI:15, R:17, SB:17, BB:4, HBP:1, SO:3,  kOBP:0.590, kSLG:0.970, kOPS:1.559 },
-        p3:  { name:'문영익',     number:11,  G:6,  PA:11, AB:10, H:5,  '2B':1, '3B':0, HR:0, RBI:3,  R:4,  SB:2,  BB:1, HBP:0, SO:2,  kOBP:0.546, kSLG:0.600, kOPS:1.146 },
-        p4:  { name:'허지욱',     number:98,  G:2,  PA:8,  AB:6,  H:3,  '2B':0, '3B':1, HR:0, RBI:3,  R:3,  SB:3,  BB:2, HBP:0, SO:0,  kOBP:0.625, kSLG:0.833, kOPS:1.458 },
-        p5:  { name:'남상민',     number:7,   G:7,  PA:24, AB:19, H:8,  '2B':0, '3B':1, HR:0, RBI:5,  R:9,  SB:3,  BB:1, HBP:3, SO:5,  kOBP:0.500, kSLG:0.526, kOPS:1.026 },
-        p6:  { name:'김종원',     number:21,  G:12, PA:40, AB:37, H:15, '2B':4, '3B':1, HR:0, RBI:14, R:18, SB:9,  BB:2, HBP:1, SO:5,  kOBP:0.450, kSLG:0.568, kOPS:1.018 },
-        p7:  { name:'이준태',     number:86,  G:10, PA:38, AB:31, H:12, '2B':1, '3B':2, HR:2, RBI:10, R:14, SB:8,  BB:7, HBP:0, SO:5,  kOBP:0.500, kSLG:0.742, kOPS:1.242 },
-        p8:  { name:'김시현',     number:55,  G:4,  PA:14, AB:13, H:5,  '2B':0, '3B':0, HR:0, RBI:0,  R:4,  SB:5,  BB:1, HBP:0, SO:3,  kOBP:0.429, kSLG:0.385, kOPS:0.813 },
-        p9:  { name:'봉제헌',     number:88,  G:3,  PA:8,  AB:8,  H:3,  '2B':0, '3B':0, HR:0, RBI:1,  R:1,  SB:3,  BB:0, HBP:0, SO:1,  kOBP:0.375, kSLG:0.375, kOPS:0.750 },
-        p10: { name:'김경필',     number:44,  G:7,  PA:22, AB:14, H:5,  '2B':2, '3B':0, HR:0, RBI:7,  R:6,  SB:2,  BB:6, HBP:2, SO:1,  kOBP:0.591, kSLG:0.500, kOPS:1.091 },
-        p11: { name:'한재윤',     number:36,  G:5,  PA:15, AB:14, H:5,  '2B':1, '3B':0, HR:0, RBI:5,  R:3,  SB:4,  BB:1, HBP:0, SO:1,  kOBP:0.400, kSLG:0.429, kOPS:0.829 },
-        p12: { name:'박철우',     number:8,   G:7,  PA:18, AB:17, H:6,  '2B':2, '3B':0, HR:0, RBI:3,  R:5,  SB:6,  BB:0, HBP:1, SO:4,  kOBP:0.389, kSLG:0.471, kOPS:0.860 },
-        p13: { name:'김종원(99)', number:99,  G:1,  PA:3,  AB:3,  H:1,  '2B':0, '3B':0, HR:1, RBI:1,  R:1,  SB:0,  BB:0, HBP:0, SO:2,  kOBP:0.333, kSLG:1.333, kOPS:1.667 },
-        p14: { name:'정교수',     number:23,  G:9,  PA:26, AB:21, H:6,  '2B':1, '3B':0, HR:0, RBI:0,  R:11, SB:8,  BB:4, HBP:1, SO:5,  kOBP:0.423, kSLG:0.333, kOPS:0.756 },
-        p15: { name:'이성진',     number:10,  G:2,  PA:4,  AB:4,  H:1,  '2B':0, '3B':0, HR:0, RBI:1,  R:1,  SB:2,  BB:0, HBP:0, SO:1,  kOBP:0.250, kSLG:0.250, kOPS:0.500 },
-        p16: { name:'서현민',     number:19,  G:8,  PA:21, AB:17, H:4,  '2B':2, '3B':0, HR:0, RBI:4,  R:4,  SB:3,  BB:4, HBP:0, SO:5,  kOBP:0.381, kSLG:0.353, kOPS:0.734 },
-        p17: { name:'추혜승',     number:16,  G:6,  PA:11, AB:9,  H:2,  '2B':1, '3B':0, HR:0, RBI:2,  R:1,  SB:1,  BB:2, HBP:0, SO:4,  kOBP:0.364, kSLG:0.333, kOPS:0.697 },
-        p18: { name:'변우동',     number:27,  G:6,  PA:7,  AB:6,  H:1,  '2B':0, '3B':0, HR:0, RBI:3,  R:2,  SB:2,  BB:1, HBP:0, SO:0,  kOBP:0.286, kSLG:0.167, kOPS:0.452 },
-        p19: { name:'차화진',     number:25,  G:4,  PA:12, AB:9,  H:1,  '2B':1, '3B':0, HR:0, RBI:1,  R:5,  SB:4,  BB:2, HBP:0, SO:2,  kOBP:0.250, kSLG:0.222, kOPS:0.472 },
-        p20: { name:'김해성',     number:38,  G:11, PA:25, AB:19, H:1,  '2B':0, '3B':0, HR:0, RBI:2,  R:3,  SB:2,  BB:5, HBP:1, SO:11, kOBP:0.280, kSLG:0.053, kOPS:0.333 },
-        p21: { name:'김회중',     number:100, G:1,  PA:3,  AB:2,  H:0,  '2B':0, '3B':0, HR:0, RBI:0,  R:1,  SB:0,  BB:0, HBP:1, SO:1,  kOBP:0.333, kSLG:0.000, kOPS:0.333 }
-      },
-      pitchers: {
-        pt1: { name:'봉제헌', number:88, G:2,  W:1, L:0, SV:0, HD:0, IP:2.0,  pH:2,  pHR:0, K:3,  pBB:2,  pIBB:0, pHBP:1, R:1,  ER:1,  WPCT:1.000, BF:0, NP:0 },
-        pt2: { name:'한재윤', number:36, G:1,  W:0, L:0, SV:0, HD:0, IP:2.1,  pH:3,  pHR:0, K:1,  pBB:1,  pIBB:0, pHBP:1, R:3,  ER:2,  WPCT:0.000, BF:0, NP:0 },
-        pt3: { name:'문영익', number:11, G:10, W:1, L:4, SV:0, HD:0, IP:36.1, pH:70, pHR:3, K:36, pBB:16, pIBB:0, pHBP:5, R:62, ER:39, WPCT:0.200, BF:0, NP:0 },
-        pt4: { name:'한민기', number:28, G:8,  W:3, L:2, SV:0, HD:0, IP:16.1, pH:35, pHR:1, K:11, pBB:21, pIBB:0, pHBP:1, R:33, ER:27, WPCT:0.600, BF:0, NP:0 },
-        pt5: { name:'서현민', number:19, G:4,  W:1, L:1, SV:0, HD:0, IP:6.0,  pH:16, pHR:1, K:6,  pBB:8,  pIBB:0, pHBP:1, R:18, ER:15, WPCT:0.500, BF:0, NP:0 },
-        pt6: { name:'김시현', number:55, G:1,  W:0, L:0, SV:0, HD:0, IP:0.1,  pH:0,  pHR:0, K:1,  pBB:3,  pIBB:0, pHBP:0, R:3,  ER:3,  WPCT:0.000, BF:0, NP:0 }
-      },
-      games: {
-        g1: { date:'2025-01-01', opponent:'토요4부 시즌', ourScore:136, theirScore:123, result:'7승 7패', location:'세종' },
-        g2: { date:'2025-01-01', opponent:'시장기',       ourScore:6,   theirScore:17,  result:'0승 2패', location:'세종' },
-        g3: { date:'2025-01-01', opponent:'협회장기',     ourScore:2,   theirScore:13,  result:'0승 1패', location:'세종' }
-      },
-      rankings: []
+  {
+    id: '2026_donggu', year: 2026, league: '동구 토요리그', leagueKey: 'donggu',
+    source: 'donggu.dbsa.kr', sourceUrl: 'https://donggu.dbsa.kr/teamPage/main/getMain.hs?teamSeq=70',
+    record: '2승 0패', W:2, L:0, D:0, G:2,
+    players: {
+      p1:  { name:'허지욱', number:98, G:1, PA:3, AB:1, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:1, SB:2, BB:2, HBP:0, SO:0, kOBP:1.000, kSLG:1.000, kOPS:2.000 },
+      p2:  { name:'박철우', number:8,  G:1, PA:1, AB:1, H:1, '2B':1, '3B':0, HR:0, RBI:2, R:0, SB:1, BB:0, HBP:0, SO:0, kOBP:2.000, kSLG:2.000, kOPS:4.000 },
+      p3:  { name:'김경필', number:44, G:1, PA:3, AB:3, H:2, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:1, BB:0, HBP:0, SO:0, kOBP:0.667, kSLG:0.667, kOPS:1.334 },
+      p4:  { name:'차화진', number:25, G:1, PA:3, AB:3, H:2, '2B':0, '3B':0, HR:0, RBI:1, R:1, SB:2, BB:0, HBP:0, SO:0, kOBP:0.667, kSLG:0.667, kOPS:1.334 },
+      p5:  { name:'고석봉', number:14, G:2, PA:7, AB:7, H:4, '2B':1, '3B':0, HR:0, RBI:4, R:3, SB:3, BB:0, HBP:0, SO:1, kOBP:0.571, kSLG:0.714, kOPS:1.285 },
+      p6:  { name:'이준태', number:86, G:1, PA:2, AB:2, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:0, SB:2, BB:0, HBP:0, SO:0, kOBP:0.500, kSLG:0.500, kOPS:1.000 },
+      p7:  { name:'이형석', number:33, G:2, PA:5, AB:5, H:2, '2B':1, '3B':0, HR:0, RBI:1, R:2, SB:2, BB:0, HBP:0, SO:1, kOBP:0.400, kSLG:0.600, kOPS:1.000 },
+      p8:  { name:'김시현', number:55, G:2, PA:6, AB:6, H:2, '2B':0, '3B':0, HR:0, RBI:1, R:3, SB:0, BB:0, HBP:0, SO:0, kOBP:0.333, kSLG:0.333, kOPS:0.666 },
+      p9:  { name:'한재윤', number:36, G:2, PA:4, AB:3, H:1, '2B':0, '3B':0, HR:0, RBI:0, R:2, SB:0, BB:1, HBP:0, SO:0, kOBP:0.500, kSLG:0.333, kOPS:0.833 },
+      p10: { name:'이성진', number:10, G:2, PA:3, AB:3, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:1, SB:1, BB:0, HBP:0, SO:0, kOBP:0.333, kSLG:0.333, kOPS:0.666 },
+      p11: { name:'문영익', number:11, G:1, PA:4, AB:4, H:1, '2B':0, '3B':0, HR:0, RBI:3, R:1, SB:0, BB:0, HBP:0, SO:1, kOBP:0.250, kSLG:0.250, kOPS:0.500 },
+      p12: { name:'김종원', number:21, G:2, PA:6, AB:6, H:1, '2B':0, '3B':0, HR:0, RBI:1, R:2, SB:2, BB:0, HBP:0, SO:2, kOBP:0.167, kSLG:0.167, kOPS:0.334 },
+      p13: { name:'김해성', number:38, G:2, PA:6, AB:5, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:1, SO:3, kOBP:0.167, kSLG:0.000, kOPS:0.167 },
+      p14: { name:'추혜승', number:16, G:2, PA:4, AB:3, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:0, BB:1, HBP:0, SO:0, kOBP:0.250, kSLG:0.000, kOPS:0.250 },
+      p15: { name:'정교수', number:23, G:1, PA:2, AB:2, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:1, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+      p16: { name:'남상민', number:7,  G:1, PA:2, AB:1, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:1, BB:1, HBP:0, SO:1, kOBP:0.500, kSLG:0.000, kOPS:0.500 },
+      p17: { name:'변우동', number:27, G:1, PA:1, AB:1, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:1, kOBP:0.000, kSLG:0.000, kOPS:0.000 },
+      p18: { name:'서현민', number:19, G:1, PA:1, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:1, SB:0, BB:1, HBP:0, SO:0, kOBP:1.000, kSLG:0.000, kOPS:1.000 },
+      p19: { name:'박경순', number:22, G:1, PA:1, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:1, HBP:0, SO:0, kOBP:1.000, kSLG:0.000, kOPS:1.000 }
     },
-    donggu: {
-      players: {
-        p1:  { name:'한재윤', number:36, G:3,  PA:9,  AB:9,  H:5,  '2B':0, '3B':0, HR:0, RBI:2,  R:4,  SB:0, BB:0, HBP:0, SO:0,  kOBP:0.556, kSLG:0.556, kOPS:1.112 },
-        p2:  { name:'이준태', number:86, G:7,  PA:21, AB:18, H:9,  '2B':2, '3B':0, HR:0, RBI:3,  R:7,  SB:0, BB:2, HBP:1, SO:1,  kOBP:0.571, kSLG:0.611, kOPS:1.182 },
-        p3:  { name:'차화진', number:25, G:7,  PA:24, AB:19, H:9,  '2B':2, '3B':1, HR:0, RBI:9,  R:8,  SB:2, BB:3, HBP:0, SO:0,  kOBP:0.500, kSLG:0.684, kOPS:1.184 },
-        p4:  { name:'변우동', number:27, G:6,  PA:13, AB:13, H:6,  '2B':2, '3B':0, HR:0, RBI:3,  R:4,  SB:0, BB:0, HBP:0, SO:2,  kOBP:0.462, kSLG:0.615, kOPS:1.077 },
-        p5:  { name:'박철우', number:8,  G:9,  PA:25, AB:21, H:9,  '2B':1, '3B':1, HR:1, RBI:10, R:10, SB:0, BB:1, HBP:3, SO:5,  kOBP:0.520, kSLG:0.714, kOPS:1.234 },
-        p6:  { name:'김해성', number:38, G:11, PA:23, AB:19, H:8,  '2B':3, '3B':0, HR:0, RBI:7,  R:5,  SB:0, BB:0, HBP:4, SO:7,  kOBP:0.522, kSLG:0.579, kOPS:1.101 },
-        p7:  { name:'김종원', number:21, G:11, PA:34, AB:31, H:13, '2B':3, '3B':2, HR:0, RBI:12, R:13, SB:0, BB:2, HBP:1, SO:3,  kOBP:0.471, kSLG:0.645, kOPS:1.116 },
-        p8:  { name:'고석봉', number:14, G:16, PA:45, AB:39, H:16, '2B':5, '3B':3, HR:0, RBI:15, R:14, SB:0, BB:5, HBP:1, SO:9,  kOBP:0.489, kSLG:0.692, kOPS:1.181 },
-        p9:  { name:'문영익', number:11, G:10, PA:27, AB:26, H:10, '2B':3, '3B':1, HR:0, RBI:12, R:6,  SB:0, BB:1, HBP:0, SO:1,  kOBP:0.407, kSLG:0.577, kOPS:0.984 },
-        p10: { name:'남상민', number:7,  G:10, PA:31, AB:27, H:10, '2B':0, '3B':3, HR:2, RBI:8,  R:11, SB:0, BB:1, HBP:3, SO:11, kOBP:0.452, kSLG:0.815, kOPS:1.267 },
-        p11: { name:'봉제헌', number:88, G:7,  PA:21, AB:17, H:6,  '2B':3, '3B':0, HR:0, RBI:7,  R:8,  SB:1, BB:3, HBP:0, SO:3,  kOBP:0.429, kSLG:0.529, kOPS:0.958 },
-        p12: { name:'이성진', number:10, G:6,  PA:14, AB:9,  H:3,  '2B':0, '3B':1, HR:0, RBI:3,  R:7,  SB:0, BB:4, HBP:1, SO:2,  kOBP:0.571, kSLG:0.556, kOPS:1.127 },
-        p13: { name:'허지욱', number:98, G:6,  PA:21, AB:18, H:6,  '2B':1, '3B':0, HR:0, RBI:0,  R:6,  SB:0, BB:3, HBP:0, SO:2,  kOBP:0.429, kSLG:0.389, kOPS:0.818 },
-        p14: { name:'서현민', number:19, G:14, PA:39, AB:28, H:9,  '2B':1, '3B':0, HR:0, RBI:9,  R:14, SB:0, BB:8, HBP:3, SO:6,  kOBP:0.513, kSLG:0.357, kOPS:0.870 },
-        p15: { name:'한민기', number:28, G:9,  PA:27, AB:23, H:7,  '2B':2, '3B':2, HR:0, RBI:2,  R:7,  SB:0, BB:1, HBP:3, SO:8,  kOBP:0.407, kSLG:0.565, kOPS:0.972 },
-        p16: { name:'김경필', number:44, G:10, PA:28, AB:24, H:7,  '2B':1, '3B':0, HR:0, RBI:8,  R:7,  SB:1, BB:2, HBP:1, SO:7,  kOBP:0.357, kSLG:0.333, kOPS:0.690 },
-        p17: { name:'추혜승', number:16, G:9,  PA:24, AB:14, H:4,  '2B':0, '3B':0, HR:0, RBI:3,  R:6,  SB:0, BB:8, HBP:2, SO:2,  kOBP:0.583, kSLG:0.286, kOPS:0.869 },
-        p18: { name:'정교수', number:23, G:8,  PA:17, AB:12, H:1,  '2B':0, '3B':0, HR:0, RBI:3,  R:5,  SB:1, BB:4, HBP:0, SO:5,  kOBP:0.294, kSLG:0.083, kOPS:0.377 }
-      },
-      pitchers: {
-        pt1: { name:'한민기', number:28, G:7, W:2, L:2, SV:0, HD:0, IP:16.2, pH:28, pHR:0, K:6,  pBB:17, pIBB:0, pHBP:1, R:30, ER:17, WPCT:0.500, BF:0, NP:0 },
-        pt2: { name:'서현민', number:19, G:5, W:0, L:1, SV:0, HD:0, IP:12.0, pH:19, pHR:0, K:12, pBB:9,  pIBB:0, pHBP:1, R:17, ER:16, WPCT:0.000, BF:0, NP:0 },
-        pt3: { name:'봉제헌', number:88, G:7, W:0, L:1, SV:0, HD:0, IP:11.2, pH:15, pHR:1, K:10, pBB:13, pIBB:0, pHBP:2, R:22, ER:16, WPCT:0.000, BF:0, NP:0 },
-        pt4: { name:'정교수', number:23, G:2, W:0, L:0, SV:0, HD:0, IP:3.2,  pH:10, pHR:1, K:2,  pBB:2,  pIBB:0, pHBP:0, R:10, ER:6,  WPCT:0.000, BF:0, NP:0 },
-        pt5: { name:'문영익', number:11, G:9, W:3, L:3, SV:0, HD:0, IP:21.0, pH:49, pHR:2, K:20, pBB:19, pIBB:0, pHBP:1, R:54, ER:40, WPCT:0.500, BF:0, NP:0 },
-        pt6: { name:'박철우', number:8,  G:1, W:0, L:1, SV:0, HD:0, IP:3.0,  pH:6,  pHR:1, K:2,  pBB:8,  pIBB:0, pHBP:0, R:7,  ER:6,  WPCT:0.000, BF:0, NP:0 },
-        pt7: { name:'한재윤', number:36, G:1, W:0, L:0, SV:0, HD:0, IP:2.0,  pH:5,  pHR:0, K:3,  pBB:3,  pIBB:0, pHBP:1, R:6,  ER:6,  WPCT:0.000, BF:0, NP:0 },
-        pt8: { name:'허지욱', number:98, G:4, W:0, L:0, SV:0, HD:0, IP:3.0,  pH:7,  pHR:0, K:4,  pBB:9,  pIBB:0, pHBP:0, R:12, ER:11, WPCT:0.000, BF:0, NP:0 }
-      },
-      games: {
-        g1: { date:'2025-01-01', opponent:'2025 동구리그 시즌', ourScore:0, theirScore:0, result:'5승 8패', location:'대전' }
-      },
-      rankings: []
-    }
-  }
-};
+    pitchers: {
+      pt1: { name:'허지욱', number:98, G:1, W:0, L:0, SV:0, HD:0, IP:0.1, pH:0, pHR:0, K:0, pBB:2, pIBB:0, pHBP:0, R:0, ER:0, WPCT:0.000, BF:0, NP:0 },
+      pt2: { name:'고석봉', number:14, G:1, W:0, L:0, SV:0, HD:0, IP:0.1, pH:1, pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:0, ER:0, WPCT:0.000, BF:0, NP:0 },
+      pt3: { name:'김시현', number:55, G:2, W:2, L:0, SV:0, HD:0, IP:4.2, pH:6, pHR:0, K:8, pBB:4, pIBB:0, pHBP:2, R:7, ER:2, WPCT:1.000, BF:0, NP:0 },
+      pt4: { name:'문영익', number:11, G:2, W:0, L:0, SV:0, HD:0, IP:4.2, pH:12,pHR:0, K:4, pBB:0, pIBB:0, pHBP:0, R:8, ER:3, WPCT:0.000, BF:0, NP:0 },
+      pt5: { name:'홍기훈', number:4,  G:1, W:0, L:0, SV:0, HD:0, IP:0.2, pH:3, pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:2, ER:1, WPCT:0.000, BF:0, NP:0 }
+    },
+    games: {
+      g1: { date:'2026-03-07', opponent:'ONE TOP',       ourScore:10, theirScore:9, result:'승', location:'한밭야구장(이글스파크)' },
+      g2: { date:'2026-03-21', opponent:'송림스터너즈',   ourScore:10, theirScore:8, result:'승', location:'대전고' },
+      g3: { date:'2026-04-25', opponent:'송림스터너즈',   ourScore:null, theirScore:null, result:'예정', location:'미정' }
+    },
+    rankings: [
+      { rank:1, team:'와인드업',       pts:6, G:2, W:2, L:0, D:0, RS:20, RA:17 },
+      { rank:2, team:'DJ빠따스',       pts:3, G:2, W:1, L:1, D:0, RS:15, RA:12 },
+      { rank:3, team:'스트롱타이거즈', pts:3, G:2, W:1, L:1, D:0, RS:14, RA:18 },
+      { rank:4, team:'넉다운',         pts:3, G:2, W:1, L:1, D:0, RS:12, RA:14 },
+      { rank:5, team:'송림스터너즈',   pts:0, G:2, W:0, L:2, D:0, RS:10, RA:14 }
+    ]
+  },
+  // === 2025 ===
+  {
+    id: '2025_sejong', year: 2025, league: '세종 토요4부', leagueKey: 'sejong',
+    source: 'ksbsa.or.kr', sourceUrl: 'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93',
+    record: '7승 7패', W:7, L:7, D:0, G:14,
+    players: {
+      p1:  { name:'한민기',     number:28,  G:12, PA:34, AB:27, H:15, '2B':4, '3B':1, HR:1, RBI:15, R:14, SB:6,  BB:5, HBP:2, SO:5,  kOBP:0.647, kSLG:0.889, kOPS:1.536 },
+      p2:  { name:'고석봉',     number:14,  G:13, PA:39, AB:33, H:18, '2B':4, '3B':2, HR:2, RBI:15, R:17, SB:17, BB:4, HBP:1, SO:3,  kOBP:0.590, kSLG:0.970, kOPS:1.559 },
+      p3:  { name:'문영익',     number:11,  G:6,  PA:11, AB:10, H:5,  '2B':1, '3B':0, HR:0, RBI:3,  R:4,  SB:2,  BB:1, HBP:0, SO:2,  kOBP:0.546, kSLG:0.600, kOPS:1.146 },
+      p4:  { name:'허지욱',     number:98,  G:2,  PA:8,  AB:6,  H:3,  '2B':0, '3B':1, HR:0, RBI:3,  R:3,  SB:3,  BB:2, HBP:0, SO:0,  kOBP:0.625, kSLG:0.833, kOPS:1.458 },
+      p5:  { name:'남상민',     number:7,   G:7,  PA:24, AB:19, H:8,  '2B':0, '3B':1, HR:0, RBI:5,  R:9,  SB:3,  BB:1, HBP:3, SO:5,  kOBP:0.500, kSLG:0.526, kOPS:1.026 },
+      p6:  { name:'김종원',     number:21,  G:12, PA:40, AB:37, H:15, '2B':4, '3B':1, HR:0, RBI:14, R:18, SB:9,  BB:2, HBP:1, SO:5,  kOBP:0.450, kSLG:0.568, kOPS:1.018 },
+      p7:  { name:'이준태',     number:86,  G:10, PA:38, AB:31, H:12, '2B':1, '3B':2, HR:2, RBI:10, R:14, SB:8,  BB:7, HBP:0, SO:5,  kOBP:0.500, kSLG:0.742, kOPS:1.242 },
+      p8:  { name:'김시현',     number:55,  G:4,  PA:14, AB:13, H:5,  '2B':0, '3B':0, HR:0, RBI:0,  R:4,  SB:5,  BB:1, HBP:0, SO:3,  kOBP:0.429, kSLG:0.385, kOPS:0.813 },
+      p9:  { name:'봉제헌',     number:88,  G:3,  PA:8,  AB:8,  H:3,  '2B':0, '3B':0, HR:0, RBI:1,  R:1,  SB:3,  BB:0, HBP:0, SO:1,  kOBP:0.375, kSLG:0.375, kOPS:0.750 },
+      p10: { name:'김경필',     number:44,  G:7,  PA:22, AB:14, H:5,  '2B':2, '3B':0, HR:0, RBI:7,  R:6,  SB:2,  BB:6, HBP:2, SO:1,  kOBP:0.591, kSLG:0.500, kOPS:1.091 },
+      p11: { name:'한재윤',     number:36,  G:5,  PA:15, AB:14, H:5,  '2B':1, '3B':0, HR:0, RBI:5,  R:3,  SB:4,  BB:1, HBP:0, SO:1,  kOBP:0.400, kSLG:0.429, kOPS:0.829 },
+      p12: { name:'박철우',     number:8,   G:7,  PA:18, AB:17, H:6,  '2B':2, '3B':0, HR:0, RBI:3,  R:5,  SB:6,  BB:0, HBP:1, SO:4,  kOBP:0.389, kSLG:0.471, kOPS:0.860 },
+      p13: { name:'김종원(99)', number:99,  G:1,  PA:3,  AB:3,  H:1,  '2B':0, '3B':0, HR:1, RBI:1,  R:1,  SB:0,  BB:0, HBP:0, SO:2,  kOBP:0.333, kSLG:1.333, kOPS:1.667 },
+      p14: { name:'정교수',     number:23,  G:9,  PA:26, AB:21, H:6,  '2B':1, '3B':0, HR:0, RBI:0,  R:11, SB:8,  BB:4, HBP:1, SO:5,  kOBP:0.423, kSLG:0.333, kOPS:0.756 },
+      p15: { name:'이성진',     number:10,  G:2,  PA:4,  AB:4,  H:1,  '2B':0, '3B':0, HR:0, RBI:1,  R:1,  SB:2,  BB:0, HBP:0, SO:1,  kOBP:0.250, kSLG:0.250, kOPS:0.500 },
+      p16: { name:'서현민',     number:19,  G:8,  PA:21, AB:17, H:4,  '2B':2, '3B':0, HR:0, RBI:4,  R:4,  SB:3,  BB:4, HBP:0, SO:5,  kOBP:0.381, kSLG:0.353, kOPS:0.734 },
+      p17: { name:'추혜승',     number:16,  G:6,  PA:11, AB:9,  H:2,  '2B':1, '3B':0, HR:0, RBI:2,  R:1,  SB:1,  BB:2, HBP:0, SO:4,  kOBP:0.364, kSLG:0.333, kOPS:0.697 },
+      p18: { name:'변우동',     number:27,  G:6,  PA:7,  AB:6,  H:1,  '2B':0, '3B':0, HR:0, RBI:3,  R:2,  SB:2,  BB:1, HBP:0, SO:0,  kOBP:0.286, kSLG:0.167, kOPS:0.452 },
+      p19: { name:'차화진',     number:25,  G:4,  PA:12, AB:9,  H:1,  '2B':1, '3B':0, HR:0, RBI:1,  R:5,  SB:4,  BB:2, HBP:0, SO:2,  kOBP:0.250, kSLG:0.222, kOPS:0.472 },
+      p20: { name:'김해성',     number:38,  G:11, PA:25, AB:19, H:1,  '2B':0, '3B':0, HR:0, RBI:2,  R:3,  SB:2,  BB:5, HBP:1, SO:11, kOBP:0.280, kSLG:0.053, kOPS:0.333 },
+      p21: { name:'김회중',     number:100, G:1,  PA:3,  AB:2,  H:0,  '2B':0, '3B':0, HR:0, RBI:0,  R:1,  SB:0,  BB:0, HBP:1, SO:1,  kOBP:0.333, kSLG:0.000, kOPS:0.333 }
+    },
+    pitchers: {
+      pt1: { name:'봉제헌', number:88, G:2,  W:1, L:0, SV:0, HD:0, IP:2.0,  pH:2,  pHR:0, K:3,  pBB:2,  pIBB:0, pHBP:1, R:1,  ER:1,  WPCT:1.000, BF:0, NP:0 },
+      pt2: { name:'한재윤', number:36, G:1,  W:0, L:0, SV:0, HD:0, IP:2.1,  pH:3,  pHR:0, K:1,  pBB:1,  pIBB:0, pHBP:1, R:3,  ER:2,  WPCT:0.000, BF:0, NP:0 },
+      pt3: { name:'문영익', number:11, G:10, W:1, L:4, SV:0, HD:0, IP:36.1, pH:70, pHR:3, K:36, pBB:16, pIBB:0, pHBP:5, R:62, ER:39, WPCT:0.200, BF:0, NP:0 },
+      pt4: { name:'한민기', number:28, G:8,  W:3, L:2, SV:0, HD:0, IP:16.1, pH:35, pHR:1, K:11, pBB:21, pIBB:0, pHBP:1, R:33, ER:27, WPCT:0.600, BF:0, NP:0 },
+      pt5: { name:'서현민', number:19, G:4,  W:1, L:1, SV:0, HD:0, IP:6.0,  pH:16, pHR:1, K:6,  pBB:8,  pIBB:0, pHBP:1, R:18, ER:15, WPCT:0.500, BF:0, NP:0 },
+      pt6: { name:'김시현', number:55, G:1,  W:0, L:0, SV:0, HD:0, IP:0.1,  pH:0,  pHR:0, K:1,  pBB:3,  pIBB:0, pHBP:0, R:3,  ER:3,  WPCT:0.000, BF:0, NP:0 }
+    },
+    games: {
+      g1: { date:'2025-01-01', opponent:'토요4부 시즌', ourScore:136, theirScore:123, result:'7승 7패', location:'세종' },
+      g2: { date:'2025-01-01', opponent:'시장기',       ourScore:6,   theirScore:17,  result:'0승 2패', location:'세종' },
+      g3: { date:'2025-01-01', opponent:'협회장기',     ourScore:2,   theirScore:13,  result:'0승 1패', location:'세종' }
+    },
+    rankings: null
+  },
+  {
+    id: '2025_geumgang', year: 2025, league: '금강토요리그', leagueKey: 'geumgang',
+    source: 'gameone.kr', sourceUrl: 'https://www.gameone.kr/club/?club_idx=7734',
+    record: '5승 9패 2무', W:5, L:9, D:2, G:16,
+    players: {
+      p1:  { name:'한재윤', number:36, G:3,  PA:9,  AB:9,  H:5,  '2B':0, '3B':0, HR:0, RBI:2,  R:4,  SB:0, BB:0, HBP:0, SO:0,  kOBP:0.556, kSLG:0.556, kOPS:1.112 },
+      p2:  { name:'이준태', number:86, G:7,  PA:21, AB:18, H:9,  '2B':2, '3B':0, HR:0, RBI:3,  R:7,  SB:0, BB:2, HBP:1, SO:1,  kOBP:0.571, kSLG:0.611, kOPS:1.182 },
+      p3:  { name:'차화진', number:25, G:7,  PA:24, AB:19, H:9,  '2B':2, '3B':1, HR:0, RBI:9,  R:8,  SB:2, BB:3, HBP:0, SO:0,  kOBP:0.500, kSLG:0.684, kOPS:1.184 },
+      p4:  { name:'변우동', number:27, G:6,  PA:13, AB:13, H:6,  '2B':2, '3B':0, HR:0, RBI:3,  R:4,  SB:0, BB:0, HBP:0, SO:2,  kOBP:0.462, kSLG:0.615, kOPS:1.077 },
+      p5:  { name:'박철우', number:8,  G:9,  PA:25, AB:21, H:9,  '2B':1, '3B':1, HR:1, RBI:10, R:10, SB:0, BB:1, HBP:3, SO:5,  kOBP:0.520, kSLG:0.714, kOPS:1.234 },
+      p6:  { name:'김해성', number:38, G:11, PA:23, AB:19, H:8,  '2B':3, '3B':0, HR:0, RBI:7,  R:5,  SB:0, BB:0, HBP:4, SO:7,  kOBP:0.522, kSLG:0.579, kOPS:1.101 },
+      p7:  { name:'김종원', number:21, G:11, PA:34, AB:31, H:13, '2B':3, '3B':2, HR:0, RBI:12, R:13, SB:0, BB:2, HBP:1, SO:3,  kOBP:0.471, kSLG:0.645, kOPS:1.116 },
+      p8:  { name:'고석봉', number:14, G:16, PA:45, AB:39, H:16, '2B':5, '3B':3, HR:0, RBI:15, R:14, SB:0, BB:5, HBP:1, SO:9,  kOBP:0.489, kSLG:0.692, kOPS:1.181 },
+      p9:  { name:'문영익', number:11, G:10, PA:27, AB:26, H:10, '2B':3, '3B':1, HR:0, RBI:12, R:6,  SB:0, BB:1, HBP:0, SO:1,  kOBP:0.407, kSLG:0.577, kOPS:0.984 },
+      p10: { name:'남상민', number:7,  G:10, PA:31, AB:27, H:10, '2B':0, '3B':3, HR:2, RBI:8,  R:11, SB:0, BB:1, HBP:3, SO:11, kOBP:0.452, kSLG:0.815, kOPS:1.267 },
+      p11: { name:'봉제헌', number:88, G:7,  PA:21, AB:17, H:6,  '2B':3, '3B':0, HR:0, RBI:7,  R:8,  SB:1, BB:3, HBP:0, SO:3,  kOBP:0.429, kSLG:0.529, kOPS:0.958 },
+      p12: { name:'이성진', number:10, G:6,  PA:14, AB:9,  H:3,  '2B':0, '3B':1, HR:0, RBI:3,  R:7,  SB:0, BB:4, HBP:1, SO:2,  kOBP:0.571, kSLG:0.556, kOPS:1.127 },
+      p13: { name:'허지욱', number:98, G:6,  PA:21, AB:18, H:6,  '2B':1, '3B':0, HR:0, RBI:0,  R:6,  SB:0, BB:3, HBP:0, SO:2,  kOBP:0.429, kSLG:0.389, kOPS:0.818 },
+      p14: { name:'서현민', number:19, G:14, PA:39, AB:28, H:9,  '2B':1, '3B':0, HR:0, RBI:9,  R:14, SB:0, BB:8, HBP:3, SO:6,  kOBP:0.513, kSLG:0.357, kOPS:0.870 },
+      p15: { name:'한민기', number:28, G:9,  PA:27, AB:23, H:7,  '2B':2, '3B':2, HR:0, RBI:2,  R:7,  SB:0, BB:1, HBP:3, SO:8,  kOBP:0.407, kSLG:0.565, kOPS:0.972 },
+      p16: { name:'김경필', number:44, G:10, PA:28, AB:24, H:7,  '2B':1, '3B':0, HR:0, RBI:8,  R:7,  SB:1, BB:2, HBP:1, SO:7,  kOBP:0.357, kSLG:0.333, kOPS:0.690 },
+      p17: { name:'추혜승', number:16, G:9,  PA:24, AB:14, H:4,  '2B':0, '3B':0, HR:0, RBI:3,  R:6,  SB:0, BB:8, HBP:2, SO:2,  kOBP:0.583, kSLG:0.286, kOPS:0.869 },
+      p18: { name:'정교수', number:23, G:8,  PA:17, AB:12, H:1,  '2B':0, '3B':0, HR:0, RBI:3,  R:5,  SB:1, BB:4, HBP:0, SO:5,  kOBP:0.294, kSLG:0.083, kOPS:0.377 }
+    },
+    pitchers: {
+      pt1: { name:'한민기', number:28, G:7, W:2, L:2, SV:0, HD:0, IP:16.2, pH:28, pHR:0, K:6,  pBB:17, pIBB:0, pHBP:1, R:30, ER:17, WPCT:0.500, BF:0, NP:0 },
+      pt2: { name:'서현민', number:19, G:5, W:0, L:1, SV:0, HD:0, IP:12.0, pH:19, pHR:0, K:12, pBB:9,  pIBB:0, pHBP:1, R:17, ER:16, WPCT:0.000, BF:0, NP:0 },
+      pt3: { name:'봉제헌', number:88, G:7, W:0, L:1, SV:0, HD:0, IP:11.2, pH:15, pHR:1, K:10, pBB:13, pIBB:0, pHBP:2, R:22, ER:16, WPCT:0.000, BF:0, NP:0 },
+      pt4: { name:'정교수', number:23, G:2, W:0, L:0, SV:0, HD:0, IP:3.2,  pH:10, pHR:1, K:2,  pBB:2,  pIBB:0, pHBP:0, R:10, ER:6,  WPCT:0.000, BF:0, NP:0 },
+      pt5: { name:'문영익', number:11, G:9, W:3, L:3, SV:0, HD:0, IP:21.0, pH:49, pHR:2, K:20, pBB:19, pIBB:0, pHBP:1, R:54, ER:40, WPCT:0.500, BF:0, NP:0 },
+      pt6: { name:'박철우', number:8,  G:1, W:0, L:1, SV:0, HD:0, IP:3.0,  pH:6,  pHR:1, K:2,  pBB:8,  pIBB:0, pHBP:0, R:7,  ER:6,  WPCT:0.000, BF:0, NP:0 },
+      pt7: { name:'한재윤', number:36, G:1, W:0, L:0, SV:0, HD:0, IP:2.0,  pH:5,  pHR:0, K:3,  pBB:3,  pIBB:0, pHBP:1, R:6,  ER:6,  WPCT:0.000, BF:0, NP:0 },
+      pt8: { name:'허지욱', number:98, G:4, W:0, L:0, SV:0, HD:0, IP:3.0,  pH:7,  pHR:0, K:4,  pBB:9,  pIBB:0, pHBP:0, R:12, ER:11, WPCT:0.000, BF:0, NP:0 }
+    },
+    games: {
+      g1: { date:'2025-01-01', opponent:'2025 금강토요리그 시즌', ourScore:0, theirScore:0, result:'5승 9패 2무', location:'대전' }
+    },
+    rankings: null
+  },
+  // === 2024 ===
+  {
+    id: '2024_daedeok', year: 2024, league: '대덕구 토요A', leagueKey: 'daedeok',
+    source: 'daedeokgu.dbsa.kr', sourceUrl: 'https://daedeokgu.dbsa.kr/teamPage/main/getMain.hs?teamSeq=24',
+    record: '3승 11패', W:3, L:11, D:0, G:14,
+    players: {
+      p1:  {name:'고석봉',num:14,G:11,PA:26,AB:24,H:13,'2B':5,'3B':0,HR:0,RBI:8,R:5,SB:7,BB:2,HBP:0,SO:3,kOBP:.577,kSLG:.750,kOPS:1.327},
+      p2:  {name:'서현민',num:19,G:8,PA:27,AB:21,H:11,'2B':4,'3B':0,HR:0,RBI:7,R:10,SB:4,BB:4,HBP:2,SO:4,kOBP:.630,kSLG:.714,kOPS:1.344},
+      p3:  {name:'박철우',num:5,G:7,PA:18,AB:16,H:8,'2B':3,'3B':0,HR:0,RBI:1,R:5,SB:6,BB:1,HBP:1,SO:2,kOBP:.556,kSLG:.688,kOPS:1.243},
+      p4:  {name:'한민기',num:28,G:8,PA:26,AB:22,H:9,'2B':1,'3B':0,HR:1,RBI:12,R:10,SB:6,BB:2,HBP:2,SO:8,kOBP:.500,kSLG:.591,kOPS:1.091},
+      p5:  {name:'김종원',num:21,G:14,PA:39,AB:32,H:13,'2B':5,'3B':0,HR:0,RBI:10,R:8,SB:5,BB:5,HBP:1,SO:8,kOBP:.487,kSLG:.562,kOPS:1.050},
+      p6:  {name:'김해성',num:38,G:11,PA:19,AB:15,H:6,'2B':1,'3B':0,HR:0,RBI:2,R:3,SB:1,BB:2,HBP:2,SO:4,kOBP:.526,kSLG:.467,kOPS:.993},
+      p7:  {name:'이준태',num:86,G:10,PA:36,AB:31,H:12,'2B':1,'3B':0,HR:0,RBI:11,R:11,SB:12,BB:4,HBP:1,SO:2,kOBP:.472,kSLG:.419,kOPS:.892},
+      p8:  {name:'봉제헌',num:88,G:4,PA:13,AB:11,H:4,'2B':2,'3B':0,HR:0,RBI:3,R:4,SB:3,BB:0,HBP:1,SO:1,kOBP:.385,kSLG:.546,kOPS:.930},
+      p9:  {name:'변우동',num:27,G:9,PA:25,AB:24,H:6,'2B':2,'3B':0,HR:0,RBI:3,R:3,SB:1,BB:1,HBP:0,SO:4,kOBP:.280,kSLG:.333,kOPS:.613},
+      p10: {name:'정교수',num:23,G:7,PA:18,AB:17,H:4,'2B':0,'3B':0,HR:0,RBI:0,R:5,SB:3,BB:1,HBP:0,SO:4,kOBP:.278,kSLG:.235,kOPS:.513},
+      p11: {name:'김경필',num:44,G:13,PA:32,AB:29,H:5,'2B':2,'3B':0,HR:0,RBI:5,R:3,SB:4,BB:2,HBP:1,SO:4,kOBP:.250,kSLG:.241,kOPS:.491},
+      p12: {name:'추혜승',num:16,G:12,PA:35,AB:28,H:4,'2B':1,'3B':0,HR:0,RBI:5,R:5,SB:0,BB:6,HBP:0,SO:9,kOBP:.286,kSLG:.179,kOPS:.464},
+      p13: {name:'문영익',num:11,G:7,PA:13,AB:10,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:3,SB:1,BB:3,HBP:0,SO:3,kOBP:.231,kSLG:.000,kOPS:.231},
+      p14: {name:'한재윤',num:36,G:3,PA:8,AB:7,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:1,SB:1,BB:1,HBP:0,SO:2,kOBP:.125,kSLG:.000,kOPS:.125},
+      p15: {name:'박경순',num:22,G:3,PA:3,AB:1,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:2,HBP:0,SO:0,kOBP:.667,kSLG:.000,kOPS:.667}
+    },
+    pitchers: {
+      pt1: {name:'한재윤',num:36,G:2,W:0,L:1,SV:0,HD:0,IP:2.0,pH:0,pHR:0,K:4,pBB:2,pIBB:0,pHBP:0,R:1,ER:0},
+      pt2: {name:'한민기',num:28,G:2,W:0,L:0,SV:0,HD:0,IP:3.2,pH:2,pHR:0,K:1,pBB:2,pIBB:0,pHBP:0,R:2,ER:1},
+      pt3: {name:'고석봉',num:14,G:1,W:0,L:1,SV:0,HD:0,IP:4.1,pH:6,pHR:0,K:8,pBB:3,pIBB:0,pHBP:0,R:6,ER:3},
+      pt4: {name:'정준영',num:82,G:2,W:0,L:1,SV:0,HD:0,IP:3.2,pH:12,pHR:0,K:4,pBB:2,pIBB:0,pHBP:0,R:13,ER:3},
+      pt5: {name:'문영익',num:11,G:10,W:3,L:2,SV:0,HD:0,IP:25.2,pH:70,pHR:2,K:30,pBB:10,pIBB:0,pHBP:0,R:48,ER:33},
+      pt6: {name:'서현민',num:19,G:5,W:0,L:3,SV:0,HD:0,IP:13.1,pH:28,pHR:0,K:15,pBB:8,pIBB:0,pHBP:4,R:26,ER:21},
+      pt7: {name:'봉제헌',num:88,G:2,W:0,L:0,SV:0,HD:0,IP:2.1,pH:4,pHR:0,K:5,pBB:3,pIBB:0,pHBP:0,R:4,ER:4},
+      pt8: {name:'홍기훈',num:4,G:2,W:0,L:1,SV:0,HD:0,IP:3.0,pH:8,pHR:0,K:3,pBB:5,pIBB:0,pHBP:2,R:13,ER:9},
+      pt9: {name:'정교수',num:23,G:2,W:0,L:0,SV:0,HD:0,IP:1.0,pH:8,pHR:0,K:0,pBB:1,pIBB:0,pHBP:0,R:5,ER:5}
+    },
+    games: {},
+    rankings: null
+  },
+  // === 2022 ===
+  { id:'2022_geumgang', year:2022, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'19승 13패 1무', W:19,L:13,D:1,G:33, players:{},pitchers:{},games:{},rankings:null },
+  // === 2021 ===
+  { id:'2021_geumgang', year:2021, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'21승 17패 2무', W:21,L:17,D:2,G:40, players:{},pitchers:{},games:{},rankings:null },
+  // === 2020 ===
+  { id:'2020_geumgang', year:2020, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'7승 8패', W:7,L:8,D:0,G:15, players:{},pitchers:{},games:{},rankings:null },
+  // === 2019 and earlier ===
+  { id:'2019_geumgang', year:2019, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'12승 17패', W:12,L:17,D:0,G:29, players:{},pitchers:{},games:{},rankings:null },
+  { id:'2018_geumgang', year:2018, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'16승 14패', W:16,L:14,D:0,G:30, players:{},pitchers:{},games:{},rankings:null },
+  { id:'2017_geumgang', year:2017, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'13승 28패 2무', W:13,L:28,D:2,G:43, players:{},pitchers:{},games:{},rankings:null },
+  { id:'2016_geumgang', year:2016, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'20승 11패 2무', W:20,L:11,D:2,G:33, players:{},pitchers:{},games:{},rankings:null },
+  { id:'2015_geumgang', year:2015, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'23승 9패 2무', W:23,L:9,D:2,G:34, players:{},pitchers:{},games:{},rankings:null },
+  { id:'2014_geumgang', year:2014, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'9승 8패 2무', W:9,L:8,D:2,G:19, players:{},pitchers:{},games:{},rankings:null },
+  { id:'2013_geumgang', year:2013, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'10승 11패', W:10,L:11,D:0,G:21, players:{},pitchers:{},games:{},rankings:null },
+  { id:'2012_geumgang', year:2012, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'12승 5패 2무', W:12,L:5,D:2,G:19, players:{},pitchers:{},games:{},rankings:null },
+  { id:'2011_geumgang', year:2011, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'9승 5패', W:9,L:5,D:0,G:14, players:{},pitchers:{},games:{},rankings:null },
+  { id:'2010_geumgang', year:2010, league:'금강토요리그', leagueKey:'geumgang', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'5승 15패', W:5,L:15,D:0,G:20, players:{},pitchers:{},games:{},rankings:null },
+];
+
+// ===== HELPER: get entry by id =====
+function getEntry(id) { return ALL_DATA.find(e => e.id === id); }
+function getEntriesForYear(year) { return ALL_DATA.filter(e => e.year === year); }
+function hasPlayerData(entry) { return entry.players && Object.keys(entry.players).length > 0; }
+function hasPitcherData(entry) { return entry.pitchers && Object.keys(entry.pitchers).length > 0; }
+function hasData(entry) { return hasPlayerData(entry) || hasPitcherData(entry); }
+
+// ===== STATE =====
+let currentMode = 'current'; // 'current' or 'history'
+let currentLeague = 'all'; // leagueKey or 'all'
+let playersData = {};
+let pitchersData = {};
+let gamesData = {};
+let fbUnsubs = [];
+let historyExpandedId = null;
 
 // ===== INIT FIREBASE =====
 try {
@@ -1329,212 +1473,200 @@ try {
   console.warn('Firebase init failed, using localStorage fallback:', e);
 }
 
-// ===== LEAGUE SWITCHING =====
-function isCombinedView() { return currentLeague === 'all'; }
+// ===== XSS PREVENTION =====
+function escHtml(str) {
+  if (str == null) return '';
+  const d = document.createElement('div');
+  d.appendChild(document.createTextNode(String(str)));
+  return d.innerHTML;
+}
 
+// ===== MODE SWITCHING =====
+function switchMode(mode) {
+  if (mode === currentMode) return;
+  currentMode = mode;
+
+  document.querySelectorAll('.season-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+
+  if (mode === 'current') {
+    document.getElementById('historyView').style.display = 'none';
+    document.getElementById('navTabs').style.display = '';
+    document.querySelectorAll('.tab-content').forEach(el => {
+      el.style.display = '';
+    });
+    document.getElementById('leaguePills').style.display = '';
+    // Re-show active tab
+    const activeTab = document.querySelector('.nav-tab.active');
+    if (activeTab) switchTab(activeTab.dataset.tab);
+    updateSubtitle();
+    detachFirebaseListeners();
+    loadData();
+  } else {
+    // History mode
+    document.getElementById('historyView').style.display = 'block';
+    document.getElementById('navTabs').style.display = 'none';
+    document.querySelectorAll('.tab-content').forEach(el => {
+      el.style.display = 'none';
+    });
+    document.getElementById('leaguePills').style.display = 'none';
+    document.getElementById('leagueSubtitle').textContent = '역대 기록';
+    renderHistory();
+  }
+  updateFooter();
+  updateAddButtonsVisibility();
+}
+
+// ===== LEAGUE SWITCHING (current year pills) =====
 function switchLeague(league) {
   if (league === currentLeague) return;
   currentLeague = league;
-  localStorage.setItem('bb_current_league', league);
 
-  // Update UI
-  document.querySelectorAll('.league-btn').forEach(b => {
+  document.querySelectorAll('.league-pill').forEach(b => {
     b.classList.toggle('active', b.dataset.league === league);
   });
-  updateLeagueUI();
 
-  // Detach old Firebase listeners
+  updateSubtitle();
   detachFirebaseListeners();
-
-  // Load new league data
   loadData();
-
-  // Rankings와 Calendar는 Firebase 콜백과 별개로 즉시 갱신
   renderRankings();
   renderCalendar();
-}
-
-// ===== YEAR SWITCHING =====
-function switchYear(year) {
-  if (year === currentYear) return;
-  currentYear = year;
-  localStorage.setItem('bb_current_year', year);
-
-  // Update LEAGUE_CONFIG for the new year
-  LEAGUE_CONFIG = getLeagueConfig(currentYear);
-
-  // Update year button UI
-  document.querySelectorAll('.year-btn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.dataset.year) === year);
-  });
-
-  // Detach old Firebase listeners
-  detachFirebaseListeners();
-
-  // Update league UI (subtitle etc.)
-  updateLeagueUI();
-
-  // Reload data for new year
-  loadData();
-
-  // Rankings and Calendar
-  renderRankings();
-  renderCalendar();
-}
-
-function initYearUI() {
-  document.querySelectorAll('.year-btn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.dataset.year) === currentYear);
-  });
-}
-
-function updateLeagueUI() {
-  const league = currentLeague;
-  document.getElementById('leagueSubtitle').textContent = LEAGUE_CONFIG[league].subtitle;
-
-  const footerLink = document.getElementById('footerSource');
-  const footerLink2 = document.getElementById('footerSource2');
-  const footerLink3 = document.getElementById('footerSource3');
-
-  if (league === 'all') {
-    footerLink.href = LEAGUE_CONFIG.sejong.sourceUrl;
-    footerLink.textContent = LEAGUE_CONFIG.sejong.sourceLabel;
-    footerLink.style.display = 'inline-block';
-    footerLink2.style.display = 'inline-block';
-    footerLink3.style.display = 'inline-block';
-  } else if (league === 'donggu') {
-    footerLink.href = LEAGUE_CONFIG[league].sourceUrl;
-    footerLink.textContent = LEAGUE_CONFIG[league].sourceLabel;
-    footerLink.style.display = 'inline-block';
-    footerLink2.style.display = 'none';
-    footerLink3.style.display = 'inline-block';
-  } else {
-    footerLink.href = LEAGUE_CONFIG[league].sourceUrl;
-    footerLink.textContent = LEAGUE_CONFIG[league].sourceLabel;
-    footerLink.style.display = 'inline-block';
-    footerLink2.style.display = 'none';
-    footerLink3.style.display = 'none';
-  }
-
-  // Toggle add buttons visibility based on combined view
+  updateFooter();
   updateAddButtonsVisibility();
+}
+
+function isCombinedView() { return currentLeague === 'all'; }
+
+function updateSubtitle() {
+  if (currentMode === 'history') {
+    document.getElementById('leagueSubtitle').textContent = '역대 기록';
+    return;
+  }
+  if (currentLeague === 'all') {
+    document.getElementById('leagueSubtitle').textContent = CURRENT_YEAR + ' 시즌 통합';
+  } else {
+    const entries = getEntriesForYear(CURRENT_YEAR);
+    const entry = entries.find(e => e.leagueKey === currentLeague);
+    if (entry) {
+      document.getElementById('leagueSubtitle').textContent = entry.league;
+    }
+  }
+}
+
+function updateFooter() {
+  const wrap = document.getElementById('footerSourceWrap');
+  if (currentMode === 'history') {
+    wrap.innerHTML = '';
+    return;
+  }
+  const entries = getEntriesForYear(CURRENT_YEAR);
+  let sources = [];
+  if (currentLeague === 'all') {
+    sources = entries;
+  } else {
+    const e = entries.find(e => e.leagueKey === currentLeague);
+    if (e) sources = [e];
+  }
+  const unique = [];
+  const seen = new Set();
+  sources.forEach(s => {
+    if (!seen.has(s.source)) {
+      seen.add(s.source);
+      unique.push(s);
+    }
+  });
+  wrap.innerHTML = unique.map(s =>
+    `<a href="${escHtml(s.sourceUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:inline-block;margin-right:12px">${escHtml(s.source)}</a>`
+  ).join('');
 }
 
 function updateAddButtonsVisibility() {
   const addBtns = document.querySelectorAll('.btn-add');
-  if (isCombinedView()) {
+  if (currentMode === 'history' || isCombinedView()) {
     addBtns.forEach(b => b.classList.add('hidden'));
   } else if (isLoggedIn()) {
     addBtns.forEach(b => b.classList.remove('hidden'));
+  } else {
+    addBtns.forEach(b => b.classList.add('hidden'));
   }
 }
 
-function initLeagueUI() {
-  document.querySelectorAll('.league-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.league === currentLeague);
+function initLeaguePills() {
+  const entries = getEntriesForYear(CURRENT_YEAR);
+  const pillsEl = document.getElementById('leaguePills');
+  let html = `<button class="league-pill${currentLeague === 'all' ? ' active' : ''}" data-league="all" onclick="switchLeague('all')">전체</button>`;
+  entries.forEach(e => {
+    html += `<button class="league-pill${currentLeague === e.leagueKey ? ' active' : ''}" data-league="${e.leagueKey}" onclick="switchLeague('${e.leagueKey}')">${escHtml(e.league)}</button>`;
   });
-  updateLeagueUI();
+  pillsEl.innerHTML = html;
 }
 
+// ===== DETACH FIREBASE =====
 function detachFirebaseListeners() {
   fbUnsubs.forEach(fn => fn());
   fbUnsubs = [];
 }
 
-// ===== COMBINED DATA STORES (for "all" view) =====
-let sejongPlayersData = {};
-let sejongPitchersData = {};
-let sejongGamesData = {};
-let dongguPlayersData = {};
-let dongguPitchersData = {};
-let dongguGamesData = {};
+// ===== COMBINED DATA (for "all" view) =====
+let leagueDataCache = {};
 
 function getCombinedData() {
-  // Merge players by name+number
-  const mergedPlayers = {};
+  const entries = getEntriesForYear(CURRENT_YEAR);
   const countingKeys = ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'];
-
-  // Add sejong players
-  Object.entries(sejongPlayersData).forEach(([id, p]) => {
-    const key = p.name + '_' + p.number;
-    mergedPlayers[key] = { ...p, _league: 'sejong', _key: key };
-  });
-
-  // Merge donggu players
-  Object.entries(dongguPlayersData).forEach(([id, p]) => {
-    const key = p.name + '_' + p.number;
-    if (mergedPlayers[key]) {
-      // Combine stats
-      const existing = mergedPlayers[key];
-      countingKeys.forEach(k => {
-        existing[k] = (existing[k] || 0) + (p[k] || 0);
-      });
-      // Remove KSBSA-specific rate overrides since we're combining
-      delete existing.kOBP;
-      delete existing.kSLG;
-      delete existing.kOPS;
-      existing._league = 'both';
-    } else {
-      mergedPlayers[key] = { ...p, _league: 'donggu', _key: key };
-      delete mergedPlayers[key].kOBP;
-      delete mergedPlayers[key].kSLG;
-      delete mergedPlayers[key].kOPS;
-    }
-  });
-
-  // Also remove kOBP/kSLG/kOPS from sejong-only entries in combined view for consistency
-  Object.values(mergedPlayers).forEach(p => {
-    if (p._league === 'sejong') {
-      delete p.kOBP;
-      delete p.kSLG;
-      delete p.kOPS;
-    }
-  });
-
-  // Convert to id-keyed object
-  const combinedPlayers = {};
-  let pIdx = 1;
-  Object.values(mergedPlayers).forEach(p => {
-    combinedPlayers['cp' + pIdx++] = p;
-  });
-
-  // Merge pitchers by name+number
-  const mergedPitchers = {};
   const pitcherCountingKeys = ['G','W','L','SV','HD','pH','pHR','K','pBB','pIBB','pHBP','R','ER','BF','NP'];
 
-  Object.entries(sejongPitchersData).forEach(([id, pt]) => {
-    const key = pt.name + '_' + pt.number;
-    mergedPitchers[key] = { ...pt, _league: 'sejong', _key: key };
+  // Merge players by name+number
+  const mergedPlayers = {};
+  entries.forEach(entry => {
+    const pData = leagueDataCache[entry.id + '_players'] || entry.players || {};
+    Object.entries(pData).forEach(([id, p]) => {
+      const key = p.name + '_' + (p.number || p.num || 0);
+      if (mergedPlayers[key]) {
+        const existing = mergedPlayers[key];
+        countingKeys.forEach(k => { existing[k] = (existing[k] || 0) + (p[k] || 0); });
+        delete existing.kOBP; delete existing.kSLG; delete existing.kOPS;
+        existing._league = 'both';
+      } else {
+        mergedPlayers[key] = { ...p, number: p.number || p.num, _league: entry.leagueKey, _key: key };
+        delete mergedPlayers[key].kOBP; delete mergedPlayers[key].kSLG; delete mergedPlayers[key].kOPS;
+      }
+    });
   });
 
-  Object.entries(dongguPitchersData).forEach(([id, pt]) => {
-    const key = pt.name + '_' + pt.number;
-    if (mergedPitchers[key]) {
-      const existing = mergedPitchers[key];
-      pitcherCountingKeys.forEach(k => {
-        existing[k] = (existing[k] || 0) + (pt[k] || 0);
-      });
-      existing.IP = (existing.IP || 0) + (pt.IP || 0);
-      existing.WPCT = (existing.W + existing.L) > 0 ? existing.W / (existing.W + existing.L) : 0;
-      existing._league = 'both';
-    } else {
-      mergedPitchers[key] = { ...pt, _league: 'donggu', _key: key };
-    }
+  const combinedPlayers = {};
+  let pIdx = 1;
+  Object.values(mergedPlayers).forEach(p => { combinedPlayers['cp' + pIdx++] = p; });
+
+  // Merge pitchers
+  const mergedPitchers = {};
+  entries.forEach(entry => {
+    const ptData = leagueDataCache[entry.id + '_pitchers'] || entry.pitchers || {};
+    Object.entries(ptData).forEach(([id, pt]) => {
+      const key = pt.name + '_' + (pt.number || pt.num || 0);
+      if (mergedPitchers[key]) {
+        const existing = mergedPitchers[key];
+        pitcherCountingKeys.forEach(k => { existing[k] = (existing[k] || 0) + (pt[k] || 0); });
+        existing.IP = (existing.IP || 0) + (pt.IP || 0);
+        existing.WPCT = (existing.W + existing.L) > 0 ? existing.W / (existing.W + existing.L) : 0;
+        existing._league = 'both';
+      } else {
+        mergedPitchers[key] = { ...pt, number: pt.number || pt.num, _league: entry.leagueKey, _key: key };
+      }
+    });
   });
 
   const combinedPitchers = {};
   let ptIdx = 1;
-  Object.values(mergedPitchers).forEach(pt => {
-    combinedPitchers['cpt' + ptIdx++] = pt;
-  });
+  Object.values(mergedPitchers).forEach(pt => { combinedPitchers['cpt' + ptIdx++] = pt; });
 
-  // Combine games with league tags
+  // Combine games
   const combinedGames = {};
-  Object.entries(sejongGamesData).forEach(([id, g]) => {
-    combinedGames['s_' + id] = { ...g, _league: 'sejong' };
-  });
-  Object.entries(dongguGamesData).forEach(([id, g]) => {
-    combinedGames['d_' + id] = { ...g, _league: 'donggu' };
+  entries.forEach(entry => {
+    const gData = leagueDataCache[entry.id + '_games'] || entry.games || {};
+    Object.entries(gData).forEach(([id, g]) => {
+      combinedGames[entry.leagueKey + '_' + id] = { ...g, _league: entry.leagueKey };
+    });
   });
 
   return { players: combinedPlayers, pitchers: combinedPitchers, games: combinedGames };
@@ -1542,19 +1674,24 @@ function getCombinedData() {
 
 // ===== LOAD DATA =====
 function loadData() {
+  if (currentMode === 'history') return;
+
   if (isCombinedView()) {
     loadCombinedData();
     return;
   }
+  const entries = getEntriesForYear(CURRENT_YEAR);
+  const entry = entries.find(e => e.leagueKey === currentLeague);
+  if (!entry) { playersData = {}; pitchersData = {}; gamesData = {}; renderAll(); return; }
+
   if (firebaseReady && db) {
-    loadFromFirebase();
+    loadEntryFromFirebase(entry);
   } else {
-    loadFromLocal();
+    loadEntryFromLocal(entry);
   }
 }
 
 function loadCombinedData() {
-  // Load both leagues' data, then combine
   if (firebaseReady && db) {
     loadCombinedFromFirebase();
   } else {
@@ -1563,16 +1700,13 @@ function loadCombinedData() {
 }
 
 function loadCombinedFromLocal() {
-  const yearData = defaultData[currentYear] || {};
-  const sDefaults = yearData.sejong || { players:{}, pitchers:{}, games:{} };
-  const dDefaults = yearData.donggu || { players:{}, pitchers:{}, games:{} };
-  sejongPlayersData = JSON.parse(localStorage.getItem('bb_' + currentYear + '_sejong_players') || 'null') || sDefaults.players;
-  sejongPitchersData = JSON.parse(localStorage.getItem('bb_' + currentYear + '_sejong_pitchers') || 'null') || sDefaults.pitchers;
-  sejongGamesData = JSON.parse(localStorage.getItem('bb_' + currentYear + '_sejong_games') || 'null') || sDefaults.games;
-  dongguPlayersData = JSON.parse(localStorage.getItem('bb_' + currentYear + '_donggu_players') || 'null') || dDefaults.players;
-  dongguPitchersData = JSON.parse(localStorage.getItem('bb_' + currentYear + '_donggu_pitchers') || 'null') || dDefaults.pitchers;
-  dongguGamesData = JSON.parse(localStorage.getItem('bb_' + currentYear + '_donggu_games') || 'null') || dDefaults.games;
-
+  const entries = getEntriesForYear(CURRENT_YEAR);
+  leagueDataCache = {};
+  entries.forEach(entry => {
+    leagueDataCache[entry.id + '_players'] = JSON.parse(localStorage.getItem('bb_' + entry.id + '_players') || 'null') || entry.players || {};
+    leagueDataCache[entry.id + '_pitchers'] = JSON.parse(localStorage.getItem('bb_' + entry.id + '_pitchers') || 'null') || entry.pitchers || {};
+    leagueDataCache[entry.id + '_games'] = JSON.parse(localStorage.getItem('bb_' + entry.id + '_games') || 'null') || entry.games || {};
+  });
   const combined = getCombinedData();
   playersData = combined.players;
   pitchersData = combined.pitchers;
@@ -1581,83 +1715,50 @@ function loadCombinedFromLocal() {
 }
 
 function loadCombinedFromFirebase() {
-  const yearData = defaultData[currentYear] || {};
-  const sDefaults = yearData.sejong || { players:{}, pitchers:{}, games:{} };
-  const dDefaults = yearData.donggu || { players:{}, pitchers:{}, games:{} };
-  let loaded = 0;
-  const total = 6;
+  const entries = getEntriesForYear(CURRENT_YEAR);
+  leagueDataCache = {};
 
-  function checkAllLoaded() {
-    loaded++;
-    if (loaded >= total) {
-      const combined = getCombinedData();
-      playersData = combined.players;
-      pitchersData = combined.pitchers;
-      gamesData = combined.games;
-      renderAll();
-    }
-  }
+  // Initialize defaults
+  entries.forEach(entry => {
+    leagueDataCache[entry.id + '_players'] = entry.players || {};
+    leagueDataCache[entry.id + '_pitchers'] = entry.pitchers || {};
+    leagueDataCache[entry.id + '_games'] = entry.games || {};
+  });
 
-  const dataMap = {
-    'sejongPlayersData': v => { sejongPlayersData = v; },
-    'sejongPitchersData': v => { sejongPitchersData = v; },
-    'sejongGamesData': v => { sejongGamesData = v; },
-    'dongguPlayersData': v => { dongguPlayersData = v; },
-    'dongguPitchersData': v => { dongguPitchersData = v; },
-    'dongguGamesData': v => { dongguGamesData = v; }
-  };
-
-  const refs = [
-    { ref: db.ref('baseball/' + currentYear + '/sejong/players'), target: 'sejongPlayersData', fallback: sDefaults.players },
-    { ref: db.ref('baseball/' + currentYear + '/sejong/pitchers'), target: 'sejongPitchersData', fallback: sDefaults.pitchers },
-    { ref: db.ref('baseball/' + currentYear + '/sejong/games'), target: 'sejongGamesData', fallback: sDefaults.games },
-    { ref: db.ref('baseball/' + currentYear + '/donggu/players'), target: 'dongguPlayersData', fallback: dDefaults.players },
-    { ref: db.ref('baseball/' + currentYear + '/donggu/pitchers'), target: 'dongguPitchersData', fallback: dDefaults.pitchers },
-    { ref: db.ref('baseball/' + currentYear + '/donggu/games'), target: 'dongguGamesData', fallback: dDefaults.games }
-  ];
-
-  refs.forEach(({ ref, target, fallback }) => {
-    const listener = ref.on('value', snap => {
-      if (!isCombinedView()) return;
-      dataMap[target](snap.val() || fallback);
-      // Recombine and rerender on each update
-      const combined = getCombinedData();
-      playersData = combined.players;
-      pitchersData = combined.pitchers;
-      gamesData = combined.games;
-      renderAll();
-    }, () => {
-      dataMap[target](fallback);
-      checkAllLoaded();
+  entries.forEach(entry => {
+    ['players', 'pitchers', 'games'].forEach(type => {
+      const ref = db.ref('baseball/' + entry.id + '/' + type);
+      const listener = ref.on('value', snap => {
+        if (currentMode !== 'current' || !isCombinedView()) return;
+        leagueDataCache[entry.id + '_' + type] = snap.val() || (entry[type] || {});
+        const combined = getCombinedData();
+        playersData = combined.players;
+        pitchersData = combined.pitchers;
+        gamesData = combined.games;
+        renderAll();
+      }, () => {
+        leagueDataCache[entry.id + '_' + type] = entry[type] || {};
+      });
+      fbUnsubs.push(() => ref.off('value', listener));
     });
-    fbUnsubs.push(() => ref.off('value', listener));
   });
 }
 
-function loadFromFirebase() {
-  const league = currentLeague;
-  const yearData = defaultData[currentYear] || {};
-  const defaults = yearData[league] || { players:{}, pitchers:{}, games:{} };
-  const pRef = db.ref('baseball/' + currentYear + '/' + league + '/players');
-  const ptRef = db.ref('baseball/' + currentYear + '/' + league + '/pitchers');
-  const gRef = db.ref('baseball/' + currentYear + '/' + league + '/games');
-
-  // 1회성 마이그레이션: 연도별+리그별 데이터 구조로 전환
-  const migKey = 'bb_migrated_ksbsa_v6';
+function loadEntryFromFirebase(entry) {
+  // Migration
+  const migKey = 'bb_migrated_v7';
   if (!localStorage.getItem(migKey)) {
-    // Write all years/leagues default data
-    Object.keys(defaultData).forEach(year => {
-      Object.keys(defaultData[year]).forEach(lg => {
-        const lgData = defaultData[year][lg];
-        if (lgData.players && Object.keys(lgData.players).length > 0)
-          db.ref('baseball/' + year + '/' + lg + '/players').set(lgData.players);
-        if (lgData.pitchers && Object.keys(lgData.pitchers).length > 0)
-          db.ref('baseball/' + year + '/' + lg + '/pitchers').set(lgData.pitchers);
-        if (lgData.games && Object.keys(lgData.games).length > 0)
-          db.ref('baseball/' + year + '/' + lg + '/games').set(lgData.games);
-      });
+    ALL_DATA.forEach(e => {
+      if (e.players && Object.keys(e.players).length > 0)
+        db.ref('baseball/' + e.id + '/players').set(e.players);
+      if (e.pitchers && Object.keys(e.pitchers).length > 0)
+        db.ref('baseball/' + e.id + '/pitchers').set(e.pitchers);
+      if (e.games && Object.keys(e.games).length > 0)
+        db.ref('baseball/' + e.id + '/games').set(e.games);
     });
-    // Remove old flat paths
+    // Remove old paths
+    db.ref('baseball/2026').remove();
+    db.ref('baseball/2025').remove();
     db.ref('baseball/players').remove();
     db.ref('baseball/pitchers').remove();
     db.ref('baseball/games').remove();
@@ -1666,27 +1767,27 @@ function loadFromFirebase() {
     localStorage.setItem(migKey, 'done');
   }
 
+  const pRef = db.ref('baseball/' + entry.id + '/players');
+  const ptRef = db.ref('baseball/' + entry.id + '/pitchers');
+  const gRef = db.ref('baseball/' + entry.id + '/games');
+
   const onP = pRef.on('value', snap => {
-    if (currentLeague !== league) return;
-    playersData = snap.val() || defaults.players;
-    renderPlayers();
-    renderTeamStats();
-  }, () => { loadFromLocal(); });
+    if (currentLeague !== entry.leagueKey || currentMode !== 'current') return;
+    playersData = snap.val() || entry.players || {};
+    renderPlayers(); renderTeamStats();
+  }, () => { loadEntryFromLocal(entry); });
 
   const onPt = ptRef.on('value', snap => {
-    if (currentLeague !== league) return;
-    pitchersData = snap.val() || defaults.pitchers;
-    renderPitchers();
-    renderTeamStats();
-  }, () => { loadFromLocal(); });
+    if (currentLeague !== entry.leagueKey || currentMode !== 'current') return;
+    pitchersData = snap.val() || entry.pitchers || {};
+    renderPitchers(); renderTeamStats();
+  }, () => { loadEntryFromLocal(entry); });
 
   const onG = gRef.on('value', snap => {
-    if (currentLeague !== league) return;
-    gamesData = snap.val() || defaults.games;
-    renderGames();
-    renderCalendar();
-    renderTeamStats();
-  }, () => { loadFromLocal(); });
+    if (currentLeague !== entry.leagueKey || currentMode !== 'current') return;
+    gamesData = snap.val() || entry.games || {};
+    renderGames(); renderCalendar(); renderTeamStats();
+  }, () => { loadEntryFromLocal(entry); });
 
   fbUnsubs.push(
     () => pRef.off('value', onP),
@@ -1695,21 +1796,27 @@ function loadFromFirebase() {
   );
 }
 
-function loadFromLocal() {
-  const league = currentLeague;
-  const yearData = defaultData[currentYear] || {};
-  const defaults = yearData[league] || { players:{}, pitchers:{}, games:{} };
-  playersData = JSON.parse(localStorage.getItem('bb_' + currentYear + '_' + league + '_players') || 'null') || defaults.players;
-  pitchersData = JSON.parse(localStorage.getItem('bb_' + currentYear + '_' + league + '_pitchers') || 'null') || defaults.pitchers;
-  gamesData = JSON.parse(localStorage.getItem('bb_' + currentYear + '_' + league + '_games') || 'null') || defaults.games;
+function loadEntryFromLocal(entry) {
+  playersData = JSON.parse(localStorage.getItem('bb_' + entry.id + '_players') || 'null') || entry.players || {};
+  pitchersData = JSON.parse(localStorage.getItem('bb_' + entry.id + '_pitchers') || 'null') || entry.pitchers || {};
+  gamesData = JSON.parse(localStorage.getItem('bb_' + entry.id + '_games') || 'null') || entry.games || {};
   renderAll();
 }
 
 function saveLocal() {
-  const league = currentLeague;
-  localStorage.setItem('bb_' + currentYear + '_' + league + '_players', JSON.stringify(playersData));
-  localStorage.setItem('bb_' + currentYear + '_' + league + '_pitchers', JSON.stringify(pitchersData));
-  localStorage.setItem('bb_' + currentYear + '_' + league + '_games', JSON.stringify(gamesData));
+  if (isCombinedView()) return;
+  const entries = getEntriesForYear(CURRENT_YEAR);
+  const entry = entries.find(e => e.leagueKey === currentLeague);
+  if (!entry) return;
+  localStorage.setItem('bb_' + entry.id + '_players', JSON.stringify(playersData));
+  localStorage.setItem('bb_' + entry.id + '_pitchers', JSON.stringify(pitchersData));
+  localStorage.setItem('bb_' + entry.id + '_games', JSON.stringify(gamesData));
+}
+
+function getFirebasePath() {
+  const entries = getEntriesForYear(CURRENT_YEAR);
+  const entry = entries.find(e => e.leagueKey === currentLeague);
+  return entry ? 'baseball/' + entry.id : null;
 }
 
 function renderAll() {
@@ -1754,7 +1861,7 @@ function updateAuthUI() {
     btn.textContent = '로그아웃';
     btn.classList.add('logged-in');
     emailEl.textContent = currentUser.email;
-    if (!isCombinedView()) {
+    if (currentMode === 'current' && !isCombinedView()) {
       addBtns.forEach(b => b.classList.remove('hidden'));
     }
   } else {
@@ -1772,7 +1879,6 @@ function switchTab(tabName) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
   document.getElementById(`tab-${tabName}`).classList.add('active');
-  // 현재 리그 기준으로 해당 탭 다시 렌더링
   switch(tabName) {
     case 'players': renderPlayers(); break;
     case 'pitchers': renderPitchers(); break;
@@ -1816,13 +1922,12 @@ function renderPlayers() {
     return;
   }
 
-  // compute stats
   const computed = entries.map(([id, p]) => ({
     id, ...p,
+    number: p.number || p.num,
     AVG: calcAVG(p), OBP: calcOBP(p), SLG: calcSLG(p), OPS: calcOPS(p)
   }));
 
-  // find leaders (max in each numeric category, min SO is not highlighted)
   const numKeys = ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','AVG','OBP','SLG','OPS'];
   const leaders = {};
   numKeys.forEach(k => {
@@ -1832,15 +1937,20 @@ function renderPlayers() {
 
   let html = '';
   computed.forEach(p => {
-    const canEdit = isLoggedIn() && !isCombinedView();
+    const canEdit = isLoggedIn() && !isCombinedView() && currentMode === 'current';
     const cls = canEdit ? 'editable-row' : '';
     const click = canEdit ? `onclick="editPlayer('${escHtml(p.id)}')"` : '';
     html += `<tr class="${cls}" ${click}>`;
     let leagueTag = '';
     if (isCombinedView() && p._league) {
-      if (p._league === 'sejong') leagueTag = ' <span class="league-tag sejong">세종</span>';
-      else if (p._league === 'donggu') leagueTag = ' <span class="league-tag donggu">동구</span>';
-      else if (p._league === 'both') leagueTag = ' <span class="league-tag sejong">세종</span><span class="league-tag donggu">동구</span>';
+      const tagClass = p._league === 'both' ? '' : p._league;
+      if (p._league === 'both') {
+        const yearEntries = getEntriesForYear(CURRENT_YEAR);
+        leagueTag = yearEntries.map(e => ` <span class="league-tag ${e.leagueKey}">${escHtml(e.league.split(' ')[0])}</span>`).join('');
+      } else {
+        const entry = getEntriesForYear(CURRENT_YEAR).find(e => e.leagueKey === p._league);
+        if (entry) leagueTag = ` <span class="league-tag ${p._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
+      }
     }
     html += `<td class="name-cell">${escHtml(p.name)}${leagueTag}</td>`;
     html += `<td>${p.number || ''}</td>`;
@@ -1858,12 +1968,10 @@ function renderPlayers() {
     html += '</tr>';
   });
 
-  // ===== TOTALS ROW =====
+  // Totals
   const totals = { G:0, PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:0 };
   computed.forEach(p => {
-    ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => {
-      totals[k] += (p[k] || 0);
-    });
+    ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => { totals[k] += (p[k] || 0); });
   });
   const tAVG = totals.AB > 0 ? (totals.H / totals.AB) : 0;
   const tOBP = (totals.AB + totals.BB + totals.HBP) > 0 ? ((totals.H + totals.BB + totals.HBP) / (totals.AB + totals.BB + totals.HBP)) : 0;
@@ -1872,17 +1980,10 @@ function renderPlayers() {
   const tSLG = totals.AB > 0 ? (tTB / totals.AB) : 0;
   const tOPS = tOBP + tSLG;
 
-  html += '<tr class="totals-row">';
-  html += '<td class="name-cell">합계</td>';
-  html += '<td></td>';
+  html += '<tr class="totals-row"><td class="name-cell">합계</td><td></td>';
   html += `<td>${fmtRate(tAVG)}</td>`;
-  ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => {
-    html += `<td>${totals[k]}</td>`;
-  });
-  html += `<td>${fmtRate(tOBP)}</td>`;
-  html += `<td>${fmtRate(tSLG)}</td>`;
-  html += `<td>${fmtRate(tOPS)}</td>`;
-  html += '</tr>';
+  ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => { html += `<td>${totals[k]}</td>`; });
+  html += `<td>${fmtRate(tOBP)}</td><td>${fmtRate(tSLG)}</td><td>${fmtRate(tOPS)}</td></tr>`;
 
   tbody.innerHTML = html;
 }
@@ -1897,10 +1998,9 @@ function renderPitchers() {
   }
 
   const computed = entries.map(([id, pt]) => ({
-    id, ...pt, ERA: calcERA(pt)
+    id, ...pt, number: pt.number || pt.num, ERA: calcERA(pt)
   }));
 
-  // leaders
   const highKeys = ['G','W','IP','K'];
   const highLeaders = {};
   highKeys.forEach(k => {
@@ -1912,15 +2012,19 @@ function renderPitchers() {
 
   let html = '';
   computed.forEach(pt => {
-    const canEdit = isLoggedIn() && !isCombinedView();
+    const canEdit = isLoggedIn() && !isCombinedView() && currentMode === 'current';
     const cls = canEdit ? 'editable-row' : '';
     const click = canEdit ? `onclick="editPitcher('${escHtml(pt.id)}')"` : '';
     html += `<tr class="${cls}" ${click}>`;
     let leagueTag = '';
     if (isCombinedView() && pt._league) {
-      if (pt._league === 'sejong') leagueTag = ' <span class="league-tag sejong">세종</span>';
-      else if (pt._league === 'donggu') leagueTag = ' <span class="league-tag donggu">동구</span>';
-      else if (pt._league === 'both') leagueTag = ' <span class="league-tag sejong">세종</span><span class="league-tag donggu">동구</span>';
+      if (pt._league === 'both') {
+        const yearEntries = getEntriesForYear(CURRENT_YEAR);
+        leagueTag = yearEntries.map(e => ` <span class="league-tag ${e.leagueKey}">${escHtml(e.league.split(' ')[0])}</span>`).join('');
+      } else {
+        const entry = getEntriesForYear(CURRENT_YEAR).find(e => e.leagueKey === pt._league);
+        if (entry) leagueTag = ` <span class="league-tag ${pt._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
+      }
     }
     html += `<td class="name-cell">${escHtml(pt.name)}${leagueTag}</td>`;
     html += `<td>${pt.number || ''}</td>`;
@@ -1931,58 +2035,36 @@ function renderPitchers() {
       const isLeader = (k !== 'L' && highLeaders[k] !== undefined && val === highLeaders[k] && val > 0) ? ' stat-leader' : '';
       html += `<td class="${isLeader}">${val}</td>`;
     });
-    html += `<td>${pt.SV || 0}</td>`;
-    html += `<td>${pt.HD || 0}</td>`;
+    html += `<td>${pt.SV || 0}</td><td>${pt.HD || 0}</td>`;
     const ipLeader = (highLeaders['IP'] !== undefined && pt.IP === highLeaders['IP'] && pt.IP > 0) ? ' stat-leader' : '';
     html += `<td class="${ipLeader}">${pt.IP}</td>`;
-    html += `<td>${pt.pH || 0}</td>`;
-    html += `<td>${pt.pHR || 0}</td>`;
+    html += `<td>${pt.pH || 0}</td><td>${pt.pHR || 0}</td>`;
     const kLeader = (highLeaders['K'] !== undefined && pt.K === highLeaders['K'] && pt.K > 0) ? ' stat-leader' : '';
     html += `<td class="${kLeader}">${pt.K || 0}</td>`;
-    html += `<td>${pt.pBB || 0}</td>`;
-    html += `<td>${pt.pIBB || 0}</td>`;
-    html += `<td>${pt.pHBP || 0}</td>`;
-    html += `<td>${pt.R || 0}</td>`;
-    html += `<td>${pt.ER || 0}</td>`;
+    html += `<td>${pt.pBB || 0}</td><td>${pt.pIBB || 0}</td><td>${pt.pHBP || 0}</td>`;
+    html += `<td>${pt.R || 0}</td><td>${pt.ER || 0}</td>`;
     html += `<td>${pt.WPCT != null ? fmtRate(pt.WPCT) : '-'}</td>`;
-    html += `<td>${pt.BF || 0}</td>`;
-    html += `<td>${pt.NP || 0}</td>`;
+    html += `<td>${pt.BF || 0}</td><td>${pt.NP || 0}</td>`;
     html += '</tr>';
   });
 
-  // ===== PITCHER TOTALS ROW =====
+  // Totals
   const ptTotals = { G:0, W:0, L:0, SV:0, HD:0, IP:0, pH:0, pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:0, ER:0, BF:0, NP:0 };
   computed.forEach(pt => {
-    ['G','W','L','SV','HD','pH','pHR','K','pBB','pIBB','pHBP','R','ER','BF','NP'].forEach(k => {
-      ptTotals[k] += (pt[k] || 0);
-    });
+    ['G','W','L','SV','HD','pH','pHR','K','pBB','pIBB','pHBP','R','ER','BF','NP'].forEach(k => { ptTotals[k] += (pt[k] || 0); });
     ptTotals.IP += (pt.IP || 0);
   });
   const ptERA = ptTotals.IP > 0 ? (ptTotals.ER * 7 / ptTotals.IP) : 0;
   const ptWPCT = (ptTotals.W + ptTotals.L) > 0 ? (ptTotals.W / (ptTotals.W + ptTotals.L)) : 0;
 
-  html += '<tr class="totals-row">';
-  html += '<td class="name-cell">합계</td>';
-  html += '<td></td>';
+  html += '<tr class="totals-row"><td class="name-cell">합계</td><td></td>';
   html += `<td>${ptTotals.IP > 0 ? fmtERA(ptERA) : '-'}</td>`;
-  html += `<td>${ptTotals.G}</td>`;
-  html += `<td>${ptTotals.W}</td>`;
-  html += `<td>${ptTotals.L}</td>`;
-  html += `<td>${ptTotals.SV}</td>`;
-  html += `<td>${ptTotals.HD}</td>`;
-  html += `<td>${ptTotals.IP}</td>`;
-  html += `<td>${ptTotals.pH}</td>`;
-  html += `<td>${ptTotals.pHR}</td>`;
-  html += `<td>${ptTotals.K}</td>`;
-  html += `<td>${ptTotals.pBB}</td>`;
-  html += `<td>${ptTotals.pIBB}</td>`;
-  html += `<td>${ptTotals.pHBP}</td>`;
-  html += `<td>${ptTotals.R}</td>`;
-  html += `<td>${ptTotals.ER}</td>`;
-  html += `<td>${fmtRate(ptWPCT)}</td>`;
-  html += `<td>${ptTotals.BF}</td>`;
-  html += `<td>${ptTotals.NP}</td>`;
-  html += '</tr>';
+  html += `<td>${ptTotals.G}</td><td>${ptTotals.W}</td><td>${ptTotals.L}</td>`;
+  html += `<td>${ptTotals.SV}</td><td>${ptTotals.HD}</td><td>${ptTotals.IP}</td>`;
+  html += `<td>${ptTotals.pH}</td><td>${ptTotals.pHR}</td><td>${ptTotals.K}</td>`;
+  html += `<td>${ptTotals.pBB}</td><td>${ptTotals.pIBB}</td><td>${ptTotals.pHBP}</td>`;
+  html += `<td>${ptTotals.R}</td><td>${ptTotals.ER}</td>`;
+  html += `<td>${fmtRate(ptWPCT)}</td><td>${ptTotals.BF}</td><td>${ptTotals.NP}</td></tr>`;
 
   tbody.innerHTML = html;
 }
@@ -2003,7 +2085,6 @@ function renderGames() {
     return;
   }
 
-  // sort by date desc
   entries.sort((a, b) => b[1].date.localeCompare(a[1].date));
 
   let wins = 0, losses = 0, draws = 0, scheduled = 0;
@@ -2030,7 +2111,7 @@ function renderGames() {
   let html = '';
   entries.forEach(([id, g]) => {
     const isFuture = isScheduledGame(g);
-    const canEdit = isLoggedIn() && !isCombinedView();
+    const canEdit = isLoggedIn() && !isCombinedView() && currentMode === 'current';
     let rowCls = 'game-row';
     if (isFuture) rowCls += ' future-game';
     if (canEdit) rowCls += ' editable-row';
@@ -2038,8 +2119,7 @@ function renderGames() {
 
     let result, resultCls, scoreHtml;
     if (isFuture) {
-      result = '예정';
-      resultCls = 'result-scheduled';
+      result = '예정'; resultCls = 'result-scheduled';
       scoreHtml = '<span class="score-vs">vs</span>';
     } else if (g.ourScore > g.theirScore) {
       result = '승'; resultCls = 'result-win';
@@ -2054,8 +2134,8 @@ function renderGames() {
 
     let leagueTag = '';
     if (isCombinedView() && g._league) {
-      if (g._league === 'sejong') leagueTag = ' <span class="league-tag sejong">세종</span>';
-      else if (g._league === 'donggu') leagueTag = ' <span class="league-tag donggu">동구</span>';
+      const entry = getEntriesForYear(CURRENT_YEAR).find(e => e.leagueKey === g._league);
+      if (entry) leagueTag = ` <span class="league-tag ${g._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
     }
 
     html += `<tr class="${rowCls}" ${click}>`;
@@ -2084,161 +2164,90 @@ function renderTeamStats() {
     else draws++;
   });
 
-  // Team batting
   let totalH = 0, totalAB = 0, totalBB = 0, totalHBP = 0, totalHR = 0, totalRBI = 0, totalSB = 0, totalSO = 0, totalR = 0;
   players.forEach(p => {
-    totalH += (p.H || 0);
-    totalAB += (p.AB || 0);
-    totalBB += (p.BB || 0);
-    totalHBP += (p.HBP || 0);
-    totalHR += (p.HR || 0);
-    totalRBI += (p.RBI || 0);
-    totalSB += (p.SB || 0);
-    totalSO += (p.SO || 0);
-    totalR += (p.R || 0);
+    totalH += (p.H || 0); totalAB += (p.AB || 0); totalBB += (p.BB || 0);
+    totalHBP += (p.HBP || 0); totalHR += (p.HR || 0); totalRBI += (p.RBI || 0);
+    totalSB += (p.SB || 0); totalSO += (p.SO || 0); totalR += (p.R || 0);
   });
   const teamAVG = totalAB > 0 ? (totalH / totalAB) : 0;
   const teamOBP = (totalAB + totalBB + totalHBP) > 0 ? ((totalH + totalBB + totalHBP) / (totalAB + totalBB + totalHBP)) : 0;
 
-  // Team pitching
-  let totalER = 0, totalIP = 0, totalK = 0, totalPR = 0;
+  let totalER = 0, totalIP = 0, totalK = 0;
   pitchers.forEach(pt => {
-    totalER += (pt.ER || 0);
-    totalIP += (pt.IP || 0);
-    totalK += (pt.K || 0);
-    totalPR += (pt.R || 0);
+    totalER += (pt.ER || 0); totalIP += (pt.IP || 0); totalK += (pt.K || 0);
   });
   const teamERA = totalIP > 0 ? (totalER * 7 / totalIP) : 0;
 
-  // Scoring
   let totalScored = 0, totalAllowed = 0;
-  games.forEach(g => {
-    totalScored += (g.ourScore || 0);
-    totalAllowed += (g.theirScore || 0);
-  });
+  games.forEach(g => { totalScored += (g.ourScore || 0); totalAllowed += (g.theirScore || 0); });
   const avgScored = games.length > 0 ? (totalScored / games.length) : 0;
   const avgAllowed = games.length > 0 ? (totalAllowed / games.length) : 0;
 
   grid.innerHTML = `
-    <div class="stat-card">
-      <div class="stat-label">시즌 성적</div>
-      <div class="stat-value accent">${wins}승 ${losses}패 ${draws}무</div>
-      <div class="stat-sub">총 ${games.length}경기 (승점 ${wins * 3})</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">승률</div>
-      <div class="stat-value">${(wins + losses > 0) ? fmtRate(wins / (wins + losses)) : '-'}</div>
-      <div class="stat-sub">${wins + losses + draws}경기 기준</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">팀 타율</div>
-      <div class="stat-value">${fmtRate(teamAVG)}</div>
-      <div class="stat-sub">${totalH}안타 / ${totalAB}타수</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">팀 출루율</div>
-      <div class="stat-value">${fmtRate(teamOBP)}</div>
-      <div class="stat-sub">(안타+볼넷+사구) / (타수+볼넷+사구)</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">팀 ERA</div>
-      <div class="stat-value">${fmtERA(teamERA)}</div>
-      <div class="stat-sub">자책 ${totalER} / ${totalIP}이닝</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">팀 홈런</div>
-      <div class="stat-value accent">${totalHR}</div>
-      <div class="stat-sub">시즌 합계</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">팀 타점</div>
-      <div class="stat-value">${totalRBI}</div>
-      <div class="stat-sub">시즌 합계</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">팀 득점</div>
-      <div class="stat-value">${totalR}</div>
-      <div class="stat-sub">시즌 합계</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">팀 도루</div>
-      <div class="stat-value">${totalSB}</div>
-      <div class="stat-sub">시즌 합계</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">팀 삼진 (투수)</div>
-      <div class="stat-value">${totalK}</div>
-      <div class="stat-sub">투수 ${pitchers.length}명</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">평균 득점</div>
-      <div class="stat-value">${avgScored.toFixed(1)}</div>
-      <div class="stat-sub">경기당 평균</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">평균 실점</div>
-      <div class="stat-value">${avgAllowed.toFixed(1)}</div>
-      <div class="stat-sub">경기당 평균</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">팀 볼넷 (타자)</div>
-      <div class="stat-value">${totalBB}</div>
-      <div class="stat-sub">시즌 합계</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">등록 선수</div>
-      <div class="stat-value accent">${players.length}</div>
-      <div class="stat-sub">타자 ${players.length}명 / 투수 ${pitchers.length}명</div>
-    </div>
+    <div class="stat-card"><div class="stat-label">시즌 성적</div><div class="stat-value accent">${wins}승 ${losses}패 ${draws}무</div><div class="stat-sub">총 ${games.length}경기 (승점 ${wins * 3})</div></div>
+    <div class="stat-card"><div class="stat-label">승률</div><div class="stat-value">${(wins + losses > 0) ? fmtRate(wins / (wins + losses)) : '-'}</div><div class="stat-sub">${wins + losses + draws}경기 기준</div></div>
+    <div class="stat-card"><div class="stat-label">팀 타율</div><div class="stat-value">${fmtRate(teamAVG)}</div><div class="stat-sub">${totalH}안타 / ${totalAB}타수</div></div>
+    <div class="stat-card"><div class="stat-label">팀 출루율</div><div class="stat-value">${fmtRate(teamOBP)}</div><div class="stat-sub">(안타+볼넷+사구) / (타수+볼넷+사구)</div></div>
+    <div class="stat-card"><div class="stat-label">팀 ERA</div><div class="stat-value">${fmtERA(teamERA)}</div><div class="stat-sub">자책 ${totalER} / ${totalIP}이닝</div></div>
+    <div class="stat-card"><div class="stat-label">팀 홈런</div><div class="stat-value accent">${totalHR}</div><div class="stat-sub">시즌 합계</div></div>
+    <div class="stat-card"><div class="stat-label">팀 타점</div><div class="stat-value">${totalRBI}</div><div class="stat-sub">시즌 합계</div></div>
+    <div class="stat-card"><div class="stat-label">팀 득점</div><div class="stat-value">${totalR}</div><div class="stat-sub">시즌 합계</div></div>
+    <div class="stat-card"><div class="stat-label">팀 도루</div><div class="stat-value">${totalSB}</div><div class="stat-sub">시즌 합계</div></div>
+    <div class="stat-card"><div class="stat-label">팀 삼진 (투수)</div><div class="stat-value">${totalK}</div><div class="stat-sub">투수 ${pitchers.length}명</div></div>
+    <div class="stat-card"><div class="stat-label">평균 득점</div><div class="stat-value">${avgScored.toFixed(1)}</div><div class="stat-sub">경기당 평균</div></div>
+    <div class="stat-card"><div class="stat-label">평균 실점</div><div class="stat-value">${avgAllowed.toFixed(1)}</div><div class="stat-sub">경기당 평균</div></div>
+    <div class="stat-card"><div class="stat-label">팀 볼넷 (타자)</div><div class="stat-value">${totalBB}</div><div class="stat-sub">시즌 합계</div></div>
+    <div class="stat-card"><div class="stat-label">등록 선수</div><div class="stat-value accent">${players.length}</div><div class="stat-sub">타자 ${players.length}명 / 투수 ${pitchers.length}명</div></div>
   `;
 }
 
 // ===== RENDER RANKINGS =====
 function renderRankings() {
   const container = document.getElementById('tab-rankings');
-
-  // 이전에 동적 생성된 섹션 모두 제거
   container.querySelectorAll('.rankings-section').forEach(el => el.remove());
-  // 기본 wrapper 숨김
   const defaultWrapper = container.querySelector('.rankings-wrapper');
   if (defaultWrapper) defaultWrapper.style.display = 'none';
 
-  const yearData = defaultData[currentYear] || {};
-  const sejongData = yearData.sejong || {};
-  const dongguData = yearData.donggu || {};
+  const entries = getEntriesForYear(CURRENT_YEAR);
 
   if (isCombinedView()) {
-    if (sejongData.rankingsA) renderRankingsSection('세종 토요4부_A조', sejongData.rankingsA, container);
-    if (sejongData.rankingsB) renderRankingsSection('세종 토요4부_B조', sejongData.rankingsB, container);
-    if (sejongData.rankings && sejongData.rankings.length > 0 && !sejongData.rankingsA) renderRankingsSection('세종 토요리그', sejongData.rankings, container);
-    if (dongguData.rankings) renderRankingsSection('동구리그 토요리그', dongguData.rankings, container);
-  } else if (currentLeague === 'sejong') {
-    if (sejongData.rankingsA) renderRankingsSection('토요4부_A조', sejongData.rankingsA, container);
-    if (sejongData.rankingsB) renderRankingsSection('토요4부_B조', sejongData.rankingsB, container);
-    if (sejongData.rankings && sejongData.rankings.length > 0 && !sejongData.rankingsA) renderRankingsSection('세종 토요리그', sejongData.rankings, container);
+    entries.forEach(entry => {
+      if (!entry.rankings) return;
+      if (Array.isArray(entry.rankings)) {
+        renderRankingsSection(entry.league, entry.rankings, container);
+      } else {
+        // Object with group keys (A, B, etc.)
+        Object.keys(entry.rankings).forEach(group => {
+          renderRankingsSection(entry.league + ' ' + group + '조', entry.rankings[group], container);
+        });
+      }
+    });
   } else {
-    renderRankingsSection('동구리그 토요리그', dongguData.rankings, container);
+    const entry = entries.find(e => e.leagueKey === currentLeague);
+    if (entry && entry.rankings) {
+      if (Array.isArray(entry.rankings)) {
+        renderRankingsSection(entry.league, entry.rankings, container);
+      } else {
+        Object.keys(entry.rankings).forEach(group => {
+          renderRankingsSection(entry.league + ' ' + group + '조', entry.rankings[group], container);
+        });
+      }
+    }
   }
 }
 
 function renderRankingsSection(title, rankings, container) {
   if (!rankings || rankings.length === 0) return;
-
   const section = document.createElement('div');
   section.className = 'rankings-section';
   section.innerHTML = `
     <div class="rankings-league-header">${escHtml(title)}</div>
     <div class="rankings-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>순위</th>
-            <th style="text-align:left;padding-left:16px">팀명</th>
-            <th>승점</th><th>경기</th><th>승</th><th>패</th><th>무</th><th>득점</th><th>실점</th>
-          </tr>
-        </thead>
-        <tbody>${buildRankingsHtml(rankings)}</tbody>
-      </table>
+      <table><thead><tr>
+        <th>순위</th><th style="text-align:left;padding-left:16px">팀명</th>
+        <th>승점</th><th>경기</th><th>승</th><th>패</th><th>무</th><th>득점</th><th>실점</th>
+      </tr></thead><tbody>${buildRankingsHtml(rankings)}</tbody></table>
     </div>
   `;
   container.appendChild(section);
@@ -2257,13 +2266,7 @@ function buildRankingsHtml(rankings) {
     html += `<tr class="${cls}">`;
     html += `<td>${rankIcon}${r.rank}</td>`;
     html += `<td style="text-align:left;padding-left:16px;font-weight:${isWindup ? '800' : '600'}">${escHtml(r.team)}</td>`;
-    html += `<td>${r.pts}</td>`;
-    html += `<td>${r.G}</td>`;
-    html += `<td>${r.W}</td>`;
-    html += `<td>${r.L}</td>`;
-    html += `<td>${r.D}</td>`;
-    html += `<td>${r.RS}</td>`;
-    html += `<td>${r.RA}</td>`;
+    html += `<td>${r.pts}</td><td>${r.G}</td><td>${r.W}</td><td>${r.L}</td><td>${r.D}</td><td>${r.RS}</td><td>${r.RA}</td>`;
     html += '</tr>';
   });
   return html;
@@ -2271,7 +2274,7 @@ function buildRankingsHtml(rankings) {
 
 // ===== CALENDAR =====
 let calendarYear = new Date().getFullYear();
-let calendarMonth = new Date().getMonth() + 1; // Current month
+let calendarMonth = new Date().getMonth() + 1;
 
 function changeMonth(delta) {
   calendarMonth += delta;
@@ -2287,25 +2290,20 @@ function renderCalendar() {
   const monthNames = ['', '1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
   titleEl.textContent = `${calendarYear}년 ${monthNames[calendarMonth]}`;
 
-  // Build game lookup from gamesData - support multiple games per date
   const gameLookup = {};
   Object.values(gamesData).forEach(g => {
     if (!gameLookup[g.date]) gameLookup[g.date] = [];
     gameLookup[g.date].push(g);
   });
 
-  // Calendar calculations
   const firstDay = new Date(calendarYear, calendarMonth - 1, 1);
   const lastDay = new Date(calendarYear, calendarMonth, 0);
-  const startDow = firstDay.getDay(); // 0=Sun
+  const startDow = firstDay.getDay();
   const daysInMonth = lastDay.getDate();
 
   const today = new Date();
-  const todayStr = today.getFullYear() + '-' +
-    String(today.getMonth() + 1).padStart(2, '0') + '-' +
-    String(today.getDate()).padStart(2, '0');
+  const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
 
-  // Day headers
   const dayHeaders = ['일', '월', '화', '수', '목', '금', '토'];
   let html = '';
   dayHeaders.forEach((d, i) => {
@@ -2313,16 +2311,10 @@ function renderCalendar() {
     html += `<div class="${cls}">${d}</div>`;
   });
 
-  // Empty cells before first day
-  for (let i = 0; i < startDow; i++) {
-    html += '<div class="cal-day empty"></div>';
-  }
+  for (let i = 0; i < startDow; i++) html += '<div class="cal-day empty"></div>';
 
-  // Day cells
   for (let day = 1; day <= daysInMonth; day++) {
-    const dateStr = calendarYear + '-' +
-      String(calendarMonth).padStart(2, '0') + '-' +
-      String(day).padStart(2, '0');
+    const dateStr = calendarYear + '-' + String(calendarMonth).padStart(2, '0') + '-' + String(day).padStart(2, '0');
     const dow = (startDow + day - 1) % 7;
     const dayGames = gameLookup[dateStr] || [];
     const isToday = dateStr === todayStr;
@@ -2330,43 +2322,186 @@ function renderCalendar() {
     const hasFutureOnly = hasGame && dayGames.every(g => isScheduledGame(g));
 
     html += `<div class="cal-day${hasGame ? (hasFutureOnly ? ' has-future-game' : ' has-game') : ''}">`;
-
-    // Day number
     const dayNumCls = isToday ? 'day-num today' : dow === 0 ? 'day-num sun' : dow === 6 ? 'day-num sat' : 'day-num';
     html += `<div class="${dayNumCls}">${day}</div>`;
 
-    // Game info - render each game
     dayGames.forEach(game => {
       const isFuture = isScheduledGame(game);
-
       let leagueTag = '';
       if (isCombinedView() && game._league) {
-        if (game._league === 'sejong') leagueTag = '<span class="league-tag sejong" style="font-size:8px;padding:0 3px;margin-left:2px">세종</span>';
-        else if (game._league === 'donggu') leagueTag = '<span class="league-tag donggu" style="font-size:8px;padding:0 3px;margin-left:2px">동구</span>';
+        const entry = getEntriesForYear(CURRENT_YEAR).find(e => e.leagueKey === game._league);
+        if (entry) leagueTag = `<span class="league-tag ${game._league}" style="font-size:8px;padding:0 3px;margin-left:2px">${escHtml(entry.league.split(' ')[0])}</span>`;
       }
-
       if (isFuture) {
-        html += '<div class="game-info">';
-        html += `<div class="game-opponent">vs ${escHtml(game.opponent)}${leagueTag}</div>`;
-        html += `<div class="game-score"><span class="game-badge scheduled">예정</span></div>`;
-        html += '</div>';
+        html += `<div class="game-info"><div class="game-opponent">vs ${escHtml(game.opponent)}${leagueTag}</div><div class="game-score"><span class="game-badge scheduled">예정</span></div></div>`;
       } else {
         let result, badgeCls;
         if (game.ourScore > game.theirScore) { result = '승'; badgeCls = 'win'; }
         else if (game.ourScore < game.theirScore) { result = '패'; badgeCls = 'loss'; }
         else { result = '무'; badgeCls = 'draw'; }
-
-        html += '<div class="game-info">';
-        html += `<div class="game-opponent">vs ${escHtml(game.opponent)}${leagueTag}</div>`;
-        html += `<div class="game-score">${game.ourScore}-${game.theirScore} <span class="game-badge ${badgeCls}">${result}</span></div>`;
-        html += '</div>';
+        html += `<div class="game-info"><div class="game-opponent">vs ${escHtml(game.opponent)}${leagueTag}</div><div class="game-score">${game.ourScore}-${game.theirScore} <span class="game-badge ${badgeCls}">${result}</span></div></div>`;
       }
     });
-
     html += '</div>';
   }
-
   gridEl.innerHTML = html;
+}
+
+// ===== RENDER HISTORY =====
+function getSourceBadgeClass(source) {
+  if (source.includes('ksbsa')) return 'ksbsa';
+  if (source.includes('donggu') || source.includes('dbsa')) return 'dbsa';
+  if (source.includes('gameone')) return 'gameone';
+  if (source.includes('daedeok')) return 'daedeok';
+  return 'ksbsa';
+}
+
+function renderHistory() {
+  const tbody = document.getElementById('historyBody');
+  let html = '';
+  let totalW = 0, totalL = 0, totalD = 0, totalG = 0;
+
+  ALL_DATA.forEach(entry => {
+    totalW += entry.W; totalL += entry.L; totalD += entry.D; totalG += entry.G;
+    const winRate = (entry.W + entry.L) > 0 ? entry.W / (entry.W + entry.L) : 0;
+    const winPct = Math.round(winRate * 100);
+    const clickable = hasData(entry);
+    const rowCls = clickable ? 'clickable-row' : '';
+    const expanded = historyExpandedId === entry.id;
+
+    html += `<tr class="${rowCls}${expanded ? ' expanded-row' : ''}" ${clickable ? `onclick="toggleHistoryDetail('${entry.id}')"` : ''}>`;
+    html += `<td class="year-cell">${entry.year}</td>`;
+    html += `<td class="league-cell">${escHtml(entry.league)}${clickable ? ' <span style="font-size:10px;color:#94a3b8">&#9654;</span>' : ''}</td>`;
+    html += `<td class="record-cell">${escHtml(entry.record)} <span class="winrate-bar" style="width:${Math.max(winPct * 0.6, 2)}px"></span></td>`;
+    html += `<td>${winRate > 0 ? fmtRate(winRate) : '-'}</td>`;
+    html += `<td>${entry.G}</td>`;
+    html += `<td><a href="${escHtml(entry.sourceUrl)}" target="_blank" rel="noopener noreferrer" class="source-badge ${getSourceBadgeClass(entry.source)}" onclick="event.stopPropagation()">${escHtml(entry.source)}</a></td>`;
+    html += '</tr>';
+  });
+
+  // Totals row
+  const totalRate = (totalW + totalL) > 0 ? totalW / (totalW + totalL) : 0;
+  let totalRecord = `${totalW}승 ${totalL}패`;
+  if (totalD > 0) totalRecord += ` ${totalD}무`;
+  html += `<tr class="history-totals">`;
+  html += `<td></td><td class="league-cell" style="color:var(--red)">통산</td>`;
+  html += `<td class="record-cell">${totalRecord}</td>`;
+  html += `<td>${fmtRate(totalRate)}</td>`;
+  html += `<td>${totalG}</td><td></td></tr>`;
+
+  tbody.innerHTML = html;
+
+  // Render detail if expanded
+  if (historyExpandedId) {
+    renderHistoryDetail(historyExpandedId);
+  } else {
+    document.getElementById('historyDetail').style.display = 'none';
+  }
+}
+
+function toggleHistoryDetail(id) {
+  if (historyExpandedId === id) {
+    historyExpandedId = null;
+  } else {
+    historyExpandedId = id;
+  }
+  renderHistory();
+}
+
+let historyDetailTab = 'players';
+
+function switchHistoryDetailTab(tab) {
+  historyDetailTab = tab;
+  if (historyExpandedId) renderHistoryDetail(historyExpandedId);
+}
+
+function renderHistoryDetail(id) {
+  const entry = getEntry(id);
+  if (!entry || !hasData(entry)) {
+    document.getElementById('historyDetail').style.display = 'none';
+    return;
+  }
+
+  const detailEl = document.getElementById('historyDetail');
+  detailEl.style.display = 'block';
+
+  const hasPlayers = hasPlayerData(entry);
+  const hasPitchers = hasPitcherData(entry);
+
+  let html = `<div class="history-detail-inner">`;
+  html += `<div style="font-weight:700;font-size:16px;margin-bottom:12px;color:#1e293b">${entry.year} ${escHtml(entry.league)} - ${escHtml(entry.record)}</div>`;
+  html += `<div class="history-detail-tabs">`;
+  if (hasPlayers) html += `<button class="history-detail-tab${historyDetailTab === 'players' ? ' active' : ''}" onclick="switchHistoryDetailTab('players')">타자 기록</button>`;
+  if (hasPitchers) html += `<button class="history-detail-tab${historyDetailTab === 'pitchers' ? ' active' : ''}" onclick="switchHistoryDetailTab('pitchers')">투수 기록</button>`;
+  html += `</div>`;
+
+  if (historyDetailTab === 'players' && hasPlayers) {
+    html += renderHistoryPlayersTable(entry);
+  } else if (historyDetailTab === 'pitchers' && hasPitchers) {
+    html += renderHistoryPitchersTable(entry);
+  } else if (hasPlayers) {
+    historyDetailTab = 'players';
+    html += renderHistoryPlayersTable(entry);
+  } else if (hasPitchers) {
+    historyDetailTab = 'pitchers';
+    html += renderHistoryPitchersTable(entry);
+  }
+
+  html += `</div>`;
+  detailEl.innerHTML = html;
+}
+
+function renderHistoryPlayersTable(entry) {
+  const players = Object.values(entry.players);
+  if (players.length === 0) return '<div class="history-no-data">데이터 없음</div>';
+
+  let html = '<div class="table-wrapper" style="margin-top:8px"><table style="min-width:900px"><thead><tr>';
+  html += '<th>선수명</th><th>등번호</th><th>타율</th><th>G</th><th>타석</th><th>타수</th><th>안타</th>';
+  html += '<th>2B</th><th>3B</th><th>HR</th><th>타점</th><th>득점</th><th>도루</th>';
+  html += '<th>볼넷</th><th>사구</th><th>삼진</th><th>출루율</th><th>장타율</th><th>OPS</th>';
+  html += '</tr></thead><tbody>';
+
+  players.forEach(p => {
+    const num = p.number || p.num || '';
+    const avg = p.AB > 0 ? (p.H / p.AB) : 0;
+    const obp = p.kOBP != null ? p.kOBP : calcOBP(p);
+    const slg = p.kSLG != null ? p.kSLG : calcSLG(p);
+    const ops = p.kOPS != null ? p.kOPS : (obp + slg);
+    html += `<tr><td class="name-cell">${escHtml(p.name)}</td><td>${num}</td><td>${fmtRate(avg)}</td>`;
+    html += `<td>${p.G||0}</td><td>${p.PA||0}</td><td>${p.AB||0}</td><td>${p.H||0}</td>`;
+    html += `<td>${p['2B']||0}</td><td>${p['3B']||0}</td><td>${p.HR||0}</td>`;
+    html += `<td>${p.RBI||0}</td><td>${p.R||0}</td><td>${p.SB||0}</td>`;
+    html += `<td>${p.BB||0}</td><td>${p.HBP||0}</td><td>${p.SO||0}</td>`;
+    html += `<td>${fmtRate(obp)}</td><td>${fmtRate(slg)}</td><td>${fmtRate(ops)}</td></tr>`;
+  });
+
+  html += '</tbody></table></div>';
+  return html;
+}
+
+function renderHistoryPitchersTable(entry) {
+  const pitchers = Object.values(entry.pitchers);
+  if (pitchers.length === 0) return '<div class="history-no-data">데이터 없음</div>';
+
+  let html = '<div class="table-wrapper" style="margin-top:8px"><table style="min-width:800px"><thead><tr>';
+  html += '<th>선수명</th><th>등번호</th><th>ERA</th><th>G</th><th>승</th><th>패</th>';
+  html += '<th>세</th><th>홀드</th><th>이닝</th><th>피안타</th><th>피홈런</th><th>삼진</th>';
+  html += '<th>볼넷</th><th>사구</th><th>실점</th><th>자책</th>';
+  html += '</tr></thead><tbody>';
+
+  pitchers.forEach(pt => {
+    const num = pt.number || pt.num || '';
+    const era = pt.IP > 0 ? calcERA(pt) : 0;
+    html += `<tr><td class="name-cell">${escHtml(pt.name)}</td><td>${num}</td>`;
+    html += `<td>${pt.IP > 0 ? fmtERA(era) : '-'}</td>`;
+    html += `<td>${pt.G||0}</td><td>${pt.W||0}</td><td>${pt.L||0}</td>`;
+    html += `<td>${pt.SV||0}</td><td>${pt.HD||0}</td><td>${pt.IP||0}</td>`;
+    html += `<td>${pt.pH||0}</td><td>${pt.pHR||0}</td><td>${pt.K||0}</td>`;
+    html += `<td>${pt.pBB||0}</td><td>${pt.pHBP||0}</td><td>${pt.R||0}</td><td>${pt.ER||0}</td></tr>`;
+  });
+
+  html += '</tbody></table></div>';
+  return html;
 }
 
 // ===== MODALS =====
@@ -2417,15 +2552,15 @@ function openGameModal(data, id) {
 }
 
 function editPlayer(id) {
-  if (!isLoggedIn() || isCombinedView()) return;
+  if (!isLoggedIn() || isCombinedView() || currentMode !== 'current') return;
   openPlayerModal(playersData[id], id);
 }
 function editPitcher(id) {
-  if (!isLoggedIn() || isCombinedView()) return;
+  if (!isLoggedIn() || isCombinedView() || currentMode !== 'current') return;
   openPitcherModal(pitchersData[id], id);
 }
 function editGame(id) {
-  if (!isLoggedIn() || isCombinedView()) return;
+  if (!isLoggedIn() || isCombinedView() || currentMode !== 'current') return;
   openGameModal(gamesData[id], id);
 }
 
@@ -2446,12 +2581,12 @@ function savePlayer() {
   const id = document.getElementById('playerId').value || ('p' + Date.now());
   playersData[id] = data;
 
-  if (firebaseReady && db) {
-    db.ref('baseball/' + currentYear + '/' + currentLeague + '/players/' + id).set(data).catch(e => console.error(e));
+  const fbPath = getFirebasePath();
+  if (firebaseReady && db && fbPath) {
+    db.ref(fbPath + '/players/' + id).set(data).catch(e => console.error(e));
   }
   saveLocal();
-  renderPlayers();
-  renderTeamStats();
+  renderPlayers(); renderTeamStats();
   closeModal('playerModal');
   showToast(document.getElementById('playerId').value ? '선수 정보가 수정되었습니다.' : '선수가 추가되었습니다.', 'success');
 }
@@ -2483,12 +2618,12 @@ function savePitcher() {
   const id = document.getElementById('pitcherId').value || ('pt' + Date.now());
   pitchersData[id] = data;
 
-  if (firebaseReady && db) {
-    db.ref('baseball/' + currentYear + '/' + currentLeague + '/pitchers/' + id).set(data).catch(e => console.error(e));
+  const fbPath = getFirebasePath();
+  if (firebaseReady && db && fbPath) {
+    db.ref(fbPath + '/pitchers/' + id).set(data).catch(e => console.error(e));
   }
   saveLocal();
-  renderPitchers();
-  renderTeamStats();
+  renderPitchers(); renderTeamStats();
   closeModal('pitcherModal');
   showToast(document.getElementById('pitcherId').value ? '투수 정보가 수정되었습니다.' : '투수가 추가되었습니다.', 'success');
 }
@@ -2505,24 +2640,20 @@ function saveGame() {
   const data = {
     date: document.getElementById('gDate').value,
     opponent,
-    ourScore: ourScore,
-    theirScore: theirScore,
+    ourScore, theirScore,
     location: document.getElementById('gLocation').value.trim()
   };
-  if (ourScore === null && theirScore === null) {
-    data.result = '예정';
-  }
+  if (ourScore === null && theirScore === null) data.result = '예정';
 
   const id = document.getElementById('gameId').value || ('g' + Date.now());
   gamesData[id] = data;
 
-  if (firebaseReady && db) {
-    db.ref('baseball/' + currentYear + '/' + currentLeague + '/games/' + id).set(data).catch(e => console.error(e));
+  const fbPath = getFirebasePath();
+  if (firebaseReady && db && fbPath) {
+    db.ref(fbPath + '/games/' + id).set(data).catch(e => console.error(e));
   }
   saveLocal();
-  renderGames();
-  renderCalendar();
-  renderTeamStats();
+  renderGames(); renderCalendar(); renderTeamStats();
   closeModal('gameModal');
   showToast(document.getElementById('gameId').value ? '경기 정보가 수정되었습니다.' : '경기가 추가되었습니다.', 'success');
 }
@@ -2532,10 +2663,9 @@ function deletePlayer() {
   const id = document.getElementById('playerId').value;
   if (!id || !confirm('이 선수를 삭제하시겠습니까?')) return;
   delete playersData[id];
-  if (firebaseReady && db) db.ref('baseball/' + currentYear + '/' + currentLeague + '/players/' + id).remove();
-  saveLocal();
-  renderPlayers();
-  renderTeamStats();
+  const fbPath = getFirebasePath();
+  if (firebaseReady && db && fbPath) db.ref(fbPath + '/players/' + id).remove();
+  saveLocal(); renderPlayers(); renderTeamStats();
   closeModal('playerModal');
   showToast('선수가 삭제되었습니다.', 'success');
 }
@@ -2544,10 +2674,9 @@ function deletePitcher() {
   const id = document.getElementById('pitcherId').value;
   if (!id || !confirm('이 투수를 삭제하시겠습니까?')) return;
   delete pitchersData[id];
-  if (firebaseReady && db) db.ref('baseball/' + currentYear + '/' + currentLeague + '/pitchers/' + id).remove();
-  saveLocal();
-  renderPitchers();
-  renderTeamStats();
+  const fbPath = getFirebasePath();
+  if (firebaseReady && db && fbPath) db.ref(fbPath + '/pitchers/' + id).remove();
+  saveLocal(); renderPitchers(); renderTeamStats();
   closeModal('pitcherModal');
   showToast('투수가 삭제되었습니다.', 'success');
 }
@@ -2556,11 +2685,9 @@ function deleteGame() {
   const id = document.getElementById('gameId').value;
   if (!id || !confirm('이 경기를 삭제하시겠습니까?')) return;
   delete gamesData[id];
-  if (firebaseReady && db) db.ref('baseball/' + currentYear + '/' + currentLeague + '/games/' + id).remove();
-  saveLocal();
-  renderGames();
-  renderCalendar();
-  renderTeamStats();
+  const fbPath = getFirebasePath();
+  if (firebaseReady && db && fbPath) db.ref(fbPath + '/games/' + id).remove();
+  saveLocal(); renderGames(); renderCalendar(); renderTeamStats();
   closeModal('gameModal');
   showToast('경기가 삭제되었습니다.', 'success');
 }
@@ -2576,19 +2703,16 @@ function setupSort(tableId, dataGetter, renderFn) {
       const key = th.dataset.key;
       const type = th.dataset.type;
 
-      // toggle direction
       if (!sortState[tableId] || sortState[tableId].key !== key) {
         sortState[tableId] = { key, dir: 'desc' };
       } else {
         sortState[tableId].dir = sortState[tableId].dir === 'desc' ? 'asc' : 'desc';
       }
 
-      // update UI
-      ths.forEach(t => { t.classList.remove('sorted'); t.querySelector('.sort-arrow').textContent = '▲'; });
+      ths.forEach(t => { t.classList.remove('sorted'); t.querySelector('.sort-arrow').textContent = '\u25B2'; });
       th.classList.add('sorted');
-      th.querySelector('.sort-arrow').textContent = sortState[tableId].dir === 'desc' ? '▼' : '▲';
+      th.querySelector('.sort-arrow').textContent = sortState[tableId].dir === 'desc' ? '\u25BC' : '\u25B2';
 
-      // sort data
       const dir = sortState[tableId].dir === 'desc' ? -1 : 1;
       const data = dataGetter();
       const entries = Object.entries(data);
@@ -2626,7 +2750,6 @@ function setupSort(tableId, dataGetter, renderFn) {
         return ((va || 0) - (vb || 0)) * dir;
       });
 
-      // rebuild ordered data
       const newData = {};
       entries.forEach(([k, v]) => { newData[k] = v; });
 
@@ -2663,8 +2786,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ===== INIT =====
-initYearUI();
-initLeagueUI();
+initLeaguePills();
+updateSubtitle();
+updateFooter();
 setupSort('playerTable', () => playersData, renderPlayers);
 setupSort('pitcherTable', () => pitchersData, renderPitchers);
 setupSort('gameTable', () => gamesData, renderGames);
