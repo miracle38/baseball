@@ -1551,7 +1551,7 @@ function getCombinedData() {
       if (mergedPitchers[key]) {
         const existing = mergedPitchers[key];
         pitcherCountingKeys.forEach(k => { existing[k] = (existing[k] || 0) + (pt[k] || 0); });
-        existing.IP = (existing.IP || 0) + (pt.IP || 0);
+        existing.IP = thirdsToIP(ipToThirds(existing.IP || 0) + ipToThirds(pt.IP || 0));
         existing.WPCT = (existing.W + existing.L) > 0 ? existing.W / (existing.W + existing.L) : 0;
         existing._league = 'both';
       } else {
@@ -1736,11 +1736,16 @@ function calcOPS(p) {
   if (p.kOPS != null) return p.kOPS;
   return calcOBP(p) + calcSLG(p);
 }
-function calcERA(pt) { return pt.IP > 0 ? (pt.ER * 7 / pt.IP) : 0; }
+// 야구 이닝: .1=1/3, .2=2/3 (3진법 소수)
+function ipToThirds(ip) { return Math.floor(ip) * 3 + Math.round((ip % 1) * 10); }
+function thirdsToIP(t) { return Math.floor(t / 3) + (t % 3) * 0.1; }
+function sumIP() { let t=0; for(const a of arguments) t+=ipToThirds(a); return thirdsToIP(t); }
+function fmtIP(val) { const t=ipToThirds(val); return Math.floor(t/3)+'.'+(t%3); }
+function ipForCalc(ip) { return Math.floor(ip) + Math.round((ip%1)*10)/3; }
+function calcERA(pt) { const dec=ipForCalc(pt.IP); return dec>0?(pt.ER*7/dec):0; }
 
 function fmtRate(val) { return val === 0 ? '.000' : (val >= 1 ? val.toFixed(3) : val.toFixed(3).substring(1)); }
 function fmtERA(val) { return val.toFixed(2); }
-function fmtIP(val) { return Math.round(val * 10) / 10; }
 
 // ===== RENDER PLAYERS =====
 function renderPlayers() {
@@ -1921,9 +1926,9 @@ function renderPitchers() {
   const ptTotals = { G:0, W:0, L:0, SV:0, HD:0, IP:0, pH:0, pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:0, ER:0, BF:0, NP:0 };
   computed.forEach(pt => {
     ['G','W','L','SV','HD','pH','pHR','K','pBB','pIBB','pHBP','R','ER','BF','NP'].forEach(k => { ptTotals[k] += (pt[k] || 0); });
-    ptTotals.IP += (pt.IP || 0);
+    ptTotals._ipThirds = (ptTotals._ipThirds||0) + ipToThirds(pt.IP||0); ptTotals.IP = thirdsToIP(ptTotals._ipThirds);
   });
-  const ptERA = ptTotals.IP > 0 ? (ptTotals.ER * 7 / ptTotals.IP) : 0;
+  const ptERA = ptTotals.IP > 0 ? (ptTotals.ER * 7 / ipForCalc(ptTotals.IP)) : 0;
   const ptWPCT = (ptTotals.W + ptTotals.L) > 0 ? (ptTotals.W / (ptTotals.W + ptTotals.L)) : 0;
 
   html += '<tr class="totals-row"><td class="name-cell">합계</td><td></td>';
@@ -2159,11 +2164,11 @@ function renderTeamStats() {
   const teamAVG = totalAB > 0 ? (totalH / totalAB) : 0;
   const teamOBP = (totalAB + totalBB + totalHBP) > 0 ? ((totalH + totalBB + totalHBP) / (totalAB + totalBB + totalHBP)) : 0;
 
-  let totalER = 0, totalIP = 0, totalK = 0;
+  let totalER = 0, totalIP = 0, totalIP_thirds = 0, totalK = 0;
   pitchers.forEach(pt => {
-    totalER += (pt.ER || 0); totalIP += (pt.IP || 0); totalK += (pt.K || 0);
+    totalER += (pt.ER || 0); totalIP = thirdsToIP((totalIP_thirds = (totalIP_thirds||0) + ipToThirds(pt.IP||0))); totalK += (pt.K || 0);
   });
-  const teamERA = totalIP > 0 ? (totalER * 7 / totalIP) : 0;
+  const teamERA = totalIP > 0 ? (totalER * 7 / ipForCalc(totalIP)) : 0;
 
   const avgScored = gameCount > 0 ? (totalScored / gameCount) : 0;
   const avgAllowed = gameCount > 0 ? (totalAllowed / gameCount) : 0;
