@@ -976,6 +976,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
   <span id="footerSourceWrap">
     <a id="footerSource" href="https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:inline-block">KSBSA 데이터 출처 - 세종특별자치시 야구소프트볼협회</a>
     <a id="footerSource2" href="https://donggu.dbsa.kr/teamPage/main/getMain.hs?teamSeq=70" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:none;margin-left:12px">DBSA 데이터 출처 - 대전광역시 야구소프트볼협회 동구리그</a>
+    <a id="footerSource3" href="https://www.gameone.kr/club/?club_idx=7734" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:none;margin-left:12px">게임원 데이터</a>
   </span>
 </footer>
 
@@ -1275,9 +1276,39 @@ const defaultData = {
       rankings: []
     },
     donggu: {
-      players: {},
-      pitchers: {},
-      games: {},
+      players: {
+        p1:  { name:'한재윤', number:36, G:3,  PA:9,  AB:9,  H:5,  '2B':0, '3B':0, HR:0, RBI:2,  R:4,  SB:0, BB:0, HBP:0, SO:0,  kOBP:0.556, kSLG:0.556, kOPS:1.112 },
+        p2:  { name:'이준태', number:86, G:7,  PA:21, AB:18, H:9,  '2B':2, '3B':0, HR:0, RBI:3,  R:7,  SB:0, BB:2, HBP:1, SO:1,  kOBP:0.571, kSLG:0.611, kOPS:1.182 },
+        p3:  { name:'차화진', number:25, G:7,  PA:24, AB:19, H:9,  '2B':2, '3B':1, HR:0, RBI:9,  R:8,  SB:2, BB:3, HBP:0, SO:0,  kOBP:0.500, kSLG:0.684, kOPS:1.184 },
+        p4:  { name:'변우동', number:27, G:6,  PA:13, AB:13, H:6,  '2B':2, '3B':0, HR:0, RBI:3,  R:4,  SB:0, BB:0, HBP:0, SO:2,  kOBP:0.462, kSLG:0.615, kOPS:1.077 },
+        p5:  { name:'박철우', number:8,  G:9,  PA:25, AB:21, H:9,  '2B':1, '3B':1, HR:1, RBI:10, R:10, SB:0, BB:1, HBP:3, SO:5,  kOBP:0.520, kSLG:0.714, kOPS:1.234 },
+        p6:  { name:'김해성', number:38, G:11, PA:23, AB:19, H:8,  '2B':3, '3B':0, HR:0, RBI:7,  R:5,  SB:0, BB:0, HBP:4, SO:7,  kOBP:0.522, kSLG:0.579, kOPS:1.101 },
+        p7:  { name:'김종원', number:21, G:11, PA:34, AB:31, H:13, '2B':3, '3B':2, HR:0, RBI:12, R:13, SB:0, BB:2, HBP:1, SO:3,  kOBP:0.471, kSLG:0.645, kOPS:1.116 },
+        p8:  { name:'고석봉', number:14, G:16, PA:45, AB:39, H:16, '2B':5, '3B':3, HR:0, RBI:15, R:14, SB:0, BB:5, HBP:1, SO:9,  kOBP:0.489, kSLG:0.692, kOPS:1.181 },
+        p9:  { name:'문영익', number:11, G:10, PA:27, AB:26, H:10, '2B':3, '3B':1, HR:0, RBI:12, R:6,  SB:0, BB:1, HBP:0, SO:1,  kOBP:0.407, kSLG:0.577, kOPS:0.984 },
+        p10: { name:'남상민', number:7,  G:10, PA:31, AB:27, H:10, '2B':0, '3B':3, HR:2, RBI:8,  R:11, SB:0, BB:1, HBP:3, SO:11, kOBP:0.452, kSLG:0.815, kOPS:1.267 },
+        p11: { name:'봉제헌', number:88, G:7,  PA:21, AB:17, H:6,  '2B':3, '3B':0, HR:0, RBI:7,  R:8,  SB:1, BB:3, HBP:0, SO:3,  kOBP:0.429, kSLG:0.529, kOPS:0.958 },
+        p12: { name:'이성진', number:10, G:6,  PA:14, AB:9,  H:3,  '2B':0, '3B':1, HR:0, RBI:3,  R:7,  SB:0, BB:4, HBP:1, SO:2,  kOBP:0.571, kSLG:0.556, kOPS:1.127 },
+        p13: { name:'허지욱', number:98, G:6,  PA:21, AB:18, H:6,  '2B':1, '3B':0, HR:0, RBI:0,  R:6,  SB:0, BB:3, HBP:0, SO:2,  kOBP:0.429, kSLG:0.389, kOPS:0.818 },
+        p14: { name:'서현민', number:19, G:14, PA:39, AB:28, H:9,  '2B':1, '3B':0, HR:0, RBI:9,  R:14, SB:0, BB:8, HBP:3, SO:6,  kOBP:0.513, kSLG:0.357, kOPS:0.870 },
+        p15: { name:'한민기', number:28, G:9,  PA:27, AB:23, H:7,  '2B':2, '3B':2, HR:0, RBI:2,  R:7,  SB:0, BB:1, HBP:3, SO:8,  kOBP:0.407, kSLG:0.565, kOPS:0.972 },
+        p16: { name:'김경필', number:44, G:10, PA:28, AB:24, H:7,  '2B':1, '3B':0, HR:0, RBI:8,  R:7,  SB:1, BB:2, HBP:1, SO:7,  kOBP:0.357, kSLG:0.333, kOPS:0.690 },
+        p17: { name:'추혜승', number:16, G:9,  PA:24, AB:14, H:4,  '2B':0, '3B':0, HR:0, RBI:3,  R:6,  SB:0, BB:8, HBP:2, SO:2,  kOBP:0.583, kSLG:0.286, kOPS:0.869 },
+        p18: { name:'정교수', number:23, G:8,  PA:17, AB:12, H:1,  '2B':0, '3B':0, HR:0, RBI:3,  R:5,  SB:1, BB:4, HBP:0, SO:5,  kOBP:0.294, kSLG:0.083, kOPS:0.377 }
+      },
+      pitchers: {
+        pt1: { name:'한민기', number:28, G:7, W:2, L:2, SV:0, HD:0, IP:16.2, pH:28, pHR:0, K:6,  pBB:17, pIBB:0, pHBP:1, R:30, ER:17, WPCT:0.500, BF:0, NP:0 },
+        pt2: { name:'서현민', number:19, G:5, W:0, L:1, SV:0, HD:0, IP:12.0, pH:19, pHR:0, K:12, pBB:9,  pIBB:0, pHBP:1, R:17, ER:16, WPCT:0.000, BF:0, NP:0 },
+        pt3: { name:'봉제헌', number:88, G:7, W:0, L:1, SV:0, HD:0, IP:11.2, pH:15, pHR:1, K:10, pBB:13, pIBB:0, pHBP:2, R:22, ER:16, WPCT:0.000, BF:0, NP:0 },
+        pt4: { name:'정교수', number:23, G:2, W:0, L:0, SV:0, HD:0, IP:3.2,  pH:10, pHR:1, K:2,  pBB:2,  pIBB:0, pHBP:0, R:10, ER:6,  WPCT:0.000, BF:0, NP:0 },
+        pt5: { name:'문영익', number:11, G:9, W:3, L:3, SV:0, HD:0, IP:21.0, pH:49, pHR:2, K:20, pBB:19, pIBB:0, pHBP:1, R:54, ER:40, WPCT:0.500, BF:0, NP:0 },
+        pt6: { name:'박철우', number:8,  G:1, W:0, L:1, SV:0, HD:0, IP:3.0,  pH:6,  pHR:1, K:2,  pBB:8,  pIBB:0, pHBP:0, R:7,  ER:6,  WPCT:0.000, BF:0, NP:0 },
+        pt7: { name:'한재윤', number:36, G:1, W:0, L:0, SV:0, HD:0, IP:2.0,  pH:5,  pHR:0, K:3,  pBB:3,  pIBB:0, pHBP:1, R:6,  ER:6,  WPCT:0.000, BF:0, NP:0 },
+        pt8: { name:'허지욱', number:98, G:4, W:0, L:0, SV:0, HD:0, IP:3.0,  pH:7,  pHR:0, K:4,  pBB:9,  pIBB:0, pHBP:0, R:12, ER:11, WPCT:0.000, BF:0, NP:0 }
+      },
+      games: {
+        g1: { date:'2025-01-01', opponent:'2025 동구리그 시즌', ourScore:0, theirScore:0, result:'5승 8패', location:'대전' }
+      },
       rankings: []
     }
   }
@@ -1363,17 +1394,26 @@ function updateLeagueUI() {
 
   const footerLink = document.getElementById('footerSource');
   const footerLink2 = document.getElementById('footerSource2');
+  const footerLink3 = document.getElementById('footerSource3');
 
   if (league === 'all') {
     footerLink.href = LEAGUE_CONFIG.sejong.sourceUrl;
     footerLink.textContent = LEAGUE_CONFIG.sejong.sourceLabel;
     footerLink.style.display = 'inline-block';
     footerLink2.style.display = 'inline-block';
+    footerLink3.style.display = 'inline-block';
+  } else if (league === 'donggu') {
+    footerLink.href = LEAGUE_CONFIG[league].sourceUrl;
+    footerLink.textContent = LEAGUE_CONFIG[league].sourceLabel;
+    footerLink.style.display = 'inline-block';
+    footerLink2.style.display = 'none';
+    footerLink3.style.display = 'inline-block';
   } else {
     footerLink.href = LEAGUE_CONFIG[league].sourceUrl;
     footerLink.textContent = LEAGUE_CONFIG[league].sourceLabel;
     footerLink.style.display = 'inline-block';
     footerLink2.style.display = 'none';
+    footerLink3.style.display = 'none';
   }
 
   // Toggle add buttons visibility based on combined view
@@ -1603,7 +1643,7 @@ function loadFromFirebase() {
   const gRef = db.ref('baseball/' + currentYear + '/' + league + '/games');
 
   // 1회성 마이그레이션: 연도별+리그별 데이터 구조로 전환
-  const migKey = 'bb_migrated_ksbsa_v5';
+  const migKey = 'bb_migrated_ksbsa_v6';
   if (!localStorage.getItem(migKey)) {
     // Write all years/leagues default data
     Object.keys(defaultData).forEach(year => {
