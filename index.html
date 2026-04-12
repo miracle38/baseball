@@ -303,6 +303,7 @@ td.stat-leader-low{color:var(--gold);font-weight:700}
   font-family:inherit;
 }
 .league-btn:first-child{border-radius:20px 0 0 20px}
+.league-btn:nth-child(2){border-radius:0}
 .league-btn:last-child{border-radius:0 20px 20px 0}
 .league-btn:hover{color:var(--white);border-color:var(--gray)}
 .league-btn.active{
@@ -459,6 +460,57 @@ tr.highlight-row:hover{
 .toast.success{border-left:4px solid #4ecdc4}
 .toast.error{border-left:4px solid var(--red)}
 @keyframes toastIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== LEAGUE TAGS ===== */
+.league-tag{
+  display:inline-block;padding:1px 6px;border-radius:4px;
+  font-size:10px;font-weight:700;color:#fff;margin-left:4px;
+  vertical-align:middle;
+}
+.league-tag.sejong{background:#3b82f6}
+.league-tag.donggu{background:#22c55e}
+
+/* ===== FUTURE GAME STYLES ===== */
+.game-row.future-game{
+  background:rgba(59,130,246,0.06)!important;
+}
+.game-row.future-game:hover{
+  background:rgba(59,130,246,0.12)!important;
+}
+.game-row .result-scheduled{
+  color:#60a5fa;font-weight:700;
+}
+.game-badge.scheduled{background:#60a5fa}
+.game-row .score-vs{
+  font-weight:600;font-size:14px;color:var(--gray);
+}
+
+/* Calendar future game */
+.calendar-grid .cal-day .game-badge.scheduled{background:#60a5fa}
+.calendar-grid .cal-day.has-future-game{
+  background:rgba(59,130,246,0.05);
+}
+
+/* Combined rankings header */
+.rankings-league-header{
+  padding:16px 20px;
+  background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));
+  border-bottom:2px solid var(--red);
+  font-size:16px;font-weight:700;color:var(--white);
+  display:flex;align-items:center;gap:8px;
+}
+.rankings-league-header::before{
+  content:'';width:4px;height:18px;background:var(--red);border-radius:2px;
+}
+.rankings-section{margin-bottom:20px}
+.rankings-section:last-child{margin-bottom:0}
+
+/* Read-only notice */
+.readonly-notice{
+  background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);
+  border-radius:8px;padding:10px 16px;margin-bottom:16px;
+  font-size:13px;color:#93c5fd;display:flex;align-items:center;gap:8px;
+}
 </style>
 </head>
 <body>
@@ -500,6 +552,7 @@ tr.highlight-row:hover{
 
 <!-- ===== LEAGUE SELECTOR ===== -->
 <div class="league-selector">
+  <button class="league-btn" data-league="all" onclick="switchLeague('all')">전체</button>
   <button class="league-btn active" data-league="sejong" onclick="switchLeague('sejong')">세종 토요리그</button>
   <button class="league-btn" data-league="donggu" onclick="switchLeague('donggu')">대전 동구리그</button>
 </div>
@@ -675,7 +728,10 @@ tr.highlight-row:hover{
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <strong>Windup Baseball Club</strong> &copy; 2026<br>
-  <a id="footerSource" href="https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:inline-block">KSBSA 데이터 출처 - 세종특별자치시 야구소프트볼협회</a>
+  <span id="footerSourceWrap">
+    <a id="footerSource" href="https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:inline-block">KSBSA 데이터 출처 - 세종특별자치시 야구소프트볼협회</a>
+    <a id="footerSource2" href="https://donggu.dbsa.kr/teamPage/main/getMain.hs?teamSeq=70" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:none;margin-left:12px">DBSA 데이터 출처 - 대전광역시 야구소프트볼협회 동구리그</a>
+  </span>
 </footer>
 
 <!-- ===== PLAYER MODAL ===== -->
@@ -803,6 +859,11 @@ const LEAGUE_CONFIG = {
     subtitle: '2026 동구리그',
     sourceUrl: 'https://donggu.dbsa.kr/teamPage/main/getMain.hs?teamSeq=70',
     sourceLabel: 'DBSA 데이터 출처 - 대전광역시 야구소프트볼협회 동구리그'
+  },
+  all: {
+    subtitle: '2026 시즌 통합',
+    sourceUrl: '',
+    sourceLabel: ''
   }
 };
 
@@ -850,9 +911,11 @@ const defaultData = {
       pt3: { name:'고석봉', number:14, G:1, W:0, L:0, SV:0, HD:0, IP:0,   pH:0,  pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:0,  ER:0,  WPCT:0.000, BF:0,  NP:0 }
     },
     games: {
-      g1: { date:'2026-03-14', opponent:'INCOURSE',       ourScore:4,  theirScore:13, location:'중앙공원 야구장' },
-      g2: { date:'2026-03-28', opponent:'금강 옥시전스',   ourScore:11, theirScore:2,  location:'부강생활체육공원 야구장' },
-      g3: { date:'2026-04-04', opponent:'KBSI 어벤져스',   ourScore:14, theirScore:11, location:'부강생활체육공원 야구장' }
+      g1: { date:'2026-03-14', opponent:'INCOURSE',       ourScore:4,  theirScore:13, result:'패', location:'중앙공원 야구장' },
+      g2: { date:'2026-03-28', opponent:'금강 옥시전스',   ourScore:11, theirScore:2,  result:'승', location:'부강생활체육공원 야구장' },
+      g3: { date:'2026-04-04', opponent:'KBSI 어벤져스',   ourScore:14, theirScore:11, result:'승', location:'부강생활체육공원 야구장' },
+      g4: { date:'2026-04-18', opponent:'CRI 챌린저스',    ourScore:null, theirScore:null, result:'예정', location:'금강스포츠공원 야구장' },
+      g5: { date:'2026-04-25', opponent:'야수들',          ourScore:null, theirScore:null, result:'예정', location:'미정' }
     },
     rankings: [
       { rank:1,  team:'백룡 워리어스',       pts:12, G:4, W:4, L:0, D:0, RS:43, RA:16 },
@@ -903,8 +966,9 @@ const defaultData = {
       pt5: { name:'홍기훈', number:4,  G:1, W:0, L:0, SV:0, HD:0, IP:0.2, pH:3, pHR:0, K:0, pBB:0, pIBB:0, pHBP:0, R:2, ER:1, WPCT:0.000, BF:0, NP:0 }
     },
     games: {
-      g1: { date:'2026-03-07', opponent:'ONE TOP',       ourScore:10, theirScore:9, location:'한밭야구장(이글스파크)' },
-      g2: { date:'2026-03-21', opponent:'송림스터너즈',   ourScore:10, theirScore:8, location:'대전고' }
+      g1: { date:'2026-03-07', opponent:'ONE TOP',       ourScore:10, theirScore:9, result:'승', location:'한밭야구장(이글스파크)' },
+      g2: { date:'2026-03-21', opponent:'송림스터너즈',   ourScore:10, theirScore:8, result:'승', location:'대전고' },
+      g3: { date:'2026-04-25', opponent:'송림스터너즈',   ourScore:null, theirScore:null, result:'예정', location:'미정' }
     },
     rankings: [
       { rank:1, team:'와인드업',       pts:6, G:2, W:2, L:0, D:0, RS:20, RA:17 },
@@ -932,6 +996,8 @@ try {
 }
 
 // ===== LEAGUE SWITCHING =====
+function isCombinedView() { return currentLeague === 'all'; }
+
 function switchLeague(league) {
   if (league === currentLeague) return;
   currentLeague = league;
@@ -941,10 +1007,7 @@ function switchLeague(league) {
   document.querySelectorAll('.league-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.league === league);
   });
-  document.getElementById('leagueSubtitle').textContent = LEAGUE_CONFIG[league].subtitle;
-  const footerLink = document.getElementById('footerSource');
-  footerLink.href = LEAGUE_CONFIG[league].sourceUrl;
-  footerLink.textContent = LEAGUE_CONFIG[league].sourceLabel;
+  updateLeagueUI();
 
   // Detach old Firebase listeners
   detachFirebaseListeners();
@@ -953,14 +1016,43 @@ function switchLeague(league) {
   loadData();
 }
 
+function updateLeagueUI() {
+  const league = currentLeague;
+  document.getElementById('leagueSubtitle').textContent = LEAGUE_CONFIG[league].subtitle;
+
+  const footerLink = document.getElementById('footerSource');
+  const footerLink2 = document.getElementById('footerSource2');
+
+  if (league === 'all') {
+    footerLink.href = LEAGUE_CONFIG.sejong.sourceUrl;
+    footerLink.textContent = LEAGUE_CONFIG.sejong.sourceLabel;
+    footerLink.style.display = 'inline-block';
+    footerLink2.style.display = 'inline-block';
+  } else {
+    footerLink.href = LEAGUE_CONFIG[league].sourceUrl;
+    footerLink.textContent = LEAGUE_CONFIG[league].sourceLabel;
+    footerLink.style.display = 'inline-block';
+    footerLink2.style.display = 'none';
+  }
+
+  // Toggle add buttons visibility based on combined view
+  updateAddButtonsVisibility();
+}
+
+function updateAddButtonsVisibility() {
+  const addBtns = document.querySelectorAll('.btn-add');
+  if (isCombinedView()) {
+    addBtns.forEach(b => b.classList.add('hidden'));
+  } else if (isLoggedIn()) {
+    addBtns.forEach(b => b.classList.remove('hidden'));
+  }
+}
+
 function initLeagueUI() {
   document.querySelectorAll('.league-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.league === currentLeague);
   });
-  document.getElementById('leagueSubtitle').textContent = LEAGUE_CONFIG[currentLeague].subtitle;
-  const footerLink = document.getElementById('footerSource');
-  footerLink.href = LEAGUE_CONFIG[currentLeague].sourceUrl;
-  footerLink.textContent = LEAGUE_CONFIG[currentLeague].sourceLabel;
+  updateLeagueUI();
 }
 
 function detachFirebaseListeners() {
@@ -968,13 +1060,195 @@ function detachFirebaseListeners() {
   fbUnsubs = [];
 }
 
+// ===== COMBINED DATA STORES (for "all" view) =====
+let sejongPlayersData = {};
+let sejongPitchersData = {};
+let sejongGamesData = {};
+let dongguPlayersData = {};
+let dongguPitchersData = {};
+let dongguGamesData = {};
+
+function getCombinedData() {
+  // Merge players by name+number
+  const mergedPlayers = {};
+  const countingKeys = ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'];
+
+  // Add sejong players
+  Object.entries(sejongPlayersData).forEach(([id, p]) => {
+    const key = p.name + '_' + p.number;
+    mergedPlayers[key] = { ...p, _league: 'sejong', _key: key };
+  });
+
+  // Merge donggu players
+  Object.entries(dongguPlayersData).forEach(([id, p]) => {
+    const key = p.name + '_' + p.number;
+    if (mergedPlayers[key]) {
+      // Combine stats
+      const existing = mergedPlayers[key];
+      countingKeys.forEach(k => {
+        existing[k] = (existing[k] || 0) + (p[k] || 0);
+      });
+      // Remove KSBSA-specific rate overrides since we're combining
+      delete existing.kOBP;
+      delete existing.kSLG;
+      delete existing.kOPS;
+      existing._league = 'both';
+    } else {
+      mergedPlayers[key] = { ...p, _league: 'donggu', _key: key };
+      delete mergedPlayers[key].kOBP;
+      delete mergedPlayers[key].kSLG;
+      delete mergedPlayers[key].kOPS;
+    }
+  });
+
+  // Also remove kOBP/kSLG/kOPS from sejong-only entries in combined view for consistency
+  Object.values(mergedPlayers).forEach(p => {
+    if (p._league === 'sejong') {
+      delete p.kOBP;
+      delete p.kSLG;
+      delete p.kOPS;
+    }
+  });
+
+  // Convert to id-keyed object
+  const combinedPlayers = {};
+  let pIdx = 1;
+  Object.values(mergedPlayers).forEach(p => {
+    combinedPlayers['cp' + pIdx++] = p;
+  });
+
+  // Merge pitchers by name+number
+  const mergedPitchers = {};
+  const pitcherCountingKeys = ['G','W','L','SV','HD','pH','pHR','K','pBB','pIBB','pHBP','R','ER','BF','NP'];
+
+  Object.entries(sejongPitchersData).forEach(([id, pt]) => {
+    const key = pt.name + '_' + pt.number;
+    mergedPitchers[key] = { ...pt, _league: 'sejong', _key: key };
+  });
+
+  Object.entries(dongguPitchersData).forEach(([id, pt]) => {
+    const key = pt.name + '_' + pt.number;
+    if (mergedPitchers[key]) {
+      const existing = mergedPitchers[key];
+      pitcherCountingKeys.forEach(k => {
+        existing[k] = (existing[k] || 0) + (pt[k] || 0);
+      });
+      existing.IP = (existing.IP || 0) + (pt.IP || 0);
+      existing.WPCT = (existing.W + existing.L) > 0 ? existing.W / (existing.W + existing.L) : 0;
+      existing._league = 'both';
+    } else {
+      mergedPitchers[key] = { ...pt, _league: 'donggu', _key: key };
+    }
+  });
+
+  const combinedPitchers = {};
+  let ptIdx = 1;
+  Object.values(mergedPitchers).forEach(pt => {
+    combinedPitchers['cpt' + ptIdx++] = pt;
+  });
+
+  // Combine games with league tags
+  const combinedGames = {};
+  Object.entries(sejongGamesData).forEach(([id, g]) => {
+    combinedGames['s_' + id] = { ...g, _league: 'sejong' };
+  });
+  Object.entries(dongguGamesData).forEach(([id, g]) => {
+    combinedGames['d_' + id] = { ...g, _league: 'donggu' };
+  });
+
+  return { players: combinedPlayers, pitchers: combinedPitchers, games: combinedGames };
+}
+
 // ===== LOAD DATA =====
 function loadData() {
+  if (isCombinedView()) {
+    loadCombinedData();
+    return;
+  }
   if (firebaseReady && db) {
     loadFromFirebase();
   } else {
     loadFromLocal();
   }
+}
+
+function loadCombinedData() {
+  // Load both leagues' data, then combine
+  if (firebaseReady && db) {
+    loadCombinedFromFirebase();
+  } else {
+    loadCombinedFromLocal();
+  }
+}
+
+function loadCombinedFromLocal() {
+  const sDefaults = defaultData.sejong;
+  const dDefaults = defaultData.donggu;
+  sejongPlayersData = JSON.parse(localStorage.getItem('bb_sejong_players') || 'null') || sDefaults.players;
+  sejongPitchersData = JSON.parse(localStorage.getItem('bb_sejong_pitchers') || 'null') || sDefaults.pitchers;
+  sejongGamesData = JSON.parse(localStorage.getItem('bb_sejong_games') || 'null') || sDefaults.games;
+  dongguPlayersData = JSON.parse(localStorage.getItem('bb_donggu_players') || 'null') || dDefaults.players;
+  dongguPitchersData = JSON.parse(localStorage.getItem('bb_donggu_pitchers') || 'null') || dDefaults.pitchers;
+  dongguGamesData = JSON.parse(localStorage.getItem('bb_donggu_games') || 'null') || dDefaults.games;
+
+  const combined = getCombinedData();
+  playersData = combined.players;
+  pitchersData = combined.pitchers;
+  gamesData = combined.games;
+  renderAll();
+}
+
+function loadCombinedFromFirebase() {
+  const sDefaults = defaultData.sejong;
+  const dDefaults = defaultData.donggu;
+  let loaded = 0;
+  const total = 6;
+
+  function checkAllLoaded() {
+    loaded++;
+    if (loaded >= total) {
+      const combined = getCombinedData();
+      playersData = combined.players;
+      pitchersData = combined.pitchers;
+      gamesData = combined.games;
+      renderAll();
+    }
+  }
+
+  const dataMap = {
+    'sejongPlayersData': v => { sejongPlayersData = v; },
+    'sejongPitchersData': v => { sejongPitchersData = v; },
+    'sejongGamesData': v => { sejongGamesData = v; },
+    'dongguPlayersData': v => { dongguPlayersData = v; },
+    'dongguPitchersData': v => { dongguPitchersData = v; },
+    'dongguGamesData': v => { dongguGamesData = v; }
+  };
+
+  const refs = [
+    { ref: db.ref('baseball/sejong/players'), target: 'sejongPlayersData', fallback: sDefaults.players },
+    { ref: db.ref('baseball/sejong/pitchers'), target: 'sejongPitchersData', fallback: sDefaults.pitchers },
+    { ref: db.ref('baseball/sejong/games'), target: 'sejongGamesData', fallback: sDefaults.games },
+    { ref: db.ref('baseball/donggu/players'), target: 'dongguPlayersData', fallback: dDefaults.players },
+    { ref: db.ref('baseball/donggu/pitchers'), target: 'dongguPitchersData', fallback: dDefaults.pitchers },
+    { ref: db.ref('baseball/donggu/games'), target: 'dongguGamesData', fallback: dDefaults.games }
+  ];
+
+  refs.forEach(({ ref, target, fallback }) => {
+    const listener = ref.on('value', snap => {
+      if (!isCombinedView()) return;
+      dataMap[target](snap.val() || fallback);
+      // Recombine and rerender on each update
+      const combined = getCombinedData();
+      playersData = combined.players;
+      pitchersData = combined.pitchers;
+      gamesData = combined.games;
+      renderAll();
+    }, () => {
+      dataMap[target](fallback);
+      checkAllLoaded();
+    });
+    fbUnsubs.push(() => ref.off('value', listener));
+  });
 }
 
 function loadFromFirebase() {
@@ -985,7 +1259,7 @@ function loadFromFirebase() {
   const gRef = db.ref('baseball/' + league + '/games');
 
   // 1회성 마이그레이션: 리그별 데이터 구조로 전환
-  const migKey = 'bb_migrated_ksbsa_v2';
+  const migKey = 'bb_migrated_ksbsa_v3';
   if (!localStorage.getItem(migKey)) {
     // Write both leagues' default data
     db.ref('baseball/sejong/players').set(defaultData.sejong.players);
@@ -1088,7 +1362,9 @@ function updateAuthUI() {
     btn.textContent = '로그아웃';
     btn.classList.add('logged-in');
     emailEl.textContent = currentUser.email;
-    addBtns.forEach(b => b.classList.remove('hidden'));
+    if (!isCombinedView()) {
+      addBtns.forEach(b => b.classList.remove('hidden'));
+    }
   } else {
     btn.textContent = '로그인';
     btn.classList.remove('logged-in');
@@ -1155,10 +1431,17 @@ function renderPlayers() {
 
   let html = '';
   computed.forEach(p => {
-    const cls = isLoggedIn() ? 'editable-row' : '';
-    const click = isLoggedIn() ? `onclick="editPlayer('${escHtml(p.id)}')"` : '';
+    const canEdit = isLoggedIn() && !isCombinedView();
+    const cls = canEdit ? 'editable-row' : '';
+    const click = canEdit ? `onclick="editPlayer('${escHtml(p.id)}')"` : '';
     html += `<tr class="${cls}" ${click}>`;
-    html += `<td class="name-cell">${escHtml(p.name)}</td>`;
+    let leagueTag = '';
+    if (isCombinedView() && p._league) {
+      if (p._league === 'sejong') leagueTag = ' <span class="league-tag sejong">세종</span>';
+      else if (p._league === 'donggu') leagueTag = ' <span class="league-tag donggu">동구</span>';
+      else if (p._league === 'both') leagueTag = ' <span class="league-tag sejong">세종</span><span class="league-tag donggu">동구</span>';
+    }
+    html += `<td class="name-cell">${escHtml(p.name)}${leagueTag}</td>`;
     html += `<td>${p.number || ''}</td>`;
     html += `<td class="${(leaders['AVG'] !== undefined && Math.abs(p.AVG - leaders['AVG']) < 0.0001 && p.AVG > 0) ? ' stat-leader' : ''}">${fmtRate(p.AVG)}</td>`;
     ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => {
@@ -1228,10 +1511,17 @@ function renderPitchers() {
 
   let html = '';
   computed.forEach(pt => {
-    const cls = isLoggedIn() ? 'editable-row' : '';
-    const click = isLoggedIn() ? `onclick="editPitcher('${escHtml(pt.id)}')"` : '';
+    const canEdit = isLoggedIn() && !isCombinedView();
+    const cls = canEdit ? 'editable-row' : '';
+    const click = canEdit ? `onclick="editPitcher('${escHtml(pt.id)}')"` : '';
     html += `<tr class="${cls}" ${click}>`;
-    html += `<td class="name-cell">${escHtml(pt.name)}</td>`;
+    let leagueTag = '';
+    if (isCombinedView() && pt._league) {
+      if (pt._league === 'sejong') leagueTag = ' <span class="league-tag sejong">세종</span>';
+      else if (pt._league === 'donggu') leagueTag = ' <span class="league-tag donggu">동구</span>';
+      else if (pt._league === 'both') leagueTag = ' <span class="league-tag sejong">세종</span><span class="league-tag donggu">동구</span>';
+    }
+    html += `<td class="name-cell">${escHtml(pt.name)}${leagueTag}</td>`;
     html += `<td>${pt.number || ''}</td>`;
     const eraLeader = (minERA !== null && pt.IP > 0 && Math.abs(pt.ERA - minERA) < 0.001) ? ' stat-leader-low' : '';
     html += `<td class="${eraLeader}">${pt.IP > 0 ? fmtERA(pt.ERA) : '-'}</td>`;
@@ -1297,6 +1587,10 @@ function renderPitchers() {
 }
 
 // ===== RENDER GAMES =====
+function isScheduledGame(g) {
+  return g.result === '예정' || (g.ourScore === null && g.theirScore === null);
+}
+
 function renderGames() {
   const tbody = document.getElementById('gameBody');
   const summaryEl = document.getElementById('recordSummary');
@@ -1311,34 +1605,62 @@ function renderGames() {
   // sort by date desc
   entries.sort((a, b) => b[1].date.localeCompare(a[1].date));
 
-  let wins = 0, losses = 0, draws = 0;
+  let wins = 0, losses = 0, draws = 0, scheduled = 0;
   entries.forEach(([, g]) => {
-    if (g.ourScore > g.theirScore) wins++;
+    if (isScheduledGame(g)) { scheduled++; }
+    else if (g.ourScore > g.theirScore) wins++;
     else if (g.ourScore < g.theirScore) losses++;
     else draws++;
   });
 
-  const winRate = (wins + losses + draws) > 0 ? (wins / (wins + losses + draws)) : 0;
-  summaryEl.innerHTML = `
+  const playedGames = wins + losses + draws;
+  const winRate = playedGames > 0 ? (wins / playedGames) : 0;
+  let summaryHtml = `
     <div class="record-card"><div class="label">승</div><div class="value win">${wins}</div></div>
     <div class="record-card"><div class="label">패</div><div class="value loss">${losses}</div></div>
     <div class="record-card"><div class="label">무</div><div class="value draw">${draws}</div></div>
     <div class="record-card"><div class="label">승률</div><div class="value rate">${fmtRate(winRate)}</div></div>
   `;
+  if (scheduled > 0) {
+    summaryHtml += `<div class="record-card"><div class="label">예정</div><div class="value" style="color:#60a5fa">${scheduled}</div></div>`;
+  }
+  summaryEl.innerHTML = summaryHtml;
 
   let html = '';
   entries.forEach(([id, g]) => {
-    const cls = isLoggedIn() ? 'game-row editable-row' : 'game-row';
-    const click = isLoggedIn() ? `onclick="editGame('${escHtml(id)}')"` : '';
-    let result, resultCls;
-    if (g.ourScore > g.theirScore) { result = '승'; resultCls = 'result-win'; }
-    else if (g.ourScore < g.theirScore) { result = '패'; resultCls = 'result-loss'; }
-    else { result = '무'; resultCls = 'result-draw'; }
+    const isFuture = isScheduledGame(g);
+    const canEdit = isLoggedIn() && !isCombinedView();
+    let rowCls = 'game-row';
+    if (isFuture) rowCls += ' future-game';
+    if (canEdit) rowCls += ' editable-row';
+    const click = canEdit ? `onclick="editGame('${escHtml(id)}')"` : '';
 
-    html += `<tr class="${cls}" ${click}>`;
+    let result, resultCls, scoreHtml;
+    if (isFuture) {
+      result = '예정';
+      resultCls = 'result-scheduled';
+      scoreHtml = '<span class="score-vs">vs</span>';
+    } else if (g.ourScore > g.theirScore) {
+      result = '승'; resultCls = 'result-win';
+      scoreHtml = `${g.ourScore} - ${g.theirScore}`;
+    } else if (g.ourScore < g.theirScore) {
+      result = '패'; resultCls = 'result-loss';
+      scoreHtml = `${g.ourScore} - ${g.theirScore}`;
+    } else {
+      result = '무'; resultCls = 'result-draw';
+      scoreHtml = `${g.ourScore} - ${g.theirScore}`;
+    }
+
+    let leagueTag = '';
+    if (isCombinedView() && g._league) {
+      if (g._league === 'sejong') leagueTag = ' <span class="league-tag sejong">세종</span>';
+      else if (g._league === 'donggu') leagueTag = ' <span class="league-tag donggu">동구</span>';
+    }
+
+    html += `<tr class="${rowCls}" ${click}>`;
     html += `<td>${escHtml(g.date)}</td>`;
-    html += `<td>${escHtml(g.opponent)}</td>`;
-    html += `<td class="score">${g.ourScore} - ${g.theirScore}</td>`;
+    html += `<td>${escHtml(g.opponent)}${leagueTag}</td>`;
+    html += `<td class="score">${scoreHtml}</td>`;
     html += `<td class="${resultCls}">${result}</td>`;
     html += `<td>${escHtml(g.location)}</td>`;
     html += '</tr>';
@@ -1351,7 +1673,8 @@ function renderTeamStats() {
   const grid = document.getElementById('statsGrid');
   const players = Object.values(playersData);
   const pitchers = Object.values(pitchersData);
-  const games = Object.values(gamesData);
+  const allGames = Object.values(gamesData);
+  const games = allGames.filter(g => !isScheduledGame(g));
 
   let wins = 0, losses = 0, draws = 0;
   games.forEach(g => {
@@ -1471,13 +1794,55 @@ function renderTeamStats() {
 
 // ===== RENDER RANKINGS =====
 function renderRankings() {
-  const tbody = document.getElementById('rankingsBody');
-  const rankings = defaultData[currentLeague].rankings;
-  if (!rankings || rankings.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" style="padding:30px;color:var(--gray)">순위 데이터가 없습니다.</td></tr>';
-    return;
-  }
+  const container = document.getElementById('tab-rankings');
+  const sectionHeader = container.querySelector('.section-header');
 
+  // Remove any previously created combined ranking wrappers
+  container.querySelectorAll('.rankings-section').forEach(el => el.remove());
+  const defaultWrapper = container.querySelector('.rankings-wrapper');
+
+  if (isCombinedView()) {
+    // Hide default wrapper and show both leagues stacked
+    defaultWrapper.style.display = 'none';
+    renderRankingsForLeague('sejong', '세종 토요리그 토요4부_A조', container);
+    renderRankingsForLeague('donggu', '대전 동구리그 토요리그', container);
+  } else {
+    defaultWrapper.style.display = '';
+    const tbody = document.getElementById('rankingsBody');
+    const rankings = defaultData[currentLeague].rankings;
+    if (!rankings || rankings.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" style="padding:30px;color:var(--gray)">순위 데이터가 없습니다.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = buildRankingsHtml(rankings);
+  }
+}
+
+function renderRankingsForLeague(league, title, container) {
+  const rankings = defaultData[league].rankings;
+  if (!rankings || rankings.length === 0) return;
+
+  const section = document.createElement('div');
+  section.className = 'rankings-section';
+  section.innerHTML = `
+    <div class="rankings-league-header">${escHtml(title)}</div>
+    <div class="rankings-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>순위</th>
+            <th style="text-align:left;padding-left:16px">팀명</th>
+            <th>승점</th><th>경기</th><th>승</th><th>패</th><th>무</th><th>득점</th><th>실점</th>
+          </tr>
+        </thead>
+        <tbody>${buildRankingsHtml(rankings)}</tbody>
+      </table>
+    </div>
+  `;
+  container.appendChild(section);
+}
+
+function buildRankingsHtml(rankings) {
   let html = '';
   rankings.forEach(r => {
     const isWindup = r.team === '와인드업';
@@ -1499,12 +1864,12 @@ function renderRankings() {
     html += `<td>${r.RA}</td>`;
     html += '</tr>';
   });
-  tbody.innerHTML = html;
+  return html;
 }
 
 // ===== CALENDAR =====
-let calendarYear = 2026;
-let calendarMonth = 3; // March
+let calendarYear = new Date().getFullYear();
+let calendarMonth = new Date().getMonth() + 1; // Current month
 
 function changeMonth(delta) {
   calendarMonth += delta;
@@ -1520,10 +1885,11 @@ function renderCalendar() {
   const monthNames = ['', '1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
   titleEl.textContent = `${calendarYear}년 ${monthNames[calendarMonth]}`;
 
-  // Build game lookup from gamesData
+  // Build game lookup from gamesData - support multiple games per date
   const gameLookup = {};
   Object.values(gamesData).forEach(g => {
-    gameLookup[g.date] = g;
+    if (!gameLookup[g.date]) gameLookup[g.date] = [];
+    gameLookup[g.date].push(g);
   });
 
   // Calendar calculations
@@ -1556,28 +1922,44 @@ function renderCalendar() {
       String(calendarMonth).padStart(2, '0') + '-' +
       String(day).padStart(2, '0');
     const dow = (startDow + day - 1) % 7;
-    const game = gameLookup[dateStr];
+    const dayGames = gameLookup[dateStr] || [];
     const isToday = dateStr === todayStr;
-    const hasGame = !!game;
+    const hasGame = dayGames.length > 0;
+    const hasFutureOnly = hasGame && dayGames.every(g => isScheduledGame(g));
 
-    html += `<div class="cal-day${hasGame ? ' has-game' : ''}">`;
+    html += `<div class="cal-day${hasGame ? (hasFutureOnly ? ' has-future-game' : ' has-game') : ''}">`;
 
     // Day number
     const dayNumCls = isToday ? 'day-num today' : dow === 0 ? 'day-num sun' : dow === 6 ? 'day-num sat' : 'day-num';
     html += `<div class="${dayNumCls}">${day}</div>`;
 
-    // Game info
-    if (game) {
-      let result, badgeCls;
-      if (game.ourScore > game.theirScore) { result = '승'; badgeCls = 'win'; }
-      else if (game.ourScore < game.theirScore) { result = '패'; badgeCls = 'loss'; }
-      else { result = '무'; badgeCls = 'draw'; }
+    // Game info - render each game
+    dayGames.forEach(game => {
+      const isFuture = isScheduledGame(game);
 
-      html += '<div class="game-info">';
-      html += `<div class="game-opponent">vs ${escHtml(game.opponent)}</div>`;
-      html += `<div class="game-score">${game.ourScore}-${game.theirScore} <span class="game-badge ${badgeCls}">${result}</span></div>`;
-      html += '</div>';
-    }
+      let leagueTag = '';
+      if (isCombinedView() && game._league) {
+        if (game._league === 'sejong') leagueTag = '<span class="league-tag sejong" style="font-size:8px;padding:0 3px;margin-left:2px">세종</span>';
+        else if (game._league === 'donggu') leagueTag = '<span class="league-tag donggu" style="font-size:8px;padding:0 3px;margin-left:2px">동구</span>';
+      }
+
+      if (isFuture) {
+        html += '<div class="game-info">';
+        html += `<div class="game-opponent">vs ${escHtml(game.opponent)}${leagueTag}</div>`;
+        html += `<div class="game-score"><span class="game-badge scheduled">예정</span></div>`;
+        html += '</div>';
+      } else {
+        let result, badgeCls;
+        if (game.ourScore > game.theirScore) { result = '승'; badgeCls = 'win'; }
+        else if (game.ourScore < game.theirScore) { result = '패'; badgeCls = 'loss'; }
+        else { result = '무'; badgeCls = 'draw'; }
+
+        html += '<div class="game-info">';
+        html += `<div class="game-opponent">vs ${escHtml(game.opponent)}${leagueTag}</div>`;
+        html += `<div class="game-score">${game.ourScore}-${game.theirScore} <span class="game-badge ${badgeCls}">${result}</span></div>`;
+        html += '</div>';
+      }
+    });
 
     html += '</div>';
   }
@@ -1624,8 +2006,8 @@ function openGameModal(data, id) {
   document.getElementById('gameId').value = id || '';
   document.getElementById('gDate').value = data ? data.date : new Date().toISOString().split('T')[0];
   document.getElementById('gOpponent').value = data ? data.opponent : '';
-  document.getElementById('gOurScore').value = data ? data.ourScore : 0;
-  document.getElementById('gTheirScore').value = data ? data.theirScore : 0;
+  document.getElementById('gOurScore').value = data ? (data.ourScore != null ? data.ourScore : '') : 0;
+  document.getElementById('gTheirScore').value = data ? (data.theirScore != null ? data.theirScore : '') : 0;
   document.getElementById('gLocation').value = data ? data.location : '';
   document.getElementById('btnDeleteGame').classList.toggle('hidden', !data);
   document.getElementById('gameModal').classList.add('open');
@@ -1633,15 +2015,15 @@ function openGameModal(data, id) {
 }
 
 function editPlayer(id) {
-  if (!isLoggedIn()) return;
+  if (!isLoggedIn() || isCombinedView()) return;
   openPlayerModal(playersData[id], id);
 }
 function editPitcher(id) {
-  if (!isLoggedIn()) return;
+  if (!isLoggedIn() || isCombinedView()) return;
   openPitcherModal(pitchersData[id], id);
 }
 function editGame(id) {
-  if (!isLoggedIn()) return;
+  if (!isLoggedIn() || isCombinedView()) return;
   openGameModal(gamesData[id], id);
 }
 
@@ -1713,13 +2095,21 @@ function saveGame() {
   const opponent = document.getElementById('gOpponent').value.trim();
   if (!opponent) { showToast('상대팀명을 입력해주세요.', 'error'); return; }
 
+  const ourScoreVal = document.getElementById('gOurScore').value;
+  const theirScoreVal = document.getElementById('gTheirScore').value;
+  const ourScore = (ourScoreVal === '' || ourScoreVal === null) ? null : (parseInt(ourScoreVal) || 0);
+  const theirScore = (theirScoreVal === '' || theirScoreVal === null) ? null : (parseInt(theirScoreVal) || 0);
+
   const data = {
     date: document.getElementById('gDate').value,
     opponent,
-    ourScore: parseInt(document.getElementById('gOurScore').value) || 0,
-    theirScore: parseInt(document.getElementById('gTheirScore').value) || 0,
+    ourScore: ourScore,
+    theirScore: theirScore,
     location: document.getElementById('gLocation').value.trim()
   };
+  if (ourScore === null && theirScore === null) {
+    data.result = '예정';
+  }
 
   const id = document.getElementById('gameId').value || ('g' + Date.now());
   gamesData[id] = data;
@@ -1814,14 +2204,18 @@ function setupSort(tableId, dataGetter, renderFn) {
         } else {
           va = a[1][key]; vb = b[1][key];
           if (key === 'score') {
-            va = a[1].ourScore - a[1].theirScore;
-            vb = b[1].ourScore - b[1].theirScore;
+            va = (a[1].ourScore != null && a[1].theirScore != null) ? a[1].ourScore - a[1].theirScore : -999;
+            vb = (b[1].ourScore != null && b[1].theirScore != null) ? b[1].ourScore - b[1].theirScore : -999;
           }
           if (key === 'result') {
-            const rOrder = { '승': 3, '무': 2, '패': 1 };
-            const ra = a[1].ourScore > a[1].theirScore ? '승' : a[1].ourScore < a[1].theirScore ? '패' : '무';
-            const rb = b[1].ourScore > b[1].theirScore ? '승' : b[1].ourScore < b[1].theirScore ? '패' : '무';
-            va = rOrder[ra]; vb = rOrder[rb];
+            const rOrder = { '승': 3, '무': 2, '패': 1, '예정': 0 };
+            const getResult = (g) => {
+              if (isScheduledGame(g)) return '예정';
+              if (g.ourScore > g.theirScore) return '승';
+              if (g.ourScore < g.theirScore) return '패';
+              return '무';
+            };
+            va = rOrder[getResult(a[1])]; vb = rOrder[getResult(b[1])];
           }
         }
         if (va == null) va = type === 'string' ? '' : 0;
