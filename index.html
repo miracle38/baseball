@@ -116,24 +116,36 @@ button{cursor:pointer;font-family:inherit}
   padding:12px 0 0;
   box-shadow:0 2px 8px rgba(0,0,0,0.06);
 }
-.season-tabs{
-  display:flex;gap:0;
+.year-select-wrap{
+  position:relative;display:inline-block;
 }
-.season-btn{
-  background:#f8fafc;
-  border:1px solid #e2e8f0;
-  color:#64748b;padding:9px 28px;font-size:14px;font-weight:600;
-  cursor:pointer;transition:var(--transition);
+.year-select-wrap select{
+  appearance:none;-webkit-appearance:none;
+  background:linear-gradient(135deg, #8b1a1a, #c0282e);
+  color:#fff;
+  border:2px solid #ffd700;
+  padding:9px 40px 9px 20px;
+  border-radius:24px;
+  font-size:15px;font-weight:700;
+  cursor:pointer;
   font-family:inherit;
+  transition:var(--transition);
+  box-shadow:0 4px 16px rgba(140,20,20,0.3);
+  outline:none;
 }
-.season-btn:first-child{border-radius:24px 0 0 24px}
-.season-btn:last-child{border-radius:0 24px 24px 0;border-left:none}
-.season-btn:hover{color:#1e293b;background:#f1f5f9;border-color:#cbd5e1}
-.season-btn.active{
-  background:linear-gradient(135deg, var(--red), #ff6b8a);
-  color:#ffffff;
-  border-color:transparent;
-  box-shadow:0 4px 16px rgba(233,69,96,0.3);
+.year-select-wrap select:hover{
+  box-shadow:0 6px 20px rgba(140,20,20,0.4);
+}
+.year-select-wrap select:focus{
+  box-shadow:0 0 0 3px rgba(255,215,0,0.3), 0 4px 16px rgba(140,20,20,0.3);
+}
+.year-select-wrap::after{
+  content:'\25BC';
+  position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  color:#ffd700;font-size:10px;pointer-events:none;
+}
+.year-select-wrap select option{
+  background:#fff;color:#1e293b;font-weight:600;
 }
 
 /* League pills */
@@ -159,7 +171,7 @@ button{cursor:pointer;font-family:inherit}
   box-shadow:0 2px 8px rgba(233,69,96,0.25);
 }
 @media(max-width:480px){
-  .season-btn{padding:7px 14px;font-size:12px}
+  .year-select-wrap select{padding:7px 32px 7px 14px;font-size:13px}
   .league-pill{padding:4px 12px;font-size:11px}
 }
 
@@ -873,9 +885,10 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 
 <!-- ===== SEASON SELECTOR ===== -->
 <div class="season-selector" id="seasonSelector">
-  <div class="season-tabs">
-    <button class="season-btn active" data-mode="current" onclick="switchMode('current')">2026 시즌</button>
-    <button class="season-btn" data-mode="history" onclick="switchMode('history')">역대 기록</button>
+  <div class="year-select-wrap">
+    <select id="yearSelect" onchange="switchYear(this.value)">
+      <!-- populated dynamically from ALL_DATA years -->
+    </select>
   </div>
   <div class="league-pills" id="leaguePills"></div>
 </div>
@@ -1450,7 +1463,7 @@ function hasPitcherData(entry) { return entry.pitchers && Object.keys(entry.pitc
 function hasData(entry) { return hasPlayerData(entry) || hasPitcherData(entry); }
 
 // ===== STATE =====
-let currentMode = 'current'; // 'current' or 'history'
+let currentYear = CURRENT_YEAR; // year number or 'career'
 let currentLeague = 'all'; // leagueKey or 'all'
 let playersData = {};
 let pitchersData = {};
@@ -1481,38 +1494,41 @@ function escHtml(str) {
   return d.innerHTML;
 }
 
-// ===== MODE SWITCHING =====
-function switchMode(mode) {
-  if (mode === currentMode) return;
-  currentMode = mode;
-
-  document.querySelectorAll('.season-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.mode === mode);
-  });
-
-  if (mode === 'current') {
+// ===== YEAR SWITCHING =====
+function switchYear(val) {
+  if (val === 'career') {
+    if (currentYear === 'career') return;
+    currentYear = 'career';
+    currentLeague = 'all';
+    document.getElementById('historyView').style.display = 'block';
+    document.getElementById('navTabs').style.display = 'none';
+    document.querySelectorAll('.tab-content').forEach(el => { el.style.display = 'none'; });
+    document.getElementById('leaguePills').style.display = 'none';
+    document.getElementById('leagueSubtitle').textContent = '통산 기록';
+    renderHistory();
+  } else {
+    const year = parseInt(val);
+    if (currentYear === year) return;
+    currentYear = year;
+    currentLeague = 'all';
+    // Set calendar to appropriate year
+    if (year === new Date().getFullYear()) {
+      calendarYear = year;
+      calendarMonth = new Date().getMonth() + 1;
+    } else {
+      calendarYear = year;
+      calendarMonth = 4; // Default to April (typical season start)
+    }
     document.getElementById('historyView').style.display = 'none';
     document.getElementById('navTabs').style.display = '';
-    document.querySelectorAll('.tab-content').forEach(el => {
-      el.style.display = '';
-    });
+    document.querySelectorAll('.tab-content').forEach(el => { el.style.display = ''; });
     document.getElementById('leaguePills').style.display = '';
-    // Re-show active tab
+    initLeaguePills();
     const activeTab = document.querySelector('.nav-tab.active');
     if (activeTab) switchTab(activeTab.dataset.tab);
     updateSubtitle();
     detachFirebaseListeners();
     loadData();
-  } else {
-    // History mode
-    document.getElementById('historyView').style.display = 'block';
-    document.getElementById('navTabs').style.display = 'none';
-    document.querySelectorAll('.tab-content').forEach(el => {
-      el.style.display = 'none';
-    });
-    document.getElementById('leaguePills').style.display = 'none';
-    document.getElementById('leagueSubtitle').textContent = '역대 기록';
-    renderHistory();
   }
   updateFooter();
   updateAddButtonsVisibility();
@@ -1539,14 +1555,21 @@ function switchLeague(league) {
 function isCombinedView() { return currentLeague === 'all'; }
 
 function updateSubtitle() {
-  if (currentMode === 'history') {
-    document.getElementById('leagueSubtitle').textContent = '역대 기록';
+  if (currentYear === 'career') {
+    document.getElementById('leagueSubtitle').textContent = '통산 기록';
     return;
   }
   if (currentLeague === 'all') {
-    document.getElementById('leagueSubtitle').textContent = CURRENT_YEAR + ' 시즌 통합';
+    const entries = getEntriesForYear(currentYear);
+    if (entries.length > 1) {
+      document.getElementById('leagueSubtitle').textContent = currentYear + '년 시즌 통합';
+    } else if (entries.length === 1) {
+      document.getElementById('leagueSubtitle').textContent = entries[0].league;
+    } else {
+      document.getElementById('leagueSubtitle').textContent = currentYear + '년';
+    }
   } else {
-    const entries = getEntriesForYear(CURRENT_YEAR);
+    const entries = getEntriesForYear(currentYear);
     const entry = entries.find(e => e.leagueKey === currentLeague);
     if (entry) {
       document.getElementById('leagueSubtitle').textContent = entry.league;
@@ -1556,11 +1579,11 @@ function updateSubtitle() {
 
 function updateFooter() {
   const wrap = document.getElementById('footerSourceWrap');
-  if (currentMode === 'history') {
+  if (currentYear === 'career') {
     wrap.innerHTML = '';
     return;
   }
-  const entries = getEntriesForYear(CURRENT_YEAR);
+  const entries = getEntriesForYear(currentYear);
   let sources = [];
   if (currentLeague === 'all') {
     sources = entries;
@@ -1583,7 +1606,7 @@ function updateFooter() {
 
 function updateAddButtonsVisibility() {
   const addBtns = document.querySelectorAll('.btn-add');
-  if (currentMode === 'history' || isCombinedView()) {
+  if (currentYear === 'career' || currentYear !== CURRENT_YEAR || isCombinedView()) {
     addBtns.forEach(b => b.classList.add('hidden'));
   } else if (isLoggedIn()) {
     addBtns.forEach(b => b.classList.remove('hidden'));
@@ -1593,8 +1616,15 @@ function updateAddButtonsVisibility() {
 }
 
 function initLeaguePills() {
-  const entries = getEntriesForYear(CURRENT_YEAR);
+  const entries = getEntriesForYear(currentYear);
   const pillsEl = document.getElementById('leaguePills');
+  if (entries.length <= 1) {
+    pillsEl.innerHTML = '';
+    // If single league, set currentLeague directly
+    if (entries.length === 1) currentLeague = entries[0].leagueKey;
+    else currentLeague = 'all';
+    return;
+  }
   let html = `<button class="league-pill${currentLeague === 'all' ? ' active' : ''}" data-league="all" onclick="switchLeague('all')">전체</button>`;
   entries.forEach(e => {
     html += `<button class="league-pill${currentLeague === e.leagueKey ? ' active' : ''}" data-league="${e.leagueKey}" onclick="switchLeague('${e.leagueKey}')">${escHtml(e.league)}</button>`;
@@ -1612,7 +1642,7 @@ function detachFirebaseListeners() {
 let leagueDataCache = {};
 
 function getCombinedData() {
-  const entries = getEntriesForYear(CURRENT_YEAR);
+  const entries = getEntriesForYear(currentYear);
   const countingKeys = ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'];
   const pitcherCountingKeys = ['G','W','L','SV','HD','pH','pHR','K','pBB','pIBB','pHBP','R','ER','BF','NP'];
 
@@ -1674,17 +1704,17 @@ function getCombinedData() {
 
 // ===== LOAD DATA =====
 function loadData() {
-  if (currentMode === 'history') return;
+  if (currentYear === 'career') return;
 
   if (isCombinedView()) {
     loadCombinedData();
     return;
   }
-  const entries = getEntriesForYear(CURRENT_YEAR);
+  const entries = getEntriesForYear(currentYear);
   const entry = entries.find(e => e.leagueKey === currentLeague);
   if (!entry) { playersData = {}; pitchersData = {}; gamesData = {}; renderAll(); return; }
 
-  if (firebaseReady && db) {
+  if (firebaseReady && db && currentYear === CURRENT_YEAR) {
     loadEntryFromFirebase(entry);
   } else {
     loadEntryFromLocal(entry);
@@ -1692,7 +1722,7 @@ function loadData() {
 }
 
 function loadCombinedData() {
-  if (firebaseReady && db) {
+  if (firebaseReady && db && currentYear === CURRENT_YEAR) {
     loadCombinedFromFirebase();
   } else {
     loadCombinedFromLocal();
@@ -1700,7 +1730,7 @@ function loadCombinedData() {
 }
 
 function loadCombinedFromLocal() {
-  const entries = getEntriesForYear(CURRENT_YEAR);
+  const entries = getEntriesForYear(currentYear);
   leagueDataCache = {};
   entries.forEach(entry => {
     leagueDataCache[entry.id + '_players'] = JSON.parse(localStorage.getItem('bb_' + entry.id + '_players') || 'null') || entry.players || {};
@@ -1715,7 +1745,7 @@ function loadCombinedFromLocal() {
 }
 
 function loadCombinedFromFirebase() {
-  const entries = getEntriesForYear(CURRENT_YEAR);
+  const entries = getEntriesForYear(currentYear);
   leagueDataCache = {};
 
   // Initialize defaults
@@ -1729,7 +1759,7 @@ function loadCombinedFromFirebase() {
     ['players', 'pitchers', 'games'].forEach(type => {
       const ref = db.ref('baseball/' + entry.id + '/' + type);
       const listener = ref.on('value', snap => {
-        if (currentMode !== 'current' || !isCombinedView()) return;
+        if (currentYear === 'career' || !isCombinedView()) return;
         leagueDataCache[entry.id + '_' + type] = snap.val() || (entry[type] || {});
         const combined = getCombinedData();
         playersData = combined.players;
@@ -1746,7 +1776,7 @@ function loadCombinedFromFirebase() {
 
 function loadEntryFromFirebase(entry) {
   // Migration
-  const migKey = 'bb_migrated_v8';
+  const migKey = 'bb_migrated_v9';
   if (!localStorage.getItem(migKey)) {
     ALL_DATA.forEach(e => {
       if (e.players && Object.keys(e.players).length > 0)
@@ -1772,19 +1802,19 @@ function loadEntryFromFirebase(entry) {
   const gRef = db.ref('baseball/' + entry.id + '/games');
 
   const onP = pRef.on('value', snap => {
-    if (currentLeague !== entry.leagueKey || currentMode !== 'current') return;
+    if (currentLeague !== entry.leagueKey || currentYear !== CURRENT_YEAR) return;
     playersData = snap.val() || entry.players || {};
     renderPlayers(); renderTeamStats();
   }, () => { loadEntryFromLocal(entry); });
 
   const onPt = ptRef.on('value', snap => {
-    if (currentLeague !== entry.leagueKey || currentMode !== 'current') return;
+    if (currentLeague !== entry.leagueKey || currentYear !== CURRENT_YEAR) return;
     pitchersData = snap.val() || entry.pitchers || {};
     renderPitchers(); renderTeamStats();
   }, () => { loadEntryFromLocal(entry); });
 
   const onG = gRef.on('value', snap => {
-    if (currentLeague !== entry.leagueKey || currentMode !== 'current') return;
+    if (currentLeague !== entry.leagueKey || currentYear !== CURRENT_YEAR) return;
     gamesData = snap.val() || entry.games || {};
     renderGames(); renderCalendar(); renderTeamStats();
   }, () => { loadEntryFromLocal(entry); });
@@ -1804,8 +1834,8 @@ function loadEntryFromLocal(entry) {
 }
 
 function saveLocal() {
-  if (isCombinedView()) return;
-  const entries = getEntriesForYear(CURRENT_YEAR);
+  if (isCombinedView() || currentYear !== CURRENT_YEAR) return;
+  const entries = getEntriesForYear(currentYear);
   const entry = entries.find(e => e.leagueKey === currentLeague);
   if (!entry) return;
   localStorage.setItem('bb_' + entry.id + '_players', JSON.stringify(playersData));
@@ -1814,7 +1844,8 @@ function saveLocal() {
 }
 
 function getFirebasePath() {
-  const entries = getEntriesForYear(CURRENT_YEAR);
+  if (currentYear !== CURRENT_YEAR) return null;
+  const entries = getEntriesForYear(currentYear);
   const entry = entries.find(e => e.leagueKey === currentLeague);
   return entry ? 'baseball/' + entry.id : null;
 }
@@ -1861,7 +1892,7 @@ function updateAuthUI() {
     btn.textContent = '로그아웃';
     btn.classList.add('logged-in');
     emailEl.textContent = currentUser.email;
-    if (currentMode === 'current' && !isCombinedView()) {
+    if (currentYear === CURRENT_YEAR && !isCombinedView()) {
       addBtns.forEach(b => b.classList.remove('hidden'));
     }
   } else {
@@ -1937,7 +1968,7 @@ function renderPlayers() {
 
   let html = '';
   computed.forEach(p => {
-    const canEdit = isLoggedIn() && !isCombinedView() && currentMode === 'current';
+    const canEdit = isLoggedIn() && !isCombinedView() && currentYear === CURRENT_YEAR;
     const cls = canEdit ? 'editable-row' : '';
     const click = canEdit ? `onclick="editPlayer('${escHtml(p.id)}')"` : '';
     html += `<tr class="${cls}" ${click}>`;
@@ -1945,10 +1976,10 @@ function renderPlayers() {
     if (isCombinedView() && p._league) {
       const tagClass = p._league === 'both' ? '' : p._league;
       if (p._league === 'both') {
-        const yearEntries = getEntriesForYear(CURRENT_YEAR);
+        const yearEntries = getEntriesForYear(currentYear);
         leagueTag = yearEntries.map(e => ` <span class="league-tag ${e.leagueKey}">${escHtml(e.league.split(' ')[0])}</span>`).join('');
       } else {
-        const entry = getEntriesForYear(CURRENT_YEAR).find(e => e.leagueKey === p._league);
+        const entry = getEntriesForYear(currentYear).find(e => e.leagueKey === p._league);
         if (entry) leagueTag = ` <span class="league-tag ${p._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
       }
     }
@@ -2012,17 +2043,17 @@ function renderPitchers() {
 
   let html = '';
   computed.forEach(pt => {
-    const canEdit = isLoggedIn() && !isCombinedView() && currentMode === 'current';
+    const canEdit = isLoggedIn() && !isCombinedView() && currentYear === CURRENT_YEAR;
     const cls = canEdit ? 'editable-row' : '';
     const click = canEdit ? `onclick="editPitcher('${escHtml(pt.id)}')"` : '';
     html += `<tr class="${cls}" ${click}>`;
     let leagueTag = '';
     if (isCombinedView() && pt._league) {
       if (pt._league === 'both') {
-        const yearEntries = getEntriesForYear(CURRENT_YEAR);
+        const yearEntries = getEntriesForYear(currentYear);
         leagueTag = yearEntries.map(e => ` <span class="league-tag ${e.leagueKey}">${escHtml(e.league.split(' ')[0])}</span>`).join('');
       } else {
-        const entry = getEntriesForYear(CURRENT_YEAR).find(e => e.leagueKey === pt._league);
+        const entry = getEntriesForYear(currentYear).find(e => e.leagueKey === pt._league);
         if (entry) leagueTag = ` <span class="league-tag ${pt._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
       }
     }
@@ -2111,7 +2142,7 @@ function renderGames() {
   let html = '';
   entries.forEach(([id, g]) => {
     const isFuture = isScheduledGame(g);
-    const canEdit = isLoggedIn() && !isCombinedView() && currentMode === 'current';
+    const canEdit = isLoggedIn() && !isCombinedView() && currentYear === CURRENT_YEAR;
     let rowCls = 'game-row';
     if (isFuture) rowCls += ' future-game';
     if (canEdit) rowCls += ' editable-row';
@@ -2134,7 +2165,7 @@ function renderGames() {
 
     let leagueTag = '';
     if (isCombinedView() && g._league) {
-      const entry = getEntriesForYear(CURRENT_YEAR).find(e => e.leagueKey === g._league);
+      const entry = getEntriesForYear(currentYear).find(e => e.leagueKey === g._league);
       if (entry) leagueTag = ` <span class="league-tag ${g._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
     }
 
@@ -2209,7 +2240,15 @@ function renderRankings() {
   const defaultWrapper = container.querySelector('.rankings-wrapper');
   if (defaultWrapper) defaultWrapper.style.display = 'none';
 
-  const entries = getEntriesForYear(CURRENT_YEAR);
+  const entries = getEntriesForYear(currentYear);
+
+  if (entries.length === 0 || entries.every(e => !e.rankings)) {
+    const section = document.createElement('div');
+    section.className = 'rankings-section';
+    section.innerHTML = '<div style="padding:30px;text-align:center;color:var(--gray)">순위 데이터가 없습니다.</div>';
+    container.appendChild(section);
+    return;
+  }
 
   if (isCombinedView()) {
     entries.forEach(entry => {
@@ -2329,7 +2368,7 @@ function renderCalendar() {
       const isFuture = isScheduledGame(game);
       let leagueTag = '';
       if (isCombinedView() && game._league) {
-        const entry = getEntriesForYear(CURRENT_YEAR).find(e => e.leagueKey === game._league);
+        const entry = getEntriesForYear(currentYear).find(e => e.leagueKey === game._league);
         if (entry) leagueTag = `<span class="league-tag ${game._league}" style="font-size:8px;padding:0 3px;margin-left:2px">${escHtml(entry.league.split(' ')[0])}</span>`;
       }
       if (isFuture) {
@@ -2552,15 +2591,15 @@ function openGameModal(data, id) {
 }
 
 function editPlayer(id) {
-  if (!isLoggedIn() || isCombinedView() || currentMode !== 'current') return;
+  if (!isLoggedIn() || isCombinedView() || currentYear !== CURRENT_YEAR) return;
   openPlayerModal(playersData[id], id);
 }
 function editPitcher(id) {
-  if (!isLoggedIn() || isCombinedView() || currentMode !== 'current') return;
+  if (!isLoggedIn() || isCombinedView() || currentYear !== CURRENT_YEAR) return;
   openPitcherModal(pitchersData[id], id);
 }
 function editGame(id) {
-  if (!isLoggedIn() || isCombinedView() || currentMode !== 'current') return;
+  if (!isLoggedIn() || isCombinedView() || currentYear !== CURRENT_YEAR) return;
   openGameModal(gamesData[id], id);
 }
 
@@ -2785,7 +2824,22 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+// ===== INIT YEAR SELECT =====
+function initYearSelect() {
+  const sel = document.getElementById('yearSelect');
+  const yearsSet = new Set();
+  ALL_DATA.forEach(e => yearsSet.add(e.year));
+  const years = [...yearsSet].sort((a, b) => b - a);
+  let html = '';
+  years.forEach(y => {
+    html += `<option value="${y}"${y === CURRENT_YEAR ? ' selected' : ''}>${y}년 시즌</option>`;
+  });
+  html += `<option value="career">통산</option>`;
+  sel.innerHTML = html;
+}
+
 // ===== INIT =====
+initYearSelect();
 initLeaguePills();
 updateSubtitle();
 updateFooter();
