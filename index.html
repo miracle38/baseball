@@ -1354,13 +1354,12 @@ const ALL_DATA = [
       pt5: { name:'서현민', number:19, G:4,  W:1, L:1, SV:0, HD:0, IP:6.0,  pH:16, pHR:1, K:6,  pBB:8,  pIBB:0, pHBP:1, R:18, ER:15, WPCT:0.500, BF:0, NP:0 },
       pt6: { name:'김시현', number:55, G:1,  W:0, L:0, SV:0, HD:0, IP:0.1,  pH:0,  pHR:0, K:1,  pBB:3,  pIBB:0, pHBP:0, R:3,  ER:3,  WPCT:0.000, BF:0, NP:0 }
     },
-    games: {
-      g1: { date:'2025-01-01', opponent:'토요4부 시즌', ourScore:136, theirScore:123, result:'7승 7패', location:'세종' },
-      g2: { date:'2025-01-01', opponent:'시장기',       ourScore:6,   theirScore:17,  result:'0승 2패', location:'세종' },
-      g3: { date:'2025-01-01', opponent:'협회장기',     ourScore:2,   theirScore:13,  result:'0승 1패', location:'세종' }
-    },
+    games: {},
+    seasonSummary: { rank:7, G:14, W:7, L:7, D:0, RS:136, RA:123 },
     rankings: null
   },
+  { id:'2025_sejong_cup1', year:2025, league:'세종 시장기', leagueKey:'sejong_cup1', source:'ksbsa.or.kr', sourceUrl:'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93', record:'0승 2패', W:0, L:2, D:0, G:2, players:{}, pitchers:{}, games:{}, seasonSummary:{ rank:3, G:2, W:0, L:2, D:0, RS:6, RA:17 }, rankings:null },
+  { id:'2025_sejong_cup2', year:2025, league:'세종 협회장기', leagueKey:'sejong_cup2', source:'ksbsa.or.kr', sourceUrl:'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93', record:'0승 1패', W:0, L:1, D:0, G:1, players:{}, pitchers:{}, games:{}, seasonSummary:{ rank:9, G:1, W:0, L:1, D:0, RS:2, RA:13 }, rankings:null },
   { id:'2025_gongju', year:2025, league:'금강토요리그', leagueKey:'gongju', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'5승 7패 2무', W:5,L:7,D:2,G:14, players:{p1:{name:'한재윤',num:36,G:1,PA:4,AB:4,H:3,'2B':0,'3B':0,HR:0,RBI:1,R:2,SB:3,BB:0,HBP:0,SO:0},p2:{name:'이준태',num:86,G:7,PA:21,AB:18,H:9,'2B':2,'3B':0,HR:0,RBI:3,R:7,SB:3,BB:0,HBP:0,SO:0},p3:{name:'차화진',num:25,G:6,PA:21,AB:18,H:9,'2B':2,'3B':1,HR:0,RBI:8,R:8,SB:4,BB:0,HBP:0,SO:0},p4:{name:'변우동',num:27,G:6,PA:13,AB:13,H:6,'2B':2,'3B':0,HR:0,RBI:3,R:4,SB:1,BB:0,HBP:0,SO:0},p5:{name:'박철우',num:8,G:8,PA:22,AB:18,H:8,'2B':1,'3B':1,HR:1,RBI:9,R:10,SB:8,BB:0,HBP:0,SO:0},p6:{name:'고석봉',num:14,G:14,PA:39,AB:34,H:15,'2B':4,'3B':3,HR:0,RBI:14,R:13,SB:11,BB:0,HBP:0,SO:0},p7:{name:'문영익',num:11,G:9,PA:24,AB:23,H:10,'2B':3,'3B':1,HR:0,RBI:10,R:6,SB:2,BB:0,HBP:0,SO:0},p8:{name:'김해성',num:38,G:11,PA:23,AB:19,H:8,'2B':3,'3B':0,HR:0,RBI:7,R:5,SB:1,BB:0,HBP:0,SO:0},p9:{name:'김종원',num:21,G:11,PA:34,AB:31,H:13,'2B':3,'3B':2,HR:0,RBI:12,R:13,SB:8,BB:0,HBP:0,SO:0},p10:{name:'봉제헌',num:88,G:7,PA:21,AB:17,H:6,'2B':3,'3B':0,HR:0,RBI:7,R:8,SB:6,BB:0,HBP:0,SO:0},p11:{name:'남상민',num:7,G:8,PA:24,AB:20,H:7,'2B':0,'3B':2,HR:2,RBI:6,R:9,SB:4,BB:0,HBP:0,SO:0},p12:{name:'이성진',num:10,G:5,PA:11,AB:6,H:2,'2B':0,'3B':1,HR:0,RBI:3,R:7,SB:4,BB:0,HBP:0,SO:0},p13:{name:'허지욱',num:98,G:6,PA:21,AB:18,H:6,'2B':1,'3B':0,HR:0,RBI:0,R:6,SB:6,BB:0,HBP:0,SO:0},p14:{name:'서현민',num:19,G:13,PA:36,AB:26,H:8,'2B':1,'3B':0,HR:0,RBI:8,R:13,SB:8,BB:0,HBP:0,SO:0},p15:{name:'추혜승',num:16,G:8,PA:23,AB:13,H:4,'2B':0,'3B':0,HR:0,RBI:3,R:6,SB:2,BB:0,HBP:0,SO:0},p16:{name:'김경필',num:44,G:8,PA:22,AB:20,H:6,'2B':1,'3B':0,HR:0,RBI:7,R:5,SB:0,BB:0,HBP:0,SO:0},p17:{name:'한민기',num:28,G:7,PA:20,AB:17,H:5,'2B':1,'3B':2,HR:0,RBI:2,R:5,SB:4,BB:0,HBP:0,SO:0},p18:{name:'정교수',num:23,G:6,PA:12,AB:8,H:1,'2B':0,'3B':0,HR:0,RBI:3,R:3,SB:1,BB:0,HBP:0,SO:0},p19:{name:'김종원',num:100,G:1,PA:4,AB:3,H:0,'2B':0,'3B':0,HR:0,RBI:1,R:1,SB:0,BB:0,HBP:0,SO:0}}, pitchers:{pt1:{name:'한민기',num:28,G:5,W:2,L:1,SV:0,HD:0,IP:0,pH:13,pHR:0,K:12,pBB:0,pIBB:0,pHBP:0,R:1,ER:0},pt2:{name:'봉제헌',num:88,G:7,W:0,L:1,SV:0,HD:0,IP:0,pH:11,pHR:0,K:13,pBB:2,pIBB:0,pHBP:0,R:3,ER:0},pt3:{name:'서현민',num:19,G:4,W:0,L:1,SV:0,HD:0,IP:0,pH:7,pHR:0,K:7,pBB:1,pIBB:0,pHBP:0,R:3,ER:0},pt4:{name:'정교수',num:23,G:2,W:0,L:0,SV:0,HD:0,IP:0,pH:3,pHR:0,K:2,pBB:0,pIBB:0,pHBP:0,R:0,ER:0},pt5:{name:'문영익',num:11,G:9,W:3,L:3,SV:0,HD:0,IP:0,pH:21,pHR:0,K:19,pBB:1,pIBB:0,pHBP:0,R:6,ER:0},pt6:{name:'박철우',num:8,G:1,W:0,L:1,SV:0,HD:0,IP:0,pH:3,pHR:0,K:8,pBB:0,pIBB:0,pHBP:0,R:1,ER:0},pt7:{name:'허지욱',num:98,G:4,W:0,L:0,SV:0,HD:0,IP:0,pH:3,pHR:0,K:9,pBB:0,pIBB:0,pHBP:0,R:2,ER:1}}, games:{}, rankings:null },
   // === 2024 ===
   {
@@ -1396,9 +1395,10 @@ const ALL_DATA = [
       pt9: {name:'정교수',num:23,G:2,W:0,L:0,SV:0,HD:0,IP:1.0,pH:8,pHR:0,K:0,pBB:1,pIBB:0,pHBP:0,R:5,ER:5}
     },
     games: {},
+    seasonSummary: { rank:0, G:14, W:3, L:11, D:0, RS:77, RA:131 },
     rankings: null
   },
-  { id:'2024_sejong', year:2024, league:'세종 토요4부', leagueKey:'sejong', source:'ksbsa.or.kr', sourceUrl:'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93', record:'3승 9패', W:3, L:9, D:0, G:12,
+  { id:'2024_sejong', year:2024, league:'세종 토요3부', leagueKey:'sejong', source:'ksbsa.or.kr', sourceUrl:'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93', record:'4승 10패', W:4, L:10, D:0, G:14,
 players:{
   p1:{name:'차화진',num:25,G:3,PA:10,AB:6,H:4,'2B':1,'3B':1,HR:0,RBI:4,R:7,SB:4,BB:4,HBP:0,SO:0,kOBP:.800,kSLG:1.167,kOPS:1.967},
   p2:{name:'한재윤',num:36,G:4,PA:14,AB:12,H:6,'2B':0,'3B':0,HR:0,RBI:5,R:5,SB:7,BB:2,HBP:0,SO:1,kOBP:.571,kSLG:.500,kOPS:1.071},
@@ -1428,9 +1428,9 @@ pitchers:{
   pt6:{name:'한재윤',num:36,G:2,W:0,L:1,SV:0,HD:0,IP:4.1,pH:10,pHR:0,K:4,pBB:2,pIBB:0,pHBP:1,R:11,ER:11},
   pt7:{name:'홍기훈',num:4,G:2,W:0,L:1,SV:0,HD:0,IP:3.2,pH:12,pHR:0,K:2,pBB:3,pIBB:0,pHBP:3,R:15,ER:10}
 },
-games:{}, rankings:null },
+games:{}, seasonSummary:{ rank:12, G:14, W:4, L:10, D:0, RS:106, RA:140 }, rankings:null },
   // === 2023 ===
-  { id:'2023_sejong', year:2023, league:'세종 토요4부', leagueKey:'sejong', source:'ksbsa.or.kr', sourceUrl:'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93', record:'9승 4패', W:9, L:4, D:0, G:13,
+  { id:'2023_sejong', year:2023, league:'세종 토요4부 정규', leagueKey:'sejong', source:'ksbsa.or.kr', sourceUrl:'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93', record:'10승 4패', W:10, L:4, D:0, G:14,
 players:{
   p1:{name:'허지욱',num:98,G:2,PA:7,AB:5,H:5,'2B':0,'3B':0,HR:0,RBI:5,R:4,SB:1,BB:2,HBP:0,SO:0,kOBP:1.000,kSLG:1.600,kOPS:2.600},
   p2:{name:'한재윤',num:36,G:11,PA:35,AB:32,H:17,'2B':2,'3B':2,HR:1,RBI:16,R:16,SB:8,BB:2,HBP:1,SO:2,kOBP:.476,kSLG:.625,kOPS:1.101},
@@ -1460,7 +1460,9 @@ pitchers:{
   pt4:{name:'정교수',num:23,G:3,W:0,L:0,SV:0,HD:0,IP:3.0,pH:8,pHR:0,K:3,pBB:6,pIBB:0,pHBP:0,R:8,ER:7},
   pt5:{name:'홍기훈',num:4,G:4,W:1,L:1,SV:0,HD:0,IP:8.1,pH:22,pHR:2,K:7,pBB:11,pIBB:0,pHBP:4,R:28,ER:26}
 },
-games:{}, rankings:null },
+games:{}, seasonSummary:{ rank:2, G:14, W:10, L:4, D:0, RS:129, RA:87 }, rankings:null },
+  { id:'2023_sejong_po', year:2023, league:'세종 토요4부 플레이오프', leagueKey:'sejong_po', source:'ksbsa.or.kr', sourceUrl:'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93', record:'1승 1패', W:1, L:1, D:0, G:2, players:{}, pitchers:{}, games:{}, seasonSummary:{ rank:3, G:2, W:1, L:1, D:0, RS:12, RA:14 }, rankings:null },
+  { id:'2023_sejong_inter', year:2023, league:'세종 인터리그', leagueKey:'sejong_inter', source:'ksbsa.or.kr', sourceUrl:'https://www.ksbsa.or.kr/teamPage/main/getMain.hs?teamSeq=93', record:'3승 3패', W:3, L:3, D:0, G:6, players:{}, pitchers:{}, games:{}, seasonSummary:{ rank:9, G:6, W:3, L:3, D:0, RS:53, RA:52 }, rankings:null },
   { id:'2023_daedeok', year:2023, league:'대덕구 토요A', leagueKey:'daedeok', source:'daedeokgu.dbsa.kr', sourceUrl:'https://daedeokgu.dbsa.kr/teamPage/main/getMain.hs?teamSeq=24', record:'6승 6패', W:6, L:6, D:0, G:12,
 players:{
   p1:{name:'한재윤',num:36,G:1,PA:3,AB:2,H:2,'2B':0,'3B':1,HR:0,RBI:0,R:2,SB:3,BB:0,HBP:1,SO:0,kOBP:2.000,kSLG:4.000,kOPS:1.000},
@@ -1491,7 +1493,7 @@ pitchers:{
   pt4:{name:'고석봉',num:14,G:3,W:0,L:0,SV:0,HD:0,IP:2.0,pH:6,pHR:1,K:4,pBB:4,pIBB:0,pHBP:0,R:5,ER:3},
   pt5:{name:'정교수',num:23,G:8,W:2,L:1,SV:2,HD:0,IP:16.0,pH:25,pHR:0,K:10,pBB:18,pIBB:0,pHBP:3,R:31,ER:27}
 },
-games:{}, rankings:null },
+games:{}, seasonSummary:{ rank:0, G:12, W:6, L:6, D:0, RS:0, RA:0 }, rankings:null },
   // === 2022 ===
   { id:'2022_daedeok', year:2022, league:'대덕구 토요4부', leagueKey:'daedeok', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'9승 5패', W:9,L:5,D:0,G:14, players:{p1:{name:'이준태',num:86,G:2,PA:4,AB:3,H:2,'2B':2,'3B':0,HR:0,RBI:1,R:2,SB:0,BB:0,HBP:0,SO:0},p2:{name:'차화진',num:25,G:3,PA:9,AB:6,H:3,'2B':2,'3B':0,HR:0,RBI:5,R:3,SB:2,BB:0,HBP:0,SO:0},p3:{name:'봉제헌',num:88,G:2,PA:6,AB:4,H:2,'2B':0,'3B':0,HR:0,RBI:3,R:1,SB:2,BB:0,HBP:0,SO:0},p4:{name:'허지욱',num:98,G:7,PA:25,AB:15,H:7,'2B':3,'3B':0,HR:1,RBI:10,R:10,SB:10,BB:0,HBP:0,SO:0},p5:{name:'한재윤',num:36,G:5,PA:16,AB:15,H:7,'2B':3,'3B':0,HR:1,RBI:4,R:7,SB:4,BB:0,HBP:0,SO:0},p6:{name:'문영익',num:11,G:7,PA:18,AB:16,H:7,'2B':3,'3B':0,HR:0,RBI:4,R:6,SB:5,BB:0,HBP:0,SO:0},p7:{name:'김종원',num:21,G:13,PA:46,AB:36,H:15,'2B':5,'3B':0,HR:0,RBI:16,R:11,SB:18,BB:0,HBP:0,SO:0},p8:{name:'김경필',num:44,G:13,PA:40,AB:34,H:14,'2B':3,'3B':1,HR:0,RBI:12,R:9,SB:10,BB:0,HBP:0,SO:0},p9:{name:'변우동',num:27,G:10,PA:28,AB:22,H:9,'2B':1,'3B':0,HR:0,RBI:7,R:12,SB:7,BB:0,HBP:0,SO:0},p10:{name:'이성진',num:10,G:5,PA:16,AB:16,H:6,'2B':1,'3B':0,HR:0,RBI:3,R:2,SB:3,BB:0,HBP:0,SO:0},p11:{name:'박철우',num:8,G:5,PA:19,AB:14,H:5,'2B':0,'3B':0,HR:0,RBI:5,R:9,SB:6,BB:0,HBP:0,SO:0},p12:{name:'한민기',num:28,G:7,PA:23,AB:18,H:6,'2B':2,'3B':0,HR:0,RBI:8,R:8,SB:6,BB:0,HBP:0,SO:0},p13:{name:'박경순',num:22,G:3,PA:5,AB:3,H:1,'2B':0,'3B':0,HR:0,RBI:2,R:0,SB:0,BB:0,HBP:0,SO:0},p14:{name:'고석봉',num:14,G:13,PA:39,AB:35,H:10,'2B':5,'3B':0,HR:0,RBI:11,R:14,SB:11,BB:0,HBP:0,SO:0},p15:{name:'정교수',num:23,G:8,PA:19,AB:15,H:4,'2B':1,'3B':0,HR:0,RBI:1,R:8,SB:5,BB:0,HBP:0,SO:0},p16:{name:'김해성',num:38,G:13,PA:32,AB:25,H:6,'2B':3,'3B':0,HR:0,RBI:6,R:8,SB:5,BB:0,HBP:0,SO:0},p17:{name:'지용구',num:9,G:5,PA:15,AB:7,H:1,'2B':0,'3B':0,HR:0,RBI:2,R:4,SB:1,BB:0,HBP:0,SO:0},p18:{name:'이형석',num:33,G:5,PA:19,AB:17,H:2,'2B':1,'3B':0,HR:0,RBI:2,R:4,SB:4,BB:0,HBP:0,SO:0}}, pitchers:{pt1:{name:'고석봉',num:14,G:1,W:0,L:0,SV:0,HD:0,IP:0,pH:1,pHR:0,K:1,pBB:0,pIBB:0,pHBP:0,R:0,ER:0},pt2:{name:'봉제헌',num:88,G:1,W:0,L:1,SV:0,HD:0,IP:0,pH:0,pHR:0,K:1,pBB:0,pIBB:0,pHBP:0,R:0,ER:0},pt3:{name:'한재윤',num:36,G:5,W:1,L:1,SV:1,HD:0,IP:0,pH:6,pHR:0,K:7,pBB:1,pIBB:0,pHBP:0,R:0,ER:0},pt4:{name:'허지욱',num:98,G:3,W:0,L:0,SV:0,HD:0,IP:0,pH:4,pHR:0,K:4,pBB:0,pIBB:0,pHBP:0,R:0,ER:0},pt5:{name:'문영익',num:11,G:13,W:7,L:3,SV:0,HD:0,IP:0,pH:46,pHR:0,K:20,pBB:6,pIBB:0,pHBP:0,R:0,ER:0},pt6:{name:'홍기훈',num:4,G:2,W:1,L:0,SV:0,HD:0,IP:0,pH:6,pHR:0,K:2,pBB:0,pIBB:0,pHBP:0,R:0,ER:0},pt7:{name:'김종원',num:21,G:1,W:0,L:0,SV:0,HD:0,IP:0,pH:2,pHR:0,K:3,pBB:0,pIBB:0,pHBP:0,R:0,ER:0},pt8:{name:'김경필',num:44,G:1,W:0,L:0,SV:0,HD:0,IP:0,pH:0,pHR:0,K:4,pBB:0,pIBB:0,pHBP:0,R:0,ER:0}}, games:{}, rankings:null },
   { id:'2022_sejong_1', year:2022, league:'세종 토요4부', leagueKey:'sejong_1', source:'gameone.kr', sourceUrl:'https://www.gameone.kr/club/?club_idx=7734', record:'8승 5패 1무', W:8,L:5,D:1,G:14, players:{p1:{name:'허지욱',num:98,G:8,PA:26,AB:19,H:10,'2B':1,'3B':0,HR:0,RBI:12,R:13,SB:16,BB:0,HBP:0,SO:0},p2:{name:'문영익',num:11,G:9,PA:23,AB:16,H:8,'2B':1,'3B':1,HR:0,RBI:6,R:9,SB:3,BB:0,HBP:0,SO:0},p3:{name:'한민기',num:28,G:9,PA:28,AB:13,H:6,'2B':1,'3B':0,HR:0,RBI:6,R:15,SB:14,BB:0,HBP:0,SO:0},p4:{name:'지용구',num:9,G:9,PA:20,AB:18,H:8,'2B':2,'3B':0,HR:0,RBI:5,R:5,SB:2,BB:0,HBP:0,SO:0},p5:{name:'김경필',num:44,G:12,PA:37,AB:25,H:11,'2B':2,'3B':0,HR:1,RBI:10,R:11,SB:5,BB:0,HBP:0,SO:0},p6:{name:'김종원',num:21,G:14,PA:44,AB:41,H:18,'2B':4,'3B':4,HR:0,RBI:25,R:17,SB:10,BB:0,HBP:0,SO:0},p7:{name:'한재윤',num:36,G:6,PA:13,AB:13,H:5,'2B':1,'3B':0,HR:0,RBI:8,R:5,SB:8,BB:0,HBP:0,SO:0},p8:{name:'변우동',num:27,G:8,PA:18,AB:16,H:6,'2B':2,'3B':0,HR:0,RBI:5,R:8,SB:3,BB:0,HBP:0,SO:0},p9:{name:'차화진',num:25,G:4,PA:13,AB:11,H:4,'2B':2,'3B':2,HR:0,RBI:3,R:6,SB:3,BB:0,HBP:0,SO:0},p10:{name:'고석봉',num:14,G:11,PA:31,AB:26,H:9,'2B':3,'3B':0,HR:0,RBI:5,R:13,SB:10,BB:0,HBP:0,SO:0},p11:{name:'봉제헌',num:88,G:2,PA:3,AB:3,H:1,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:1,BB:0,HBP:0,SO:0},p12:{name:'이형석',num:33,G:3,PA:10,AB:7,H:2,'2B':0,'3B':0,HR:0,RBI:2,R:2,SB:4,BB:0,HBP:0,SO:0},p13:{name:'박철우',num:8,G:6,PA:16,AB:12,H:3,'2B':0,'3B':0,HR:0,RBI:1,R:7,SB:8,BB:0,HBP:0,SO:0},p14:{name:'정교수',num:23,G:7,PA:20,AB:15,H:3,'2B':1,'3B':0,HR:0,RBI:4,R:3,SB:5,BB:0,HBP:0,SO:0},p15:{name:'김해성',num:38,G:11,PA:30,AB:25,H:4,'2B':2,'3B':0,HR:0,RBI:5,R:7,SB:0,BB:0,HBP:0,SO:0},p16:{name:'이성진',num:10,G:4,PA:12,AB:8,H:1,'2B':0,'3B':1,HR:0,RBI:1,R:4,SB:5,BB:0,HBP:0,SO:0},p17:{name:'박경순',num:22,G:2,PA:4,AB:4,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:1,SB:0,BB:0,HBP:0,SO:0},p18:{name:'홍기훈',num:4,G:2,PA:2,AB:1,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:0,HBP:0,SO:0},p19:{name:'이준태',num:86,G:2,PA:3,AB:3,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:0,HBP:0,SO:0}}, pitchers:{pt1:{name:'한재윤',num:36,G:5,W:0,L:1,SV:0,HD:0,IP:109,pH:6,pHR:0,K:5,pBB:1,pIBB:0,pHBP:0,R:0,ER:0},pt2:{name:'봉제헌',num:88,G:1,W:0,L:0,SV:0,HD:0,IP:34,pH:1,pHR:0,K:3,pBB:0,pIBB:0,pHBP:0,R:1,ER:0},pt3:{name:'허지욱',num:98,G:5,W:2,L:2,SV:0,HD:0,IP:256,pH:11,pHR:0,K:9,pBB:0,pIBB:0,pHBP:0,R:2,ER:1},pt4:{name:'문영익',num:11,G:11,W:3,L:1,SV:0,HD:0,IP:436,pH:24,pHR:0,K:10,pBB:3,pIBB:0,pHBP:0,R:3,ER:0},pt5:{name:'홍기훈',num:4,G:6,W:3,L:1,SV:0,HD:0,IP:340,pH:16,pHR:0,K:12,pBB:0,pIBB:0,pHBP:0,R:3,ER:2}}, games:{}, rankings:null },
@@ -1856,7 +1858,7 @@ function loadCombinedFromFirebase() {
 
 function loadEntryFromFirebase(entry) {
   // Migration
-  const migKey = 'bb_migrated_v12';
+  const migKey = 'bb_migrated_v13';
   if (!localStorage.getItem(migKey)) {
     ALL_DATA.forEach(e => {
       if (e.players && Object.keys(e.players).length > 0)
@@ -2185,15 +2187,81 @@ function isScheduledGame(g) {
   return g.result === '예정' || (g.ourScore === null && g.theirScore === null);
 }
 
+function getSeasonSummaries() {
+  const yearEntries = getEntriesForYear(currentYear);
+  if (isCombinedView()) {
+    return yearEntries.filter(e => e.seasonSummary);
+  } else {
+    const entry = yearEntries.find(e => e.leagueKey === currentLeague);
+    return (entry && entry.seasonSummary) ? [entry] : [];
+  }
+}
+
 function renderGames() {
   const tbody = document.getElementById('gameBody');
   const summaryEl = document.getElementById('recordSummary');
   const entries = Object.entries(gamesData);
 
   if (entries.length === 0) {
+    // Check for seasonSummary data
+    const summEntries = getSeasonSummaries();
+    if (summEntries.length > 0) {
+      let cardsHtml = '';
+      summEntries.forEach(e => {
+        const s = e.seasonSummary;
+        const winRate = (s.W + s.L) > 0 ? (s.W / (s.W + s.L)) : 0;
+        const avgRS = s.G > 0 ? (s.RS / s.G).toFixed(1) : '-';
+        const avgRA = s.G > 0 ? (s.RA / s.G).toFixed(1) : '-';
+        const rankText = s.rank > 0 ? s.rank + '위' : '-';
+        cardsHtml += `
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;text-align:center">
+            <div style="font-weight:700;font-size:1.05rem;margin-bottom:12px;color:var(--text)">${e.year} ${escHtml(e.league)} 시즌 요약</div>
+            <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap">
+              <div class="record-card"><div class="label">순위</div><div class="value accent">${rankText}</div></div>
+              <div class="record-card"><div class="label">경기</div><div class="value">${s.G}</div></div>
+              <div class="record-card"><div class="label">승</div><div class="value win">${s.W}</div></div>
+              <div class="record-card"><div class="label">패</div><div class="value loss">${s.L}</div></div>
+              <div class="record-card"><div class="label">무</div><div class="value draw">${s.D}</div></div>
+              <div class="record-card"><div class="label">승률</div><div class="value rate">${fmtRate(winRate)}</div></div>
+            </div>
+            <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:8px">
+              <div class="record-card"><div class="label">득점</div><div class="value">${s.RS}</div></div>
+              <div class="record-card"><div class="label">실점</div><div class="value">${s.RA}</div></div>
+              <div class="record-card"><div class="label">평균 득점</div><div class="value">${avgRS}</div></div>
+              <div class="record-card"><div class="label">평균 실점</div><div class="value">${avgRA}</div></div>
+            </div>
+          </div>`;
+      });
+      tbody.innerHTML = '';
+      summaryEl.innerHTML = '';
+      // Insert cards before the table
+      const tableEl = tbody.closest('table') || tbody.parentElement;
+      let summWrap = tableEl.parentElement.querySelector('.season-summary-cards');
+      if (!summWrap) {
+        summWrap = document.createElement('div');
+        summWrap.className = 'season-summary-cards';
+        tableEl.parentElement.insertBefore(summWrap, tableEl);
+      }
+      summWrap.innerHTML = cardsHtml;
+      tableEl.style.display = 'none';
+      return;
+    }
     tbody.innerHTML = '<tr><td colspan="5" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
     summaryEl.innerHTML = '';
+    // Clean up summary cards if they exist
+    const tableEl = tbody.closest('table') || tbody.parentElement;
+    const summWrap = tableEl.parentElement.querySelector('.season-summary-cards');
+    if (summWrap) summWrap.innerHTML = '';
+    tableEl.style.display = '';
     return;
+  }
+
+  // Clean up summary cards and restore table if we have actual games
+  {
+    const tableEl = tbody.closest('table') || tbody.parentElement;
+    const summWrap = tableEl.parentElement.querySelector('.season-summary-cards');
+    if (summWrap) summWrap.innerHTML = '';
+    tableEl.style.display = '';
   }
 
   entries.sort((a, b) => b[1].date.localeCompare(a[1].date));
@@ -2269,11 +2337,27 @@ function renderTeamStats() {
   const games = allGames.filter(g => !isScheduledGame(g));
 
   let wins = 0, losses = 0, draws = 0;
-  games.forEach(g => {
-    if (g.ourScore > g.theirScore) wins++;
-    else if (g.ourScore < g.theirScore) losses++;
-    else draws++;
-  });
+  let totalScored = 0, totalAllowed = 0;
+  let gameCount = 0;
+
+  // Use seasonSummary if no individual games
+  if (games.length === 0) {
+    const summEntries = getSeasonSummaries();
+    summEntries.forEach(e => {
+      const s = e.seasonSummary;
+      wins += s.W; losses += s.L; draws += s.D;
+      totalScored += s.RS; totalAllowed += s.RA;
+      gameCount += s.G;
+    });
+  } else {
+    games.forEach(g => {
+      if (g.ourScore > g.theirScore) wins++;
+      else if (g.ourScore < g.theirScore) losses++;
+      else draws++;
+    });
+    gameCount = games.length;
+    games.forEach(g => { totalScored += (g.ourScore || 0); totalAllowed += (g.theirScore || 0); });
+  }
 
   let totalH = 0, totalAB = 0, totalBB = 0, totalHBP = 0, totalHR = 0, totalRBI = 0, totalSB = 0, totalSO = 0, totalR = 0;
   players.forEach(p => {
@@ -2290,20 +2374,18 @@ function renderTeamStats() {
   });
   const teamERA = totalIP > 0 ? (totalER * 7 / totalIP) : 0;
 
-  let totalScored = 0, totalAllowed = 0;
-  games.forEach(g => { totalScored += (g.ourScore || 0); totalAllowed += (g.theirScore || 0); });
-  const avgScored = games.length > 0 ? (totalScored / games.length) : 0;
-  const avgAllowed = games.length > 0 ? (totalAllowed / games.length) : 0;
+  const avgScored = gameCount > 0 ? (totalScored / gameCount) : 0;
+  const avgAllowed = gameCount > 0 ? (totalAllowed / gameCount) : 0;
 
   grid.innerHTML = `
-    <div class="stat-card"><div class="stat-label">시즌 성적</div><div class="stat-value accent">${wins}승 ${losses}패 ${draws}무</div><div class="stat-sub">총 ${games.length}경기 (승점 ${wins * 3})</div></div>
+    <div class="stat-card"><div class="stat-label">시즌 성적</div><div class="stat-value accent">${wins}승 ${losses}패 ${draws}무</div><div class="stat-sub">총 ${gameCount}경기 (승점 ${wins * 3})</div></div>
     <div class="stat-card"><div class="stat-label">승률</div><div class="stat-value">${(wins + losses > 0) ? fmtRate(wins / (wins + losses)) : '-'}</div><div class="stat-sub">${wins + losses + draws}경기 기준</div></div>
     <div class="stat-card"><div class="stat-label">팀 타율</div><div class="stat-value">${fmtRate(teamAVG)}</div><div class="stat-sub">${totalH}안타 / ${totalAB}타수</div></div>
     <div class="stat-card"><div class="stat-label">팀 출루율</div><div class="stat-value">${fmtRate(teamOBP)}</div><div class="stat-sub">(안타+볼넷+사구) / (타수+볼넷+사구)</div></div>
     <div class="stat-card"><div class="stat-label">팀 ERA</div><div class="stat-value">${fmtERA(teamERA)}</div><div class="stat-sub">자책 ${totalER} / ${totalIP}이닝</div></div>
     <div class="stat-card"><div class="stat-label">팀 홈런</div><div class="stat-value accent">${totalHR}</div><div class="stat-sub">시즌 합계</div></div>
     <div class="stat-card"><div class="stat-label">팀 타점</div><div class="stat-value">${totalRBI}</div><div class="stat-sub">시즌 합계</div></div>
-    <div class="stat-card"><div class="stat-label">팀 득점</div><div class="stat-value">${totalR}</div><div class="stat-sub">시즌 합계</div></div>
+    <div class="stat-card"><div class="stat-label">팀 득점</div><div class="stat-value">${totalScored}</div><div class="stat-sub">시즌 합계</div></div>
     <div class="stat-card"><div class="stat-label">팀 도루</div><div class="stat-value">${totalSB}</div><div class="stat-sub">시즌 합계</div></div>
     <div class="stat-card"><div class="stat-label">팀 삼진 (투수)</div><div class="stat-value">${totalK}</div><div class="stat-sub">투수 ${pitchers.length}명</div></div>
     <div class="stat-card"><div class="stat-label">평균 득점</div><div class="stat-value">${avgScored.toFixed(1)}</div><div class="stat-sub">경기당 평균</div></div>
