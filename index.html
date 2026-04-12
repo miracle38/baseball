@@ -658,33 +658,29 @@ function loadFromFirebase() {
   const ptRef = db.ref('baseball/pitchers');
   const gRef = db.ref('baseball/games');
 
+  // 1회성 마이그레이션: 이전 샘플 데이터를 KSBSA 실제 데이터로 교체
+  const migKey = 'bb_migrated_ksbsa_v1';
+  if (!localStorage.getItem(migKey)) {
+    pRef.set(samplePlayers);
+    ptRef.set(samplePitchers);
+    gRef.set(sampleGames);
+    localStorage.setItem(migKey, 'done');
+  }
+
   pRef.on('value', snap => {
-    playersData = snap.val() || {};
-    if (Object.keys(playersData).length === 0) {
-      // seed sample data
-      pRef.set(samplePlayers);
-      return;
-    }
+    playersData = snap.val() || samplePlayers;
     renderPlayers();
     renderTeamStats();
   }, () => { loadFromLocal(); });
 
   ptRef.on('value', snap => {
-    pitchersData = snap.val() || {};
-    if (Object.keys(pitchersData).length === 0) {
-      ptRef.set(samplePitchers);
-      return;
-    }
+    pitchersData = snap.val() || samplePitchers;
     renderPitchers();
     renderTeamStats();
   }, () => { loadFromLocal(); });
 
   gRef.on('value', snap => {
-    gamesData = snap.val() || {};
-    if (Object.keys(gamesData).length === 0) {
-      gRef.set(sampleGames);
-      return;
-    }
+    gamesData = snap.val() || sampleGames;
     renderGames();
     renderTeamStats();
   }, () => { loadFromLocal(); });
