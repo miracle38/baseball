@@ -95,6 +95,53 @@ async function getLeagueOptionsForYear(browser, year) {
   } finally { await page.close(); }
 }
 
+// 공격/수비 페이지에서 팀별 득점/실점 추출
+async function scrapeTeamRSRA(browser, lig_idx, year, group_code, part_code) {
+  const result = {}; // { teamName: { RS, RA } }
+  const page = await browser.newPage();
+  try {
+    for (const kind of ['offense', 'defense']) {
+      const gc = group_code != null ? group_code : '0';
+      const pc = part_code != null ? `&part_code=${part_code}` : '';
+      const url = `https://www.gameone.kr/league/record/content/${kind}?lig_idx=${lig_idx}&group_code=${gc}${pc}&season=${year}`;
+      try {
+        await page.goto(url, { waitUntil: 'networkidle', timeout: 15000 });
+        await page.waitForTimeout(1500);
+      } catch(e) { continue; }
+
+      const parsed = await page.evaluate((k) => {
+        // 헤더 텍스트로 컬럼 인덱스 매핑 (순위 테이블과 상세 테이블이 나란히 있어 둘째 테이블 선택)
+        const tables = Array.from(document.querySelectorAll('table.ranking_table, table'));
+        for (const t of tables) {
+          const thTexts = Array.from(t.querySelectorAll('thead th')).map(th => th.textContent.trim());
+          const target = k === 'offense' ? '득점' : '실점';
+          const ci = thTexts.indexOf(target);
+          if (ci < 0) continue;
+          const out = {};
+          t.querySelectorAll('tbody tr').forEach(tr => {
+            const children = Array.from(tr.children);
+            const team = (children[1] && children[1].textContent.trim()) || '';
+            const cellText = (children[ci] && children[ci].textContent.trim()) || '0';
+            const val = parseInt(cellText) || 0;
+            if (team && val >= 0) out[team] = val;
+          });
+          return { key: target, data: out };
+        }
+        return null;
+      }, kind);
+
+      if (parsed) {
+        Object.entries(parsed.data).forEach(([team, val]) => {
+          if (!result[team]) result[team] = { RS: 0, RA: 0 };
+          if (kind === 'offense') result[team].RS = val;
+          else result[team].RA = val;
+        });
+      }
+    }
+  } finally { await page.close(); }
+  return result;
+}
+
 // 해당 리그/group의 part_code 옵션 조회 (A조/B조 등 sub-division 확인)
 async function getPartOptions(browser, lig_idx, group_code, year) {
   const page = await browser.newPage();
@@ -240,6 +287,46 @@ function findEntrySpan(text, entryId) {
   return { start: i, end: j };
 }
 
+function updateEntrySeasonSummary(html, entryId, summary) {
+  const span = findEntrySpan(html, entryId);
+  if (!span) return html;
+  let entryText = html.substring(span.start, span.end);
+  const ssJs = `{rank:${summary.rank},G:${summary.G},W:${summary.W},L:${summary.L},D:${summary.D},RS:${summary.RS},RA:${summary.RA}}`;
+
+  // seasonSummary 이미 있으면 교체, 없으면 rankings 앞에 삽입
+  const re = /seasonSummary\s*:\s*\{/;
+  const m = re.exec(entryText);
+  if (m) {
+    // balance-match 로 끝 찾기
+    const openIdx = m.index + m[0].length - 1;
+    let depth = 1, i = openIdx + 1;
+    let inStr = false, strCh = '', esc = false;
+    while (i < entryText.length && depth > 0) {
+      const c = entryText[i];
+      if (esc) { esc = false; i++; continue; }
+      if (c === '\\' && inStr) { esc = true; i++; continue; }
+      if (inStr) { if (c === strCh) inStr = false; i++; continue; }
+      if (c === "'" || c === '"') { inStr = true; strCh = c; i++; continue; }
+      if (c === '{') depth++;
+      else if (c === '}') depth--;
+      i++;
+    }
+    entryText = entryText.substring(0, m.index) + `seasonSummary:${ssJs}` + entryText.substring(i);
+  } else {
+    // rankings 필드 앞에 seasonSummary 삽입
+    const rm = entryText.match(/,?\s*rankings\s*:/);
+    if (rm) {
+      const idx = rm.index;
+      entryText = entryText.substring(0, idx) + `, seasonSummary:${ssJs}` + entryText.substring(idx);
+    } else {
+      // 마지막 } 직전에 삽입
+      const lastCurly = entryText.lastIndexOf('}');
+      entryText = entryText.substring(0, lastCurly).replace(/,?\s*$/, '') + `, seasonSummary:${ssJs} }`;
+    }
+  }
+  return html.substring(0, span.start) + entryText + html.substring(span.end);
+}
+
 function updateEntryRankings(html, entryId, rankings) {
   const span = findEntrySpan(html, entryId);
   if (!span) { console.warn(`  [${entryId}] 엔트리 못 찾음`); return html; }
@@ -346,36 +433,57 @@ async function main() {
         const partOpts = await getPartOptions(browser, matched.lig_idx, matched.group, entry.year);
 
         let rankings;
+        let windupRow = null;       // 와인드업 랭킹 행
+        let windupPartLabel = null; // 조 라벨 (있으면)
+
         if (partOpts.length >= 2) {
-          // 조별 랭킹: 각 part 스크래핑 → { 'A조': [...], 'B조': [...] }
           rankings = {};
           for (const po of partOpts) {
             const ranks = await scrapeTeamRank(browser, matched.lig_idx, entry.year, matched.group, po.value);
-            if (ranks.length > 0) {
-              // 조 이름 추출: "일요금강(3부)리그 A조" → "A", "토요3부 B조" → "B"
-              let label = po.text.trim();
-              const m = label.match(/([A-Z가-힣])조$/);
-              if (m) label = m[1];
-              rankings[label] = ranks;
-            }
+            if (ranks.length === 0) continue;
+            // 해당 part의 RS/RA 병합
+            const rsra = await scrapeTeamRSRA(browser, matched.lig_idx, entry.year, matched.group, po.value);
+            ranks.forEach(r => {
+              if (rsra[r.team]) { r.RS = rsra[r.team].RS; r.RA = rsra[r.team].RA; }
+            });
+
+            let label = po.text.trim();
+            const lm = label.match(/([A-Z가-힣])조$/);
+            if (lm) label = lm[1];
+            rankings[label] = ranks;
+
+            const wr = ranks.find(r => /와인드업/.test(r.team));
+            if (wr && !windupRow) { windupRow = wr; windupPartLabel = label; }
           }
           const partCount = Object.keys(rankings).length;
           if (partCount === 0) { summary.push(`${entry.id}: 순위 0건`); continue; }
           const totalTeams = Object.values(rankings).reduce((a, b) => a + b.length, 0);
-          const windupPart = Object.entries(rankings).find(([k, rs]) => rs.some(r => /와인드업/.test(r.team)));
-          console.log(`    ✓ ${partCount}조 총 ${totalTeams}팀${windupPart ? ` (와인드업 ${windupPart[0]}조 ${windupPart[1].find(r=>/와인드업/.test(r.team)).rank}위)` : ''}`);
+          console.log(`    ✓ ${partCount}조 총 ${totalTeams}팀${windupRow ? ` (와인드업 ${windupPartLabel}조 ${windupRow.rank}위 RS${windupRow.RS}/RA${windupRow.RA})` : ''}`);
           summary.push(`${entry.id}: ${partCount}조 ${totalTeams}팀`);
         } else {
-          // 단일 조 랭킹
           rankings = await scrapeTeamRank(browser, matched.lig_idx, entry.year, matched.group);
           if (rankings.length === 0) { summary.push(`${entry.id}: 순위 0건`); continue; }
-          const wr = rankings.find(r => /와인드업/.test(r.team));
-          console.log(`    ✓ ${rankings.length}팀${wr ? ` (와인드업 ${wr.rank}위)` : ''}`);
+          const rsra = await scrapeTeamRSRA(browser, matched.lig_idx, entry.year, matched.group);
+          rankings.forEach(r => {
+            if (rsra[r.team]) { r.RS = rsra[r.team].RS; r.RA = rsra[r.team].RA; }
+          });
+          windupRow = rankings.find(r => /와인드업/.test(r.team));
+          console.log(`    ✓ ${rankings.length}팀${windupRow ? ` (와인드업 ${windupRow.rank}위 RS${windupRow.RS}/RA${windupRow.RA})` : ''}`);
           summary.push(`${entry.id}: ${rankings.length}팀`);
         }
 
         fs.writeFileSync(path.join(debugDir, `${entry.id}.json`), JSON.stringify(rankings, null, 2), 'utf-8');
         html = updateEntryRankings(html, entry.id, rankings);
+
+        // seasonSummary 주입 (와인드업 행 기반)
+        if (windupRow) {
+          const ss = {
+            rank: windupRow.rank,
+            G: windupRow.G, W: windupRow.W, L: windupRow.L, D: windupRow.D,
+            RS: windupRow.RS || 0, RA: windupRow.RA || 0
+          };
+          html = updateEntrySeasonSummary(html, entry.id, ss);
+        }
       } catch(e) {
         console.warn(`    에러: ${e.message}`);
         summary.push(`${entry.id}: 에러 ${e.message}`);
