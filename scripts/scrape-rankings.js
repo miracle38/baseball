@@ -14,36 +14,38 @@ const CLUB_IDX = 7734;
 
 // 엔트리 id → 리그명 매칭 패턴 (gameone에서 해당 연도 리그 드롭다운 옵션에서 찾을 때 사용)
 // 기본값: 엔트리의 league 값을 그대로 regex로 사용
+// 연도별 엔트리 → {pattern, groupHint} 매칭
+// groupHint가 있으면 여러 매칭 중 group 값으로 추가 필터링
 const LEAGUE_MATCHERS = {
-  '2025_gongju':         /금강토요|공주.*금강토요리/,
-  '2022_daedeok':        /대덕구.*토요4부/,
-  '2022_sejong_1':       /세종.*토요4부(?!.*후기)/,
-  '2022_sejong_2':       /세종.*토요4부.*후기|세종.*후기/,
-  '2021_daedeok':        /대덕구.*토요4부/,
-  '2021_sejong_1':       /세종.*토요4부(?!.*후기|.*평일)/,
-  '2021_sejong_weekday': /세종.*평일4부/,
-  '2021_sejong_2':       /세종.*토요4부.*후기/,
-  '2020_daejeon':        /대전.*토요3부|대전광역.*토요3부/,
-  '2020_sejong':         /세종.*토요4부/,
-  '2019_daejeon':        /대전.*토요3부|대전광역.*토요3부/,
-  '2019_sejong':         /세종.*토요4부/,
-  '2018_donggu':         /동구.*토요|대전.*동구/,
-  '2018_daejeon':        /대전.*토요3부/,
-  '2017_kukmin_nanum':   /토요나눔|대전.*나눔/,
-  '2017_kukmin_eoul':    /토요어울|대전.*어울/,
-  '2017_daejeon':        /대전.*토요3부/,
-  '2016_daedeok':        /대덕구.*토요3부B|토요3부B/,
-  '2016_daejeon_geumgang': /대전.*토요금강|토요금강/,
-  '2015_donggu_taebaek': /태백기|동구.*태백/,
-  '2015_daejeon_geumgang': /토요금강기|대전.*금강기/,
-  '2014_kukmin_chugye':  /추계.*토요금강|토요금강.*추계|추계/,
-  '2014_myeongpum':      /명품.*토요3부|명품리그/,
-  '2013_kukmin_chugye':  /토요금강.*추계|추계/,
-  '2013_myeongpum':      /명품.*토요3부|명품리그/,
-  '2012_kukmin_chugye':  /토요추계|추계/,
-  '2012_daejeon':        /대전.*토요(?!추계)|대전.*토요리그/,
-  '2011_geumgang':       /금강|대전/,
-  '2010_geumgang':       /금강|대전/
+  '2025_gongju':         { pattern: /금강토요|공주.*금강/ },
+  '2022_daedeok':        { pattern: /대덕구.*토요\s*4부/ },
+  '2022_sejong_1':       { pattern: /세종.*토요\s*4부\)$/ },  // 끝이 ) - 전기/일반
+  '2022_sejong_2':       { pattern: /세종.*토요\s*4부\(/ },   // ( 로 시작하는 후기
+  '2021_daedeok':        { pattern: /대덕구.*토요\s*4부/ },
+  '2021_sejong_1':       { pattern: /세종.*토요\s*4부/, textMatch: /^(?!.*평일|.*후기)/ },
+  '2021_sejong_weekday': { pattern: /세종.*평일\s*4부/ },
+  '2021_sejong_2':       { pattern: /세종.*토요\s*4부/, pickIndex: 'last' }, // 여러 개 중 마지막
+  '2020_daejeon':        { pattern: /대전.*토요\s*3부/ },
+  '2020_sejong':         { pattern: /세종.*토요\s*4부/ },
+  '2019_daejeon':        { pattern: /대전.*토요\s*3부/ },
+  '2019_sejong':         { pattern: /세종.*토요\s*4부/ },
+  '2018_donggu':         { pattern: /동구.*토요|대전.*동구/ },
+  '2018_daejeon':        { pattern: /대전.*토요\s*3부/ },
+  '2017_kukmin_nanum':   { pattern: /토요\s*나눔/ },
+  '2017_kukmin_eoul':    { pattern: /토요\s*어울/ },
+  '2017_daejeon':        { pattern: /대전.*토요\s*3부/ },
+  '2016_daedeok':        { pattern: /대덕구.*토요\s*3부\s*B|토요\s*3부\s*B/ },
+  '2016_daejeon_geumgang': { pattern: /대전.*토요금강|토요금강/ },
+  '2015_donggu_taebaek': { pattern: /태백|동구/ },
+  '2015_daejeon_geumgang': { pattern: /토요금강|대전.*금강/ },
+  '2014_kukmin_chugye':  { pattern: /추계|금강/ },
+  '2014_myeongpum':      { pattern: /명품/ },
+  '2013_kukmin_chugye':  { pattern: /추계|금강/ },
+  '2013_myeongpum':      { pattern: /명품/ },
+  '2012_kukmin_chugye':  { pattern: /추계|토요추계/ },
+  '2012_daejeon':        { pattern: /대전.*토요/, textMatch: /^(?!.*추계)/ },
+  '2011_geumgang':       { pattern: /금강|대전/ },
+  '2010_geumgang':       { pattern: /금강|대전/ }
 };
 
 async function getLeagueOptionsForYear(browser, year) {
@@ -93,10 +95,11 @@ async function getLeagueOptionsForYear(browser, year) {
   } finally { await page.close(); }
 }
 
-async function scrapeTeamRank(browser, lig_idx, year) {
+async function scrapeTeamRank(browser, lig_idx, year, group_code) {
   const page = await browser.newPage();
   try {
-    const url = `https://www.gameone.kr/league/record/content/rank?lig_idx=${lig_idx}&group_code=0&season=${year}`;
+    const gc = group_code != null ? group_code : '0';
+    const url = `https://www.gameone.kr/league/record/content/rank?lig_idx=${lig_idx}&group_code=${gc}&season=${year}`;
     await page.goto(url, { waitUntil: 'networkidle', timeout: 20000 });
     await page.waitForTimeout(2000);
     const rows = await page.evaluate(() => {
@@ -263,8 +266,9 @@ async function main() {
   if (!m) { console.error('ALL_DATA를 찾을 수 없음'); process.exit(1); }
   let DATA;
   try { eval('DATA = ' + m[1]); } catch(e) { console.error('ALL_DATA eval 실패:', e.message); process.exit(1); }
-  const targets = DATA.filter(e => e.source === 'gameone.kr' && e.rankings == null);
-  console.log(`총 ${targets.length}개 엔트리 대상`);
+  // gameone 소스 엔트리 전체 재스크래핑 (group_code 버그 수정으로 재실행 필요)
+  const targets = DATA.filter(e => e.source === 'gameone.kr');
+  console.log(`총 ${targets.length}개 엔트리 대상 (gameone 전체)`);
 
   // 연도별로 그룹화 (연도당 한 번만 리그 목록 조회)
   const byYear = {};
@@ -290,16 +294,22 @@ async function main() {
     console.log(`  ${year} 리그 옵션: ${leagueOpts.map(o => o.text).join(' | ')}`);
 
     for (const entry of byYear[year]) {
-      const matcher = LEAGUE_MATCHERS[entry.id] || new RegExp(entry.league.replace(/[()]/g, '.?'));
-      const matched = leagueOpts.find(o => matcher.test(o.text));
+      const mDef = LEAGUE_MATCHERS[entry.id] || { pattern: new RegExp(entry.league.replace(/[()]/g, '.?')) };
+      let candidates = leagueOpts.filter(o => mDef.pattern.test(o.text));
+      if (mDef.textMatch) candidates = candidates.filter(o => mDef.textMatch.test(o.text));
+      let matched = null;
+      if (candidates.length === 0) matched = null;
+      else if (candidates.length === 1) matched = candidates[0];
+      else if (mDef.pickIndex === 'last') matched = candidates[candidates.length - 1];
+      else matched = candidates[0];
       if (!matched) {
-        console.warn(`  [${entry.id}] 매칭 리그 없음 (매처: ${matcher})`);
+        console.warn(`  [${entry.id}] 매칭 리그 없음 (패턴: ${mDef.pattern})`);
         summary.push(`${entry.id}: 매칭 실패`);
         continue;
       }
-      console.log(`  [${entry.id}] → ${matched.text} (lig_idx=${matched.lig_idx})`);
+      console.log(`  [${entry.id}] → ${matched.text} (lig_idx=${matched.lig_idx}, group=${matched.group})`);
       try {
-        const rankings = await scrapeTeamRank(browser, matched.lig_idx, entry.year);
+        const rankings = await scrapeTeamRank(browser, matched.lig_idx, entry.year, matched.group);
         if (rankings.length === 0) {
           console.warn(`    순위 0건`);
           summary.push(`${entry.id}: 순위 0건`);

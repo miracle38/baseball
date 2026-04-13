@@ -33,6 +33,10 @@ jobs:
       - name: 전체 스크래핑 (2025 + 2026)
         run: node scripts/scrape-all.js
 
+      - name: 팀순위 스크래핑 (gameone 전체)
+        run: node scripts/scrape-rankings.js
+        continue-on-error: true
+
       - name: 변경사항 커밋 & 푸시
         run: |
           git config user.name "github-actions[bot]"
