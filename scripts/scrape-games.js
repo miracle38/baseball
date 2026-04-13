@@ -88,7 +88,8 @@ async function scrapeSeasonGames(browser, year) {
         const tables = document.querySelectorAll('table');
         tables.forEach(t => {
           t.querySelectorAll('tbody tr').forEach(tr => {
-            const cells = Array.from(tr.children).map(c => c.textContent.trim().replace(/\s+/g, ' '));
+            const children = Array.from(tr.children);
+            const cells = children.map(c => c.textContent.trim().replace(/\s+/g, ' '));
             if (cells.length < 4) return;
             if (cells[0] === '일시' || cells[1] === '분류') return;
             const dateTime = cells[0];
@@ -96,11 +97,18 @@ async function scrapeSeasonGames(browser, year) {
             const stadium = cells[2];
             const game = cells[3];
             const result = cells[4] || '';
+            // BOX SCORE 링크에서 game_idx 추출
+            const boxLink = children[4] ? children[4].querySelector('a.boxscore, a[href*="boxscore"]') : null;
+            let gameIdx = null;
+            if (boxLink) {
+              const m = boxLink.href.match(/game_idx=(\d+)/);
+              if (m) gameIdx = m[1];
+            }
             const dm = dateTime.match(/(\d{1,2})월\s*(\d{1,2})일/);
             if (!dm) return;
             const month = dm[1].padStart(2, '0');
             const day = dm[2].padStart(2, '0');
-            out.push({ dateTime, month, day, category, stadium, game, result });
+            out.push({ dateTime, month, day, category, stadium, game, result, gameIdx });
           });
         });
         return out;
@@ -236,9 +244,10 @@ function replaceField(text, fieldRe, newValue) {
 function gamesToJs(games) {
   if (!games || !games.length) return '{}';
   return '{' + games.map((g, i) => {
-    const opp = (g.opponent || '').replace(/'/g, "\\'").replace(/\(/g, '(').replace(/\)/g, ')');
+    const opp = (g.opponent || '').replace(/'/g, "\\'");
     const loc = (g.location || '').replace(/'/g, "\\'");
-    return `g${i+1}:{date:'${g.date}',opponent:'${opp}',ourScore:${g.ourScore},theirScore:${g.theirScore},result:'${g.result}',location:'${loc}'}`;
+    const gidx = g.gameIdx ? `,gameIdx:'${g.gameIdx}'` : '';
+    return `g${i+1}:{date:'${g.date}',opponent:'${opp}',ourScore:${g.ourScore},theirScore:${g.theirScore},result:'${g.result}',location:'${loc}'${gidx}}`;
   }).join(',') + '}';
 }
 
@@ -317,6 +326,7 @@ async function main() {
       if (!parsed) continue;
       // location은 stadium
       parsed.location = g.stadium;
+      if (g.gameIdx) parsed.gameIdx = g.gameIdx;
 
       // 엔트리 매칭 (가장 구체적인 매처 먼저: exclude 있는 것 우선)
       let matched = null;
