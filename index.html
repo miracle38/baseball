@@ -2295,6 +2295,19 @@ function renderGames() {
     else draws++;
   });
 
+  // Combined view: also include seasonSummary from entries without individual games
+  if (isCombinedView()) {
+    const yearEntries = getEntriesForYear(currentYear);
+    const leaguesWithGames = new Set();
+    entries.forEach(([, g]) => { if (g._league) leaguesWithGames.add(g._league); });
+    yearEntries.forEach(entry => {
+      if (!leaguesWithGames.has(entry.leagueKey) && entry.seasonSummary) {
+        const s = entry.seasonSummary;
+        wins += s.W; losses += s.L; draws += s.D;
+      }
+    });
+  }
+
   const playedGames = wins + losses + draws;
   const winRate = playedGames > 0 ? (wins / playedGames) : 0;
   let summaryHtml = `
@@ -2344,6 +2357,52 @@ function renderGames() {
     html += '</tr>';
   });
   tbody.innerHTML = html;
+
+  // Combined view: show season summary cards for entries without individual games
+  if (isCombinedView()) {
+    const tableEl = tbody.closest('table') || tbody.parentElement;
+    let summWrap = tableEl.parentElement.querySelector('.season-summary-cards');
+    const yearEntries = getEntriesForYear(currentYear);
+    const leaguesWithGames = new Set();
+    entries.forEach(([, g]) => { if (g._league) leaguesWithGames.add(g._league); });
+    const noGameEntries = yearEntries.filter(e => !leaguesWithGames.has(e.leagueKey) && e.seasonSummary);
+    if (noGameEntries.length > 0) {
+      let cardsHtml = '';
+      noGameEntries.forEach(e => {
+        const s = e.seasonSummary;
+        const winRate = (s.W + s.L) > 0 ? (s.W / (s.W + s.L)) : 0;
+        const avgRS = s.G > 0 ? (s.RS / s.G).toFixed(1) : '-';
+        const avgRA = s.G > 0 ? (s.RA / s.G).toFixed(1) : '-';
+        const rankText = s.rank > 0 ? s.rank + '위' : '-';
+        cardsHtml += `
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;text-align:center">
+            <div style="font-weight:700;font-size:1.05rem;margin-bottom:12px;color:var(--text)">${e.year} ${escHtml(e.league)} 시즌 요약</div>
+            <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap">
+              <div class="record-card"><div class="label">순위</div><div class="value accent">${rankText}</div></div>
+              <div class="record-card"><div class="label">경기</div><div class="value">${s.G}</div></div>
+              <div class="record-card"><div class="label">승</div><div class="value win">${s.W}</div></div>
+              <div class="record-card"><div class="label">패</div><div class="value loss">${s.L}</div></div>
+              <div class="record-card"><div class="label">무</div><div class="value draw">${s.D}</div></div>
+              <div class="record-card"><div class="label">승률</div><div class="value rate">${fmtRate(winRate)}</div></div>
+            </div>
+            <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:8px">
+              <div class="record-card"><div class="label">득점</div><div class="value">${s.RS}</div></div>
+              <div class="record-card"><div class="label">실점</div><div class="value">${s.RA}</div></div>
+              <div class="record-card"><div class="label">평균 득점</div><div class="value">${avgRS}</div></div>
+              <div class="record-card"><div class="label">평균 실점</div><div class="value">${avgRA}</div></div>
+            </div>
+          </div>`;
+      });
+      if (!summWrap) {
+        summWrap = document.createElement('div');
+        summWrap.className = 'season-summary-cards';
+        tableEl.parentElement.insertBefore(summWrap, tableEl.nextSibling);
+      }
+      summWrap.innerHTML = cardsHtml;
+    } else if (summWrap) {
+      summWrap.innerHTML = '';
+    }
+  }
 }
 
 // ===== RENDER TEAM STATS =====
@@ -2358,8 +2417,32 @@ function renderTeamStats() {
   let totalScored = 0, totalAllowed = 0;
   let gameCount = 0;
 
-  // Use seasonSummary if no individual games
-  if (games.length === 0) {
+  // Combined view: merge game records + seasonSummary for entries without games
+  if (isCombinedView() && games.length > 0) {
+    const entries = getEntriesForYear(currentYear);
+    const gamesByLeague = {};
+    games.forEach(g => {
+      if (!gamesByLeague[g._league]) gamesByLeague[g._league] = [];
+      gamesByLeague[g._league].push(g);
+    });
+    entries.forEach(entry => {
+      const lg = gamesByLeague[entry.leagueKey];
+      if (lg && lg.length > 0) {
+        lg.forEach(g => {
+          if (g.ourScore > g.theirScore) wins++;
+          else if (g.ourScore < g.theirScore) losses++;
+          else draws++;
+          totalScored += (g.ourScore || 0); totalAllowed += (g.theirScore || 0);
+        });
+        gameCount += lg.length;
+      } else if (entry.seasonSummary) {
+        const s = entry.seasonSummary;
+        wins += s.W; losses += s.L; draws += s.D;
+        totalScored += s.RS; totalAllowed += s.RA;
+        gameCount += s.G;
+      }
+    });
+  } else if (games.length === 0) {
     const summEntries = getSeasonSummaries();
     summEntries.forEach(e => {
       const s = e.seasonSummary;
