@@ -2,9 +2,11 @@ name: 야구 데이터 자동 업데이트
 
 on:
   schedule:
-    # 매주 일요일 21시(UTC) = 월요일 06시(KST) - 주말 경기 후 갱신
-    - cron: '0 21 * * 0'
-  workflow_dispatch: # 수동 실행 가능 (GitHub Actions 탭에서 Run workflow 클릭)
+    # 하루 2회: 매일 03:00 KST, 15:00 KST (UTC 18:00 전날, UTC 06:00)
+    # 주말 경기 후 빠르게 갱신 + 평일에도 DB 싱크
+    - cron: '0 18 * * *'
+    - cron: '0 6 * * *'
+  workflow_dispatch: # 수동 실행 가능
 
 permissions:
   contents: write
@@ -12,7 +14,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: 코드 체크아웃
@@ -28,8 +30,16 @@ jobs:
           npm install playwright
           npx playwright install chromium --with-deps
 
-      - name: 2026 시즌 데이터 스크래핑
-        run: node scripts/update-2026.js
+      - name: 전체 스크래핑 (2025 + 2026)
+        run: node scripts/scrape-all.js
+
+      - name: 팀순위 스크래핑 (gameone 전체)
+        run: node scripts/scrape-rankings.js
+        continue-on-error: true
+
+      - name: 경기 기록 & RS/RA 스크래핑 (gameone 전체)
+        run: node scripts/scrape-games.js
+        continue-on-error: true
 
       - name: 변경사항 커밋 & 푸시
         run: |
