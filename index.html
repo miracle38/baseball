@@ -373,46 +373,6 @@ td.stat-leader-low{
 .game-row .result-loss{color:var(--red);font-weight:700}
 .game-row .result-draw{color:var(--gray);font-weight:700}
 .game-row .score{font-weight:700;font-size:15px}
-.game-row .score.clickable{cursor:pointer;color:var(--accent-cyan);text-decoration:underline dotted;transition:all .15s}
-.game-row .score.clickable:hover{color:var(--accent-gold);text-decoration:underline solid}
-
-/* ===== BOX SCORE MODAL ===== */
-.box-modal{
-  display:none;position:fixed;inset:0;z-index:9999;
-  background:rgba(0,0,0,.75);backdrop-filter:blur(4px);
-  align-items:center;justify-content:center;padding:20px;
-}
-.box-modal.show{display:flex}
-.box-modal-inner{
-  background:var(--card);border:1px solid var(--border);border-radius:12px;
-  width:100%;max-width:1100px;height:90vh;max-height:900px;
-  display:flex;flex-direction:column;overflow:hidden;
-  box-shadow:0 20px 60px rgba(0,0,0,.5);
-}
-.box-modal-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 20px;border-bottom:1px solid var(--border);
-  background:linear-gradient(135deg,var(--maroon) 0%,#5a1818 100%);
-  color:#fff;
-}
-.box-modal-title{font-weight:700;font-size:1.05rem}
-.box-modal-actions{display:flex;gap:8px;align-items:center}
-.box-modal-btn{
-  background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);
-  width:34px;height:34px;border-radius:8px;cursor:pointer;
-  font-size:18px;display:inline-flex;align-items:center;justify-content:center;
-  text-decoration:none;transition:background .15s;
-}
-.box-modal-btn:hover{background:rgba(255,255,255,.25)}
-.box-modal-frame{flex:1;width:100%;border:none;background:#fff}
-.box-modal-fallback{
-  padding:30px;text-align:center;color:var(--gray);
-}
-.box-modal-fallback a{color:var(--accent-cyan);margin-left:8px}
-@media (max-width:768px){
-  .box-modal{padding:8px}
-  .box-modal-inner{height:94vh}
-}
 
 /* ===== TEAM STATS ===== */
 .stats-grid{
@@ -1024,23 +984,6 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
   <span id="footerSourceWrap"></span>
 </footer>
 
-<!-- ===== BOX SCORE MODAL ===== -->
-<div id="boxScoreModal" class="box-modal" onclick="if(event.target===this) closeBoxScore()">
-  <div class="box-modal-inner">
-    <div class="box-modal-header">
-      <div class="box-modal-title" id="boxScoreTitle">박스스코어</div>
-      <div class="box-modal-actions">
-        <a id="boxScoreExternal" href="#" target="_blank" class="box-modal-btn" title="새 탭으로 열기">↗</a>
-        <button class="box-modal-btn" onclick="closeBoxScore()" title="닫기">&times;</button>
-      </div>
-    </div>
-    <iframe id="boxScoreFrame" class="box-modal-frame" src="about:blank" loading="lazy"></iframe>
-    <div id="boxScoreFallback" class="box-modal-fallback" style="display:none">
-      박스스코어를 임베드할 수 없습니다.
-      <a id="boxScoreFallbackLink" href="#" target="_blank">새 탭으로 열기 ↗</a>
-    </div>
-  </div>
-</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -1073,13 +1016,7 @@ const ALL_DATA = [
     record: '2승 1패', W:2, L:1, D:0, G:3,
     players:{p1:{name:'허지욱',number:98,G:2,PA:6,AB:2,H:2,'2B':1,'3B':0,HR:0,RBI:1,R:4,SB:2,BB:4,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p2:{name:'이형석',number:33,G:1,PA:1,AB:1,H:1,'2B':0,'3B':0,HR:0,RBI:1,R:0,SB:0,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p3:{name:'한민기',number:28,G:3,PA:9,AB:7,H:5,'2B':2,'3B':1,HR:1,RBI:6,R:4,SB:3,BB:1,HBP:0,SO:1,kOBP:0,kSLG:0,kOPS:0},p4:{name:'고석봉',number:14,G:3,PA:9,AB:9,H:6,'2B':1,'3B':0,HR:2,RBI:4,R:6,SB:1,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p5:{name:'김해성',number:38,G:2,PA:4,AB:3,H:2,'2B':1,'3B':0,HR:0,RBI:2,R:2,SB:0,BB:1,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p6:{name:'김종원',number:21,G:3,PA:8,AB:7,H:4,'2B':1,'3B':1,HR:0,RBI:4,R:4,SB:0,BB:1,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p7:{name:'김경필',number:44,G:1,PA:3,AB:2,H:1,'2B':0,'3B':0,HR:0,RBI:1,R:2,SB:0,BB:1,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p8:{name:'정교수',number:23,G:3,PA:7,AB:5,H:2,'2B':1,'3B':0,HR:0,RBI:0,R:2,SB:2,BB:1,HBP:1,SO:2,kOBP:0,kSLG:0,kOPS:0},p9:{name:'박철우',number:8,G:3,PA:9,AB:6,H:2,'2B':0,'3B':0,HR:0,RBI:1,R:3,SB:3,BB:2,HBP:0,SO:4,kOBP:0,kSLG:0,kOPS:0},p10:{name:'문영익',number:11,G:3,PA:5,AB:5,H:1,'2B':0,'3B':1,HR:0,RBI:2,R:1,SB:0,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p11:{name:'변우동',number:27,G:3,PA:5,AB:5,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:1,SB:0,BB:0,HBP:0,SO:3,kOBP:0,kSLG:0,kOPS:0},p12:{name:'서현민',number:19,G:2,PA:4,AB:3,H:0,'2B':0,'3B':0,HR:0,RBI:1,R:0,SB:0,BB:0,HBP:0,SO:2,kOBP:0,kSLG:0,kOPS:0},p13:{name:'김시현',number:55,G:3,PA:3,AB:2,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:1,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p14:{name:'추혜승',number:16,G:2,PA:2,AB:2,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:0,HBP:0,SO:1,kOBP:0,kSLG:0,kOPS:0},p15:{name:'남상민',number:7,G:1,PA:1,AB:1,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p16:{name:'한재윤',number:36,G:1,PA:0,AB:0,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p17:{name:'박경순',number:22,G:1,PA:0,AB:0,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:1,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0}},
     pitchers:{pt1:{name:'김시현',number:55,G:3,W:2,L:0,SV:0,HD:0,IP:6,pH:5,pHR:0,K:9,pBB:7,pIBB:0,pHBP:1,R:7,ER:4},pt2:{name:'문영익',number:11,G:3,W:0,L:1,SV:0,HD:0,IP:7,pH:20,pHR:0,K:5,pBB:1,pIBB:0,pHBP:0,R:15,ER:13}},
-    games: {
-      g1: { date:'2026-03-14', opponent:'INCOURSE',       ourScore:4,  theirScore:13, result:'패', location:'중앙공원 야구장' },
-      g2: { date:'2026-03-28', opponent:'금강 옥시전스',   ourScore:11, theirScore:2,  result:'승', location:'부강생활체육공원 야구장' },
-      g3: { date:'2026-04-04', opponent:'KBSI 어벤져스',   ourScore:14, theirScore:11, result:'승', location:'부강생활체육공원 야구장' },
-      g4: { date:'2026-04-18', opponent:'CRI 챌린저스',    ourScore:null, theirScore:null, result:'예정', location:'금강스포츠공원 야구장' },
-      g5: { date:'2026-04-25', opponent:'야수들',          ourScore:null, theirScore:null, result:'예정', location:'미정' }
-    },
+    games:{g1:{date:'2026-03-14',opponent:'INCOURSE',ourScore:4,theirScore:13,result:'패',location:'중앙공원 야구장',boxScoreUrl:'https://www.ksbsa.or.kr/schedule/getGameRecord.hs?gameScheduleSeq=336&leagueCategory=INTER'},g2:{date:'2026-03-28',opponent:'금강 옥시전스',ourScore:11,theirScore:2,result:'승',location:'부강생활체육공원 야구장',boxScoreUrl:'https://www.ksbsa.or.kr/schedule/getGameRecord.hs?gameScheduleSeq=339&leagueCategory=INTER'},g3:{date:'2026-04-04',opponent:'KBSI 어벤져스',ourScore:14,theirScore:11,result:'승',location:'부강생활체육공원 야구장',boxScoreUrl:'https://www.ksbsa.or.kr/schedule/getGameRecord.hs?gameScheduleSeq=3902&leagueCategory=NORMAL'},g4:{date:'2026-04-18',opponent:'CRI 챌린저스',ourScore:null,theirScore:null,result:'예정',location:''},g5:{date:'2026-04-25',opponent:'야수들',ourScore:null,theirScore:null,result:'예정',location:''}},
     rankings: {
       A: [
         { rank:1, team:'한밭 플렉스',                pts:9, G:3, W:3, L:0, D:0, RS:41, RA:24 },
@@ -1111,11 +1048,7 @@ const ALL_DATA = [
     record: '2승 0패', W:2, L:0, D:0, G:2,
     players:{p1:{name:'허지욱',number:98,G:1,PA:3,AB:1,H:1,'2B':0,'3B':0,HR:0,RBI:1,R:1,SB:2,BB:2,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p2:{name:'박철우',number:8,G:1,PA:1,AB:1,H:1,'2B':1,'3B':0,HR:0,RBI:2,R:0,SB:1,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p3:{name:'김경필',number:44,G:1,PA:3,AB:3,H:2,'2B':0,'3B':0,HR:0,RBI:0,R:1,SB:1,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p4:{name:'차화진',number:25,G:1,PA:3,AB:3,H:2,'2B':0,'3B':0,HR:0,RBI:1,R:1,SB:2,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p5:{name:'고석봉',number:14,G:2,PA:7,AB:7,H:4,'2B':1,'3B':0,HR:0,RBI:4,R:3,SB:3,BB:0,HBP:0,SO:1,kOBP:0,kSLG:0,kOPS:0},p6:{name:'이준태',number:86,G:1,PA:2,AB:2,H:1,'2B':0,'3B':0,HR:0,RBI:1,R:0,SB:2,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p7:{name:'이형석',number:33,G:2,PA:5,AB:5,H:2,'2B':1,'3B':0,HR:0,RBI:1,R:2,SB:2,BB:0,HBP:0,SO:1,kOBP:0,kSLG:0,kOPS:0},p8:{name:'김시현',number:55,G:2,PA:6,AB:6,H:2,'2B':0,'3B':0,HR:0,RBI:1,R:3,SB:0,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p9:{name:'한재윤',number:36,G:2,PA:4,AB:3,H:1,'2B':0,'3B':0,HR:0,RBI:0,R:2,SB:0,BB:1,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p10:{name:'이성진',number:10,G:2,PA:3,AB:3,H:1,'2B':0,'3B':0,HR:0,RBI:1,R:1,SB:1,BB:0,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p11:{name:'문영익',number:11,G:1,PA:4,AB:4,H:1,'2B':0,'3B':0,HR:0,RBI:3,R:1,SB:0,BB:0,HBP:0,SO:1,kOBP:0,kSLG:0,kOPS:0},p12:{name:'김종원',number:21,G:2,PA:6,AB:6,H:1,'2B':0,'3B':0,HR:0,RBI:1,R:2,SB:2,BB:0,HBP:0,SO:2,kOBP:0,kSLG:0,kOPS:0},p13:{name:'김해성',number:38,G:2,PA:6,AB:5,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:0,HBP:1,SO:3,kOBP:0,kSLG:0,kOPS:0},p14:{name:'추혜승',number:16,G:2,PA:4,AB:3,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:1,SB:0,BB:1,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p15:{name:'정교수',number:23,G:1,PA:2,AB:2,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:0,HBP:0,SO:1,kOBP:0,kSLG:0,kOPS:0},p16:{name:'남상민',number:7,G:1,PA:2,AB:1,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:1,SB:1,BB:1,HBP:0,SO:1,kOBP:0,kSLG:0,kOPS:0},p17:{name:'변우동',number:27,G:1,PA:1,AB:1,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:0,HBP:0,SO:1,kOBP:0,kSLG:0,kOPS:0},p18:{name:'서현민',number:19,G:1,PA:1,AB:0,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:1,SB:0,BB:1,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0},p19:{name:'박경순',number:22,G:1,PA:1,AB:0,H:0,'2B':0,'3B':0,HR:0,RBI:0,R:0,SB:0,BB:1,HBP:0,SO:0,kOBP:0,kSLG:0,kOPS:0}},
     pitchers:{pt1:{name:'허지욱',number:98,G:1,W:0,L:0,SV:0,HD:0,IP:0.1,pH:0,pHR:0,K:0,pBB:2,pIBB:0,pHBP:0,R:0,ER:0},pt2:{name:'고석봉',number:14,G:1,W:0,L:0,SV:0,HD:0,IP:0.1,pH:1,pHR:0,K:0,pBB:0,pIBB:0,pHBP:0,R:0,ER:0},pt3:{name:'김시현',number:55,G:2,W:2,L:0,SV:0,HD:0,IP:4.2,pH:6,pHR:0,K:8,pBB:4,pIBB:0,pHBP:2,R:7,ER:2},pt4:{name:'문영익',number:11,G:2,W:0,L:0,SV:0,HD:0,IP:4.2,pH:12,pHR:0,K:4,pBB:0,pIBB:0,pHBP:0,R:8,ER:3},pt5:{name:'홍기훈',number:4,G:1,W:0,L:0,SV:0,HD:0,IP:0.2,pH:3,pHR:0,K:0,pBB:0,pIBB:0,pHBP:0,R:2,ER:1}},
-    games: {
-      g1: { date:'2026-03-07', opponent:'ONE TOP',       ourScore:10, theirScore:9, result:'승', location:'한밭야구장(이글스파크)' },
-      g2: { date:'2026-03-21', opponent:'송림스터너즈',   ourScore:10, theirScore:8, result:'승', location:'대전고' },
-      g3: { date:'2026-04-25', opponent:'송림스터너즈',   ourScore:null, theirScore:null, result:'예정', location:'미정' }
-    },
+    games:{g1:{date:'2026-03-07',opponent:'ONE TOP',ourScore:10,theirScore:9,result:'승',location:'한밭야구장(이글스파크)',boxScoreUrl:'https://donggu.dbsa.kr/schedule/getGameRecord.hs?leagueCategory=NORMAL&gameScheduleSeq=1199'},g2:{date:'2026-03-21',opponent:'송림스터너즈',ourScore:10,theirScore:8,result:'승',location:'대전고',boxScoreUrl:'https://donggu.dbsa.kr/schedule/getGameRecord.hs?leagueCategory=NORMAL&gameScheduleSeq=1203'},g3:{date:'2026-04-25',opponent:'송림스터너즈',ourScore:null,theirScore:null,result:'예정',location:''}},
     rankings: [
       { rank:1, team:'와인드업',       pts:6, G:2, W:2, L:0, D:0, RS:20, RA:17 },
       { rank:2, team:'DJ빠따스',       pts:3, G:2, W:1, L:1, D:0, RS:15, RA:12 },
@@ -1370,49 +1303,6 @@ try {
 } catch(e) {
   console.warn('Firebase init failed, using localStorage fallback:', e);
 }
-
-// ===== BOX SCORE MODAL =====
-const BOX_CLUB_IDX = 7734;
-function openBoxScore(gameIdx, title) {
-  if (!gameIdx) return;
-  const modal = document.getElementById('boxScoreModal');
-  const frame = document.getElementById('boxScoreFrame');
-  const fallback = document.getElementById('boxScoreFallback');
-  const titleEl = document.getElementById('boxScoreTitle');
-  const extLink = document.getElementById('boxScoreExternal');
-  const fallbackLink = document.getElementById('boxScoreFallbackLink');
-  const url = `https://www.gameone.kr/club/info/schedule/boxscore?club_idx=${BOX_CLUB_IDX}&game_idx=${gameIdx}`;
-  titleEl.textContent = title || '박스스코어';
-  extLink.href = url;
-  fallbackLink.href = url;
-  frame.style.display = '';
-  fallback.style.display = 'none';
-  frame.src = url;
-  modal.classList.add('show');
-  document.body.style.overflow = 'hidden';
-  // iframe 로드 실패(X-Frame-Options) 대비: 3초 뒤 로드 안 됐으면 fallback 표시
-  setTimeout(() => {
-    try {
-      // cross-origin이면 접근 불가 → 그냥 iframe 유지
-      frame.contentWindow.location.href;
-    } catch(e) {
-      // 정상 (cross-origin 차단됨 = iframe 로드는 됐을 가능성)
-    }
-  }, 3000);
-}
-function closeBoxScore() {
-  const modal = document.getElementById('boxScoreModal');
-  const frame = document.getElementById('boxScoreFrame');
-  modal.classList.remove('show');
-  frame.src = 'about:blank';
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    const modal = document.getElementById('boxScoreModal');
-    if (modal && modal.classList.contains('show')) closeBoxScore();
-  }
-});
 
 // ===== XSS PREVENTION =====
 function escHtml(str) {
@@ -2155,12 +2045,10 @@ function renderGames() {
       if (entry) leagueTag = ` <span class="league-tag ${g._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
     }
 
-    const scoreCls = (!isFuture && g.gameIdx) ? 'score clickable' : 'score';
-    const scoreAttr = (!isFuture && g.gameIdx) ? ` onclick="openBoxScore('${g.gameIdx}', '${escHtml(g.date)} vs ${escHtml(g.opponent).replace(/'/g,"\\'")}')" title="박스스코어 보기"` : '';
     html += `<tr class="${rowCls}">`;
     html += `<td>${escHtml(g.date)}</td>`;
     html += `<td>${escHtml(g.opponent)}${leagueTag}</td>`;
-    html += `<td class="${scoreCls}"${scoreAttr}>${scoreHtml}</td>`;
+    html += `<td class="score">${scoreHtml}</td>`;
     html += `<td class="${resultCls}">${result}</td>`;
     html += `<td>${escHtml(g.location)}</td>`;
     html += '</tr>';

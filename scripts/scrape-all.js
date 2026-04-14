@@ -154,6 +154,146 @@ async function scrapeDbsaPitchers(browser, base, teamSeq, year) {
   } finally { await page.close(); }
 }
 
+async function scrapeDbsaRecentGames(browser, base, teamSeq, year) {
+  // 두 소스에서 경기 수집:
+  // 1) getMain.hs의 .team-match (ksbsa 스타일, 스코어+박스스코어)
+  // 2) getGameRecord.hs의 경기기록 TR 행 (donggu 스타일)
+  // 3) getMain.hs 상단 일정 테이블 (예정 경기)
+  // 결과를 date+opponent로 중복 제거
+  const pickGame = (list) => list;
+  const all = [];
+  const page = await browser.newPage();
+  try {
+    // 1) getMain.hs .team-match (과거 경기 + 박스스코어)
+    await page.goto(`${base}/teamPage/main/getMain.hs?teamSeq=${teamSeq}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.waitForTimeout(4000);
+
+    const fromMain = await page.evaluate(({ yr, baseUrl }) => {
+      const out = [];
+      // 1a) .team-match 과거 경기
+      document.querySelectorAll('.team-match').forEach(tm => {
+        try {
+          const dateText = tm.querySelector('.date')?.textContent.trim() || '';
+          const dm = dateText.match(/(\d{4})\.(\d{2})\.(\d{2})/);
+          if (!dm) return;
+          if (parseInt(dm[1]) !== yr) return;
+          const date = `${dm[1]}-${dm[2]}-${dm[3]}`;
+          const lName = tm.querySelector('.l-team .team-name')?.textContent.trim() || '';
+          const rName = tm.querySelector('.r-team .team-name')?.textContent.trim() || '';
+          const lPoint = tm.querySelector('.l-team .point')?.textContent.trim() || '';
+          const rPoint = tm.querySelector('.r-team .point')?.textContent.trim() || '';
+          const isWindupL = /와인드업/.test(lName);
+          const ourScore = parseInt(isWindupL ? lPoint : rPoint);
+          const theirScore = parseInt(isWindupL ? rPoint : lPoint);
+          const opponent = isWindupL ? rName : lName;
+          let result = '예정';
+          if (!isNaN(ourScore) && !isNaN(theirScore)) {
+            if (ourScore > theirScore) result = '승';
+            else if (ourScore < theirScore) result = '패';
+            else result = '무';
+          }
+          const place = tm.querySelector('.stadium-info .place')?.textContent.trim() || '';
+          const boxLink = tm.querySelector('.stadium-info a[href*=gameScheduleSeq]');
+          let boxScoreUrl = '';
+          if (boxLink) {
+            const href = boxLink.getAttribute('href') || '';
+            boxScoreUrl = href.startsWith('http') ? href : (baseUrl + href);
+          }
+          out.push({
+            date, opponent,
+            ourScore: isNaN(ourScore) ? null : ourScore,
+            theirScore: isNaN(theirScore) ? null : theirScore,
+            result, location: place, boxScoreUrl
+          });
+        } catch(e) {}
+      });
+
+      // 1b) 상단 일정 테이블의 예정 경기 (ksbsa 스타일)
+      document.querySelectorAll('table tbody tr').forEach(tr => {
+        try {
+          const cells = Array.from(tr.children).map(c => c.textContent.trim().replace(/\s+/g,' '));
+          if (cells.length < 4) return;
+          const dm = cells[0].match(/(\d{4})-(\d{2})-(\d{2})/);
+          if (!dm) return;
+          if (parseInt(dm[1]) !== yr) return;
+          const date = `${dm[1]}-${dm[2]}-${dm[3]}`;
+          const team1 = cells[1];
+          const vsText = cells[2];
+          const team2 = cells[3];
+          const sm = vsText.match(/(\d+)\s*VS\s*(\d+)/i);
+          const isWindupL = /와인드업/.test(team1);
+          const opponent = isWindupL ? team2 : team1;
+          if (!/와인드업/.test(team1+team2)) return;
+          let ourScore = null, theirScore = null, result = '예정';
+          if (sm) {
+            const a = parseInt(sm[1]), b = parseInt(sm[2]);
+            ourScore = isWindupL ? a : b;
+            theirScore = isWindupL ? b : a;
+            if (ourScore > theirScore) result = '승';
+            else if (ourScore < theirScore) result = '패';
+            else result = '무';
+          }
+          out.push({ date, opponent, ourScore, theirScore, result, location: '', boxScoreUrl: '' });
+        } catch(e) {}
+      });
+      return out;
+    }, { yr: year, baseUrl: base });
+    all.push(...fromMain);
+
+    // 2) getGameRecord.hs의 경기기록 링크 (donggu 스타일)
+    await page.goto(`${base}/teamPage/scheduleRecord/getGameRecord.hs?teamSeq=${teamSeq}&searchYear=${year}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.waitForTimeout(3000);
+    const fromRecord = await page.evaluate(({ yr, baseUrl }) => {
+      const out = [];
+      // 테이블 행 중 경기기록 링크가 있는 행만 파싱
+      document.querySelectorAll('table tbody tr').forEach(tr => {
+        try {
+          const a = tr.querySelector('a[href*=gameScheduleSeq]');
+          if (!a) return;
+          const cells = Array.from(tr.children).map(c => c.textContent.trim().replace(/\s+/g,' '));
+          if (cells.length < 4) return;
+          // cells[0]: 날짜/시간, cells[1]: 리그, cells[2]: 장소, cells[3]: 게임, cells[4]: 경기기록
+          const dm = cells[0].match(/(\d{4})-(\d{2})-(\d{2})/);
+          if (!dm) return;
+          if (parseInt(dm[1]) !== yr) return;
+          const date = `${dm[1]}-${dm[2]}-${dm[3]}`;
+          const location = cells[2] || '';
+          const gameText = cells[3] || '';
+          const gm = gameText.match(/^(.+?)\s+(\d+)\s*VS\s*(\d+)\s+(.+?)$/);
+          if (!gm) return;
+          const team1 = gm[1].trim();
+          const score1 = parseInt(gm[2]);
+          const score2 = parseInt(gm[3]);
+          const team2 = gm[4].trim();
+          const isWindupL = /와인드업/.test(team1);
+          const opponent = isWindupL ? team2 : team1;
+          const ourScore = isWindupL ? score1 : score2;
+          const theirScore = isWindupL ? score2 : score1;
+          let result = '무';
+          if (ourScore > theirScore) result = '승';
+          else if (ourScore < theirScore) result = '패';
+          const href = a.getAttribute('href') || '';
+          const boxScoreUrl = href.startsWith('http') ? href : (baseUrl + href);
+          out.push({ date, opponent, ourScore, theirScore, result, location, boxScoreUrl });
+        } catch(e) {}
+      });
+      return out;
+    }, { yr: year, baseUrl: base });
+    all.push(...fromRecord);
+
+    // 중복 제거: date+opponent 키, boxScoreUrl 있는 쪽 우선
+    const map = new Map();
+    all.forEach(g => {
+      const key = g.date + '|' + g.opponent;
+      const existing = map.get(key);
+      if (!existing) map.set(key, g);
+      else if (!existing.boxScoreUrl && g.boxScoreUrl) map.set(key, g);
+    });
+    const merged = Array.from(map.values()).sort((a, b) => a.date.localeCompare(b.date));
+    return merged;
+  } finally { await page.close(); }
+}
+
 async function scrapeDbsaGames(browser, base, teamSeq, year) {
   const page = await browser.newPage();
   // getMain.hs의 '경기결과' 탭에서 경기 목록 파싱
@@ -332,7 +472,8 @@ function gameToJs(g, i) {
   const loc = (g.location||'').replace(/'/g,"\\'");
   const osc = g.ourScore == null ? 'null' : g.ourScore;
   const tsc = g.theirScore == null ? 'null' : g.theirScore;
-  return `g${i+1}:{date:'${g.date}',opponent:'${opp}',ourScore:${osc},theirScore:${tsc},result:'${g.result}',location:'${loc}'}`;
+  const box = g.boxScoreUrl ? `,boxScoreUrl:'${g.boxScoreUrl.replace(/'/g,"\\'")}'` : '';
+  return `g${i+1}:{date:'${g.date}',opponent:'${opp}',ourScore:${osc},theirScore:${tsc},result:'${g.result}',location:'${loc}'${box}}`;
 }
 
 function playersBlock(batters) {
@@ -460,9 +601,9 @@ async function main() {
       if (t.kind === 'dbsa') {
         const batters  = await scrapeDbsaBatters(browser, t.base, t.teamSeq, t.year);
         const pitchers = await scrapeDbsaPitchers(browser, t.base, t.teamSeq, t.year);
-        console.log(`  타자 ${batters.length}, 투수 ${pitchers.length}`);
-        // 경기 데이터는 DBSA에서 개별 경기 스크래핑이 복잡해서 기존 유지
-        data = { players: batters, pitchers, games: null, summary: null };
+        const games    = await scrapeDbsaRecentGames(browser, t.base, t.teamSeq, t.year);
+        console.log(`  타자 ${batters.length}, 투수 ${pitchers.length}, 경기 ${games.length} (박스스코어 ${games.filter(g => g.boxScoreUrl).length})`);
+        data = { players: batters, pitchers, games, summary: null };
       } else if (t.kind === 'gameone') {
         const leagueOpt = await getGameoneLeagueOption(browser, t.clubIdx, t.year, t.leagueMatch);
         if (!leagueOpt) {
