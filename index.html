@@ -834,6 +834,24 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
   padding:24px;text-align:center;color:var(--gray);font-size:14px;
   background:#f8fafc;border-radius:8px;border:1px dashed #cbd5e1;
 }
+.bs-nodata-wrap{
+  padding:32px 20px;text-align:center;background:#f8fafc;
+  border-radius:12px;border:1px dashed #cbd5e1;
+}
+.bs-nodata-icon{font-size:40px;margin-bottom:10px;opacity:0.6}
+.bs-nodata-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.bs-nodata-sub{font-size:13px;color:var(--gray);margin-bottom:16px}
+.bs-nodata-actions{display:flex;flex-direction:column;gap:8px;align-items:center}
+.bs-external-link{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 20px;background:var(--red);color:#fff;
+  border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;
+  transition:opacity 0.15s;
+}
+.bs-external-link:hover{opacity:0.85}
+.bs-external-hint{
+  font-size:12px;color:var(--gray);margin:4px 0 0;
+}
 </style>
 </head>
 <body>
@@ -2752,6 +2770,17 @@ function openBoxScore(gameId, gameObj) {
   const bs = gameObj.boxScore;
   const isFuture = isScheduledGame(gameObj);
   const isKsbsa = bs && bs.awayBatters; // ksbsa 형식 판별
+  // 박스스코어 세부 데이터 보유 여부 (이닝/타자/투수 중 어느 하나라도 있으면 true)
+  const hasBoxData = !!bs && (
+    (Array.isArray(bs.innings) && bs.innings.length > 0) ||
+    (Array.isArray(bs.awayBatters) && bs.awayBatters.length > 0) ||
+    (Array.isArray(bs.homeBatters) && bs.homeBatters.length > 0) ||
+    (Array.isArray(bs.awayPitchers) && bs.awayPitchers.length > 0) ||
+    (Array.isArray(bs.homePitchers) && bs.homePitchers.length > 0) ||
+    (Array.isArray(bs.batters) && bs.batters.length > 0) ||
+    (Array.isArray(bs.pitchers) && bs.pitchers.length > 0)
+  );
+  const noDataMode = !isFuture && !hasBoxData;
 
   let resultText = '', badgeCls = '';
   if (isFuture) { resultText = '예정'; badgeCls = ''; }
@@ -2938,9 +2967,34 @@ function openBoxScore(gameId, gameObj) {
   } else { pitEl.innerHTML = ''; }
 
   // Show/hide sections
-  document.getElementById('bsLinescoreSection').style.display = isFuture ? 'none' : '';
-  document.getElementById('bsBattersSection').style.display = isFuture ? 'none' : '';
-  document.getElementById('bsPitchersSection').style.display = isFuture ? 'none' : '';
+  const hideDetail = isFuture || noDataMode;
+  document.getElementById('bsLinescoreSection').style.display = hideDetail ? 'none' : '';
+  document.getElementById('bsBattersSection').style.display = hideDetail ? 'none' : '';
+  document.getElementById('bsPitchersSection').style.display = hideDetail ? 'none' : '';
+  if (noDataMode) document.getElementById('bsHighlightsSection').style.display = 'none';
+
+  // 박스스코어 데이터 없음 안내 (원본 페이지 링크 제공)
+  const noDataSection = document.getElementById('bsNoDataSection');
+  if (noDataMode) {
+    const url = gameObj.boxScoreUrl || '';
+    const actionsEl = document.getElementById('bsNoDataActions');
+    let actionsHtml = '';
+    if (url) {
+      let host = '';
+      try { host = new URL(url).hostname; } catch {}
+      actionsHtml = `
+        <a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer" class="bs-external-link">
+          원본 페이지에서 보기 <span style="font-size:12px">↗</span>
+        </a>
+        <p class="bs-external-hint">외부 사이트${host ? ` (${escHtml(host)})` : ''}로 이동합니다</p>`;
+    } else {
+      actionsHtml = `<p class="bs-external-hint">원본 박스스코어 링크가 등록되지 않은 경기입니다</p>`;
+    }
+    actionsEl.innerHTML = actionsHtml;
+    noDataSection.style.display = '';
+  } else {
+    noDataSection.style.display = 'none';
+  }
 
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -2990,6 +3044,14 @@ renderGames = function() {
     </div>
     <div class="bs-body">
       <div id="bsScoreBanner" class="bs-score-banner"></div>
+      <div class="bs-section" id="bsNoDataSection" style="display:none">
+        <div class="bs-nodata-wrap">
+          <div class="bs-nodata-icon">📋</div>
+          <div class="bs-nodata-title">박스스코어 세부 데이터가 수집되지 않았습니다</div>
+          <div class="bs-nodata-sub">이닝 스코어/타자/투수 기록이 아직 등록되지 않은 경기입니다</div>
+          <div id="bsNoDataActions" class="bs-nodata-actions"></div>
+        </div>
+      </div>
       <div class="bs-section" id="bsLinescoreSection">
         <div class="bs-section-title">이닝 스코어</div>
         <div id="bsLinescore"></div>
