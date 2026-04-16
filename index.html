@@ -725,6 +725,59 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
   .stat-card .stat-value{font-size:30px}
 }
 
+/* ===== GAME TABLE MOBILE CARDS ===== */
+@media(max-width:600px){
+  #gameTable{min-width:unset!important}
+  #gameTable thead{display:none}
+  #gameTable tbody{display:flex;flex-direction:column;gap:8px}
+  #gameTable tr.game-row{
+    display:grid;
+    grid-template-columns:1fr auto;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid #e2e8f0;
+    border-left:4px solid #cbd5e1;
+    background:#fff!important;
+  }
+  #gameTable tr.game-row:hover{transform:none;border-left-width:4px}
+  #gameTable tr.game-row.row-win{border-left-color:var(--accent-cyan)}
+  #gameTable tr.game-row.row-loss{border-left-color:var(--red)}
+  #gameTable tr.game-row.row-draw{border-left-color:var(--gray)}
+  #gameTable tr.game-row.future-game{border-left-color:#60a5fa}
+  #gameTable tr.game-row td{padding:0;border:none;text-align:left}
+  /* Row 1: date + result */
+  #gameTable tr.game-row td:nth-child(1){
+    grid-column:1;grid-row:1;
+    font-size:12px;color:var(--gray);
+  }
+  #gameTable tr.game-row td:nth-child(4){
+    grid-column:2;grid-row:1;
+    text-align:right;font-size:13px;
+  }
+  /* Row 2: opponent + score */
+  #gameTable tr.game-row td:nth-child(2){
+    grid-column:1;grid-row:2;
+    font-weight:700;font-size:15px;color:#1e293b;
+    padding-top:4px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  #gameTable tr.game-row td:nth-child(3){
+    grid-column:2;grid-row:2;
+    text-align:right;font-size:20px;font-weight:800;
+    padding-top:2px;white-space:nowrap;
+  }
+  /* Row 3: location */
+  #gameTable tr.game-row td:nth-child(5){
+    grid-column:1/-1;grid-row:3;
+    font-size:11px;color:var(--gray-light);
+    padding-top:6px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  #gameTable tr.game-row td:nth-child(5):not(:empty)::before{
+    content:'📍 ';
+  }
+}
+
 /* ===== PRINT ===== */
 @media print{
   .header,.nav-tabs,.season-selector,.footer{display:none!important}
@@ -2193,6 +2246,9 @@ function renderGames() {
     const isFuture = isScheduledGame(g);
     let rowCls = 'game-row';
     if (isFuture) rowCls += ' future-game';
+    else if (g.ourScore > g.theirScore) rowCls += ' row-win';
+    else if (g.ourScore < g.theirScore) rowCls += ' row-loss';
+    else rowCls += ' row-draw';
 
     let result, resultCls, scoreHtml;
     if (isFuture) {
