@@ -2271,7 +2271,7 @@ function renderGames() {
       if (entry) leagueTag = ` <span class="league-tag ${g._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
     }
 
-    html += `<tr class="${rowCls}">`;
+    html += `<tr class="${rowCls}" data-game-id="${escHtml(id)}">`;
     html += `<td>${escHtml(g.date)}</td>`;
     html += `<td>${escHtml(g.opponent)}${leagueTag}</td>`;
     html += `<td class="score">${scoreHtml}</td>`;
@@ -3111,28 +3111,18 @@ renderGames = function() {
   const tbody = document.getElementById('gameBody');
   const rows = tbody.querySelectorAll('tr.game-row');
   rows.forEach(tr => {
-    // Find game data from cells
-    const cells = tr.querySelectorAll('td');
-    if (cells.length < 5) return;
-    const date = cells[0].textContent.trim();
-    const opponent = cells[1].textContent.trim().replace(/\s*(세종|동구|대덕구|gameone)$/, '');
-    // Find matching game in gamesData
-    const entry = Object.entries(gamesData).find(([, g]) => {
-      return g.date === date && (g.opponent === opponent || opponent.startsWith(g.opponent));
-    });
-    if (entry) {
-      const g = entry[1];
-      const isFuture = isScheduledGame(g);
-      if (isFuture) return;
-      // 원본 사이트 박스스코어 URL 생성
-      let url = g.boxScoreUrl || '';
-      if (!url && g.gameIdx) {
-        url = 'https://www.gameone.kr/club/info/schedule/boxscore?club_idx=7734&game_idx=' + g.gameIdx;
-      }
-      if (url) {
-        tr.classList.add('clickable');
-        tr.onclick = () => window.open(url, '_blank', 'noopener,noreferrer');
-      }
+    const gameId = tr.dataset.gameId;
+    if (!gameId || !gamesData[gameId]) return;
+    const g = gamesData[gameId];
+    if (isScheduledGame(g)) return;
+    // 원본 사이트 박스스코어 URL 생성
+    let url = g.boxScoreUrl || '';
+    if (!url && g.gameIdx) {
+      url = 'https://www.gameone.kr/club/info/schedule/boxscore?club_idx=7734&game_idx=' + g.gameIdx;
+    }
+    if (url) {
+      tr.classList.add('clickable');
+      tr.onclick = () => window.open(url, '_blank', 'noopener,noreferrer');
     }
   });
 };
