@@ -624,6 +624,27 @@ tr.highlight-row:hover{
 .toast.error{border-left:4px solid var(--red)}
 @keyframes toastIn{from{opacity:0;transform:translateY(20px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 
+/* ===== PLAYER PROFILE TABLE ===== */
+.pp-table{width:100%;border-collapse:collapse;font-size:13px}
+.pp-table thead{position:sticky;top:0;z-index:2}
+.pp-table th{background:#1e293b;color:#fff;padding:8px 6px;text-align:center;font-size:11px;white-space:nowrap}
+.pp-table td{padding:6px;text-align:center;border-bottom:1px solid var(--border)}
+.pp-year{font-weight:700;text-align:left!important;white-space:nowrap}
+.pp-avg{font-weight:600}
+.pp-year-row{background:#fff}
+.pp-year-row:hover{background:rgba(233,69,96,0.04)}
+.pp-expandable{cursor:pointer}
+.pp-expandable:hover .pp-toggle{color:var(--red)}
+.pp-toggle{font-size:10px;color:var(--gray);margin-left:2px;transition:var(--transition)}
+.pp-league-row{background:#f8fafc}
+.pp-league-row td{font-size:12px;color:var(--gray);padding:4px 6px}
+.pp-league-name{text-align:left!important;padding-left:20px!important;font-style:italic;white-space:nowrap}
+.pp-hidden{display:none}
+.pp-total-row{background:linear-gradient(135deg,#fef2f2,#fff1f2);font-weight:700;border-top:2px solid var(--red)}
+.pp-total-row td{padding:8px 6px}
+#playerModal .bs-header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+#playerModal .bs-body{overflow-y:auto;max-height:calc(85vh - 80px)}
+
 /* ===== PLAYER LINK ===== */
 .player-link{color:var(--white);text-decoration:none;border-bottom:1px dashed transparent;transition:var(--transition)}
 .player-link:hover{color:var(--red);border-bottom-color:var(--red)}
@@ -3146,13 +3167,11 @@ renderGames = function() {
 // === 선수 프로필 (연도별 기록) ===
 function openPlayerProfile(name, number) {
   const overlay = document.getElementById('playerOverlay');
-  const modal = document.getElementById('playerModal');
 
   // ALL_DATA에서 해당 선수의 전체 기록 검색
   const batterRows = [];
   const pitcherRows = [];
   ALL_DATA.forEach(entry => {
-    // 타자 기록
     if (entry.players) {
       Object.values(entry.players).forEach(p => {
         const pNum = p.number || p.num || 0;
@@ -3161,7 +3180,6 @@ function openPlayerProfile(name, number) {
         }
       });
     }
-    // 투수 기록
     if (entry.pitchers) {
       Object.values(entry.pitchers).forEach(pt => {
         const ptNum = pt.number || pt.num || 0;
@@ -3172,47 +3190,71 @@ function openPlayerProfile(name, number) {
     }
   });
 
-  // 연도 내림차순 정렬
   batterRows.sort((a, b) => b.year - a.year || a.league.localeCompare(b.league));
   pitcherRows.sort((a, b) => b.year - a.year || a.league.localeCompare(b.league));
 
   document.getElementById('ppName').textContent = name;
   document.getElementById('ppNumber').textContent = '#' + number;
 
-  // 첫 등장~마지막 등장 연도
   const allYears = [...new Set([...batterRows.map(r => r.year), ...pitcherRows.map(r => r.year)])].sort();
   document.getElementById('ppYears').textContent = allYears.length > 0 ? allYears[0] + '~' + allYears[allYears.length - 1] : '';
   document.getElementById('ppSeasons').textContent = allYears.length + '시즌';
 
-  // 타자 기록 테이블
+  const batKeys = ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','SO'];
+  const pitKeys = ['G','W','L','SV','pH','K','pBB','R','ER'];
+
+  // 연도별 그룹핑
+  function groupByYear(rows) {
+    const map = {};
+    rows.forEach(r => {
+      if (!map[r.year]) map[r.year] = [];
+      map[r.year].push(r);
+    });
+    return Object.entries(map).sort((a, b) => b[0] - a[0]);
+  }
+
+  function sumRows(rows, keys) {
+    const t = {};
+    keys.forEach(k => t[k] = 0);
+    rows.forEach(r => keys.forEach(k => t[k] += (r[k] || 0)));
+    return t;
+  }
+
+  // 타자 기록
   const batEl = document.getElementById('ppBatters');
   const batSection = document.getElementById('ppBattersSection');
   if (batterRows.length > 0) {
-    let html = '<div style="overflow-x:auto"><table class="bs-detail-table"><thead><tr>';
-    html += '<th>연도</th><th>리그</th><th>경기</th><th>타석</th><th>타수</th><th>안타</th><th>2B</th><th>3B</th><th>HR</th><th>타점</th><th>득점</th><th>도루</th><th>볼넷</th><th>삼진</th><th>타율</th>';
+    const yearGroups = groupByYear(batterRows);
+    const grandTotal = sumRows(batterRows, batKeys);
+    const gtAvg = grandTotal.AB > 0 ? grandTotal.H / grandTotal.AB : 0;
+
+    let html = '<div style="overflow-x:auto"><table class="pp-table"><thead><tr>';
+    html += '<th>연도</th><th>경기</th><th>타석</th><th>타수</th><th>안타</th><th>2B</th><th>3B</th><th>HR</th><th>타점</th><th>득점</th><th>도루</th><th>볼넷</th><th>삼진</th><th>타율</th>';
     html += '</tr></thead><tbody>';
-    const totals = { G:0, PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, SO:0 };
-    batterRows.forEach(r => {
-      const avg = r.AB > 0 ? (r.H / r.AB) : 0;
-      html += `<tr>`;
-      html += `<td style="font-weight:600">${r.year}</td>`;
-      html += `<td style="font-size:12px;white-space:nowrap">${escHtml(r.league)}</td>`;
-      ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','SO'].forEach(k => {
-        html += `<td>${r[k] || 0}</td>`;
-        totals[k] += (r[k] || 0);
-      });
-      html += `<td style="font-weight:600">${fmtRate(avg)}</td>`;
-      html += '</tr>';
+
+    yearGroups.forEach(([year, rows]) => {
+      const yt = sumRows(rows, batKeys);
+      const yAvg = yt.AB > 0 ? yt.H / yt.AB : 0;
+      const multi = rows.length > 1;
+      const uid = 'bat_' + year;
+      html += `<tr class="pp-year-row${multi ? ' pp-expandable' : ''}" ${multi ? `onclick="document.querySelectorAll('.${uid}').forEach(r=>r.classList.toggle('pp-hidden'))"` : ''}>`;
+      html += `<td class="pp-year">${year}${multi ? ' <span class="pp-toggle">▸</span>' : ''}</td>`;
+      batKeys.forEach(k => html += `<td>${yt[k]}</td>`);
+      html += `<td class="pp-avg">${fmtRate(yAvg)}</td></tr>`;
+      if (multi) {
+        rows.forEach(r => {
+          const rAvg = r.AB > 0 ? r.H / r.AB : 0;
+          html += `<tr class="pp-league-row ${uid} pp-hidden">`;
+          html += `<td class="pp-league-name">${escHtml(shortLeagueName(r.league))}</td>`;
+          batKeys.forEach(k => html += `<td>${r[k] || 0}</td>`);
+          html += `<td>${fmtRate(rAvg)}</td></tr>`;
+        });
+      }
     });
-    // 통산 합계
-    const tAvg = totals.AB > 0 ? (totals.H / totals.AB) : 0;
-    html += '<tr style="font-weight:700;border-top:2px solid var(--border)">';
-    html += `<td colspan="2">통산 (${allYears.length}시즌)</td>`;
-    ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','SO'].forEach(k => {
-      html += `<td>${totals[k]}</td>`;
-    });
-    html += `<td>${fmtRate(tAvg)}</td>`;
-    html += '</tr>';
+
+    html += `<tr class="pp-total-row"><td class="pp-year">통산</td>`;
+    batKeys.forEach(k => html += `<td>${grandTotal[k]}</td>`);
+    html += `<td class="pp-avg">${fmtRate(gtAvg)}</td></tr>`;
     html += '</tbody></table></div>';
     batEl.innerHTML = html;
     batSection.style.display = '';
@@ -3220,29 +3262,37 @@ function openPlayerProfile(name, number) {
     batSection.style.display = 'none';
   }
 
-  // 투수 기록 테이블
+  // 투수 기록
   const pitEl = document.getElementById('ppPitchers');
   const pitSection = document.getElementById('ppPitchersSection');
   if (pitcherRows.length > 0) {
-    let html = '<div style="overflow-x:auto"><table class="bs-detail-table"><thead><tr>';
-    html += '<th>연도</th><th>리그</th><th>경기</th><th>승</th><th>패</th><th>세</th><th>피안타</th><th>삼진</th><th>볼넷</th><th>실점</th><th>자책</th>';
+    const yearGroups = groupByYear(pitcherRows);
+    const grandTotal = sumRows(pitcherRows, pitKeys);
+
+    let html = '<div style="overflow-x:auto"><table class="pp-table"><thead><tr>';
+    html += '<th>연도</th><th>경기</th><th>승</th><th>패</th><th>세</th><th>피안타</th><th>삼진</th><th>볼넷</th><th>실점</th><th>자책</th>';
     html += '</tr></thead><tbody>';
-    const totals = { G:0, W:0, L:0, SV:0, pH:0, K:0, pBB:0, R:0, ER:0 };
-    pitcherRows.forEach(r => {
-      html += `<tr>`;
-      html += `<td style="font-weight:600">${r.year}</td>`;
-      html += `<td style="font-size:12px;white-space:nowrap">${escHtml(r.league)}</td>`;
-      ['G','W','L','SV','pH','K','pBB','R','ER'].forEach(k => {
-        html += `<td>${r[k] || 0}</td>`;
-        totals[k] += (r[k] || 0);
-      });
+
+    yearGroups.forEach(([year, rows]) => {
+      const yt = sumRows(rows, pitKeys);
+      const multi = rows.length > 1;
+      const uid = 'pit_' + year;
+      html += `<tr class="pp-year-row${multi ? ' pp-expandable' : ''}" ${multi ? `onclick="document.querySelectorAll('.${uid}').forEach(r=>r.classList.toggle('pp-hidden'))"` : ''}>`;
+      html += `<td class="pp-year">${year}${multi ? ' <span class="pp-toggle">▸</span>' : ''}</td>`;
+      pitKeys.forEach(k => html += `<td>${yt[k]}</td>`);
       html += '</tr>';
+      if (multi) {
+        rows.forEach(r => {
+          html += `<tr class="pp-league-row ${uid} pp-hidden">`;
+          html += `<td class="pp-league-name">${escHtml(shortLeagueName(r.league))}</td>`;
+          pitKeys.forEach(k => html += `<td>${r[k] || 0}</td>`);
+          html += '</tr>';
+        });
+      }
     });
-    html += '<tr style="font-weight:700;border-top:2px solid var(--border)">';
-    html += `<td colspan="2">통산</td>`;
-    ['G','W','L','SV','pH','K','pBB','R','ER'].forEach(k => {
-      html += `<td>${totals[k]}</td>`;
-    });
+
+    html += `<tr class="pp-total-row"><td class="pp-year">통산</td>`;
+    pitKeys.forEach(k => html += `<td>${grandTotal[k]}</td>`);
     html += '</tr>';
     html += '</tbody></table></div>';
     pitEl.innerHTML = html;
