@@ -3269,30 +3269,45 @@ function openPlayerProfile(name, number) {
     const yearGroups = groupByYear(pitcherRows);
     const grandTotal = sumRows(pitcherRows, pitKeys);
 
+    function sumIPRows(rows) { let t=0; rows.forEach(r => t += ipToThirds(r.IP || 0)); return t; }
+    function fmtEraVal(er, ipThirds) { const dec = Math.floor(ipThirds/3) + (ipThirds%3)/3; return dec > 0 ? fmtERA(er*7/dec) : '-'; }
+
     let html = '<div style="overflow-x:auto"><table class="pp-table"><thead><tr>';
-    html += '<th>연도</th><th>경기</th><th>승</th><th>패</th><th>세</th><th>피안타</th><th>삼진</th><th>볼넷</th><th>실점</th><th>자책</th>';
+    html += '<th>연도</th><th>경기</th><th>승</th><th>패</th><th>세</th><th>이닝</th><th>피안타</th><th>삼진</th><th>볼넷</th><th>실점</th><th>자책</th><th>ERA</th>';
     html += '</tr></thead><tbody>';
 
     yearGroups.forEach(([year, rows]) => {
       const yt = sumRows(rows, pitKeys);
+      const yIPt = sumIPRows(rows);
       const multi = rows.length > 1;
       const uid = 'pit_' + year;
       html += `<tr class="pp-year-row${multi ? ' pp-expandable' : ''}" ${multi ? `onclick="document.querySelectorAll('.${uid}').forEach(r=>r.classList.toggle('pp-hidden'))"` : ''}>`;
       html += `<td class="pp-year">${year}${multi ? ' <span class="pp-toggle">▸</span>' : ''}</td>`;
-      pitKeys.forEach(k => html += `<td>${yt[k]}</td>`);
+      html += `<td>${yt.G}</td><td>${yt.W}</td><td>${yt.L}</td><td>${yt.SV}</td>`;
+      html += `<td>${yIPt > 0 ? fmtIP(thirdsToIP(yIPt)) : '-'}</td>`;
+      html += `<td>${yt.pH}</td><td>${yt.K}</td><td>${yt.pBB}</td><td>${yt.R}</td><td>${yt.ER}</td>`;
+      html += `<td class="pp-avg">${fmtEraVal(yt.ER, yIPt)}</td>`;
       html += '</tr>';
       if (multi) {
         rows.forEach(r => {
+          const rIPt = ipToThirds(r.IP || 0);
           html += `<tr class="pp-league-row ${uid} pp-hidden">`;
           html += `<td class="pp-league-name">${escHtml(shortLeagueName(r.league))}</td>`;
-          pitKeys.forEach(k => html += `<td>${r[k] || 0}</td>`);
+          html += `<td>${r.G||0}</td><td>${r.W||0}</td><td>${r.L||0}</td><td>${r.SV||0}</td>`;
+          html += `<td>${rIPt > 0 ? fmtIP(r.IP) : '-'}</td>`;
+          html += `<td>${r.pH||0}</td><td>${r.K||0}</td><td>${r.pBB||0}</td><td>${r.R||0}</td><td>${r.ER||0}</td>`;
+          html += `<td>${fmtEraVal(r.ER||0, rIPt)}</td>`;
           html += '</tr>';
         });
       }
     });
 
+    const gtIPt = sumIPRows(pitcherRows);
     html += `<tr class="pp-total-row"><td class="pp-year">통산</td>`;
-    pitKeys.forEach(k => html += `<td>${grandTotal[k]}</td>`);
+    html += `<td>${grandTotal.G}</td><td>${grandTotal.W}</td><td>${grandTotal.L}</td><td>${grandTotal.SV}</td>`;
+    html += `<td>${gtIPt > 0 ? fmtIP(thirdsToIP(gtIPt)) : '-'}</td>`;
+    html += `<td>${grandTotal.pH}</td><td>${grandTotal.K}</td><td>${grandTotal.pBB}</td><td>${grandTotal.R}</td><td>${grandTotal.ER}</td>`;
+    html += `<td class="pp-avg">${fmtEraVal(grandTotal.ER, gtIPt)}</td>`;
     html += '</tr>';
     html += '</tbody></table></div>';
     pitEl.innerHTML = html;
