@@ -631,7 +631,12 @@ tr.highlight-row:hover{
   vertical-align:middle;letter-spacing:0.3px;
 }
 .league-tag.sejong{background:linear-gradient(135deg, #3b82f6, #60a5fa);box-shadow:0 2px 6px rgba(59,130,246,0.25)}
+.league-tag.sejong_cup1{background:linear-gradient(135deg, #0ea5e9, #38bdf8);box-shadow:0 2px 6px rgba(14,165,233,0.25)}
+.league-tag.sejong_cup2{background:linear-gradient(135deg, #6366f1, #818cf8);box-shadow:0 2px 6px rgba(99,102,241,0.25)}
+.league-tag.sejong_inter{background:linear-gradient(135deg, #14b8a6, #2dd4bf);box-shadow:0 2px 6px rgba(20,184,166,0.25)}
+.league-tag.sejong_po{background:linear-gradient(135deg, #f43f5e, #fb7185);box-shadow:0 2px 6px rgba(244,63,94,0.25)}
 .league-tag.donggu{background:linear-gradient(135deg, #22c55e, #4ade80);box-shadow:0 2px 6px rgba(34,197,94,0.25)}
+.league-tag.gongju{background:linear-gradient(135deg, #f59e0b, #fbbf24);box-shadow:0 2px 6px rgba(245,158,11,0.25)}
 .league-tag.geumgang{background:linear-gradient(135deg, #f59e0b, #fbbf24);box-shadow:0 2px 6px rgba(245,158,11,0.25)}
 .league-tag.daedeok{background:linear-gradient(135deg, #8b5cf6, #a78bfa);box-shadow:0 2px 6px rgba(139,92,246,0.25)}
 
@@ -1507,6 +1512,14 @@ try {
 }
 
 // ===== XSS PREVENTION =====
+function shortLeagueName(league) {
+  if (!league) return '';
+  // 짧은 리그 약칭 생성
+  const m = league.match(/(시장기|협회장기|인터리그|플레이오프)/);
+  if (m) return m[1];
+  if (/금강/.test(league)) return '금강';
+  return league.split(' ')[0];
+}
 function escHtml(str) {
   if (str == null) return '';
   const d = document.createElement('div');
@@ -1664,9 +1677,9 @@ function getCombinedData() {
         const existing = mergedPlayers[key];
         countingKeys.forEach(k => { existing[k] = (existing[k] || 0) + (p[k] || 0); });
         delete existing.kOBP; delete existing.kSLG; delete existing.kOPS;
-        existing._league = 'both';
+        if (!existing._leagues.includes(entry.leagueKey)) existing._leagues.push(entry.leagueKey);
       } else {
-        mergedPlayers[key] = { ...p, number: p.number || p.num, _league: entry.leagueKey, _key: key };
+        mergedPlayers[key] = { ...p, number: p.number || p.num, _leagues: [entry.leagueKey], _key: key };
         delete mergedPlayers[key].kOBP; delete mergedPlayers[key].kSLG; delete mergedPlayers[key].kOPS;
       }
     });
@@ -1687,9 +1700,9 @@ function getCombinedData() {
         pitcherCountingKeys.forEach(k => { existing[k] = (existing[k] || 0) + (pt[k] || 0); });
         existing.IP = thirdsToIP(ipToThirds(existing.IP || 0) + ipToThirds(pt.IP || 0));
         existing.WPCT = (existing.W + existing.L) > 0 ? existing.W / (existing.W + existing.L) : 0;
-        existing._league = 'both';
+        if (!existing._leagues.includes(entry.leagueKey)) existing._leagues.push(entry.leagueKey);
       } else {
-        mergedPitchers[key] = { ...pt, number: pt.number || pt.num, _league: entry.leagueKey, _key: key };
+        mergedPitchers[key] = { ...pt, number: pt.number || pt.num, _leagues: [entry.leagueKey], _key: key };
       }
     });
   });
@@ -1942,15 +1955,12 @@ function renderPlayers() {
   computed.forEach(p => {
     html += `<tr>`;
     let leagueTag = '';
-    if (isCombinedView() && p._league) {
-      const tagClass = p._league === 'both' ? '' : p._league;
-      if (p._league === 'both') {
-        const yearEntries = getEntriesForYear(currentYear);
-        leagueTag = yearEntries.map(e => ` <span class="league-tag ${e.leagueKey}">${escHtml(e.league.split(' ')[0])}</span>`).join('');
-      } else {
-        const entry = getEntriesForYear(currentYear).find(e => e.leagueKey === p._league);
-        if (entry) leagueTag = ` <span class="league-tag ${p._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
-      }
+    if (isCombinedView() && p._leagues && p._leagues.length > 0) {
+      const yearEntries = getEntriesForYear(currentYear);
+      leagueTag = p._leagues.map(lk => {
+        const entry = yearEntries.find(e => e.leagueKey === lk);
+        return entry ? ` <span class="league-tag ${lk}">${escHtml(shortLeagueName(entry.league))}</span>` : '';
+      }).join('');
     }
     html += `<td class="name-cell">${escHtml(p.name)}${leagueTag}</td>`;
     html += `<td>${p.number || ''}</td>`;
@@ -2037,14 +2047,12 @@ function renderPitchers() {
   computed.forEach(pt => {
     html += `<tr>`;
     let leagueTag = '';
-    if (isCombinedView() && pt._league) {
-      if (pt._league === 'both') {
-        const yearEntries = getEntriesForYear(currentYear);
-        leagueTag = yearEntries.map(e => ` <span class="league-tag ${e.leagueKey}">${escHtml(e.league.split(' ')[0])}</span>`).join('');
-      } else {
-        const entry = getEntriesForYear(currentYear).find(e => e.leagueKey === pt._league);
-        if (entry) leagueTag = ` <span class="league-tag ${pt._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
-      }
+    if (isCombinedView() && pt._leagues && pt._leagues.length > 0) {
+      const yearEntries = getEntriesForYear(currentYear);
+      leagueTag = pt._leagues.map(lk => {
+        const entry = yearEntries.find(e => e.leagueKey === lk);
+        return entry ? ` <span class="league-tag ${lk}">${escHtml(shortLeagueName(entry.league))}</span>` : '';
+      }).join('');
     }
     html += `<td class="name-cell">${escHtml(pt.name)}${leagueTag}</td>`;
     html += `<td>${pt.number || ''}</td>`;
@@ -2272,7 +2280,7 @@ function renderGames() {
     let leagueTag = '';
     if (isCombinedView() && g._league) {
       const entry = getEntriesForYear(currentYear).find(e => e.leagueKey === g._league);
-      if (entry) leagueTag = ` <span class="league-tag ${g._league}">${escHtml(entry.league.split(' ')[0])}</span>`;
+      if (entry) leagueTag = ` <span class="league-tag ${g._league}">${escHtml(shortLeagueName(entry.league))}</span>`;
     }
 
     html += `<tr class="${rowCls}" data-game-id="${escHtml(id)}">`;
@@ -2559,7 +2567,7 @@ function renderCalendar() {
       let leagueTag = '';
       if (isCombinedView() && game._league) {
         const entry = getEntriesForYear(currentYear).find(e => e.leagueKey === game._league);
-        if (entry) leagueTag = `<span class="league-tag ${game._league}" style="font-size:8px;padding:0 3px;margin-left:2px">${escHtml(entry.league.split(' ')[0])}</span>`;
+        if (entry) leagueTag = `<span class="league-tag ${game._league}" style="font-size:8px;padding:0 3px;margin-left:2px">${escHtml(shortLeagueName(entry.league))}</span>`;
       }
       if (isFuture) {
         html += `<div class="game-info"><div class="game-opponent">vs ${escHtml(game.opponent)}${leagueTag}</div><div class="game-score"><span class="game-badge scheduled">예정</span></div></div>`;
