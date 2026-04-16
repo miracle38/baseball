@@ -1706,7 +1706,11 @@ function getCombinedData() {
     Object.entries(gData).forEach(([id, g]) => {
       const orig = origGames[id];
       const merged = { ...g, _league: entry.leagueKey };
-      if (orig && orig.boxScore) merged.boxScore = orig.boxScore;
+      if (orig) {
+        if (orig.boxScore) merged.boxScore = orig.boxScore;
+        if (orig.boxScoreUrl) merged.boxScoreUrl = orig.boxScoreUrl;
+        if (orig.gameIdx) merged.gameIdx = orig.gameIdx;
+      }
       combinedGames[entry.leagueKey + '_' + id] = merged;
     });
   });
@@ -1813,7 +1817,7 @@ function loadEntryFromFirebase(entry) {
     if (currentLeague !== entry.leagueKey || currentYear !== CURRENT_YEAR) return;
     gamesData = snap.val() || entry.games || {};
     // Overlay boxScore from original data
-    if (entry.games) Object.entries(entry.games).forEach(([id,g]) => { if (g.boxScore && gamesData[id]) gamesData[id].boxScore = g.boxScore; });
+    if (entry.games) Object.entries(entry.games).forEach(([id,g]) => { if (gamesData[id]) { if (g.boxScore) gamesData[id].boxScore = g.boxScore; if (g.boxScoreUrl) gamesData[id].boxScoreUrl = g.boxScoreUrl; if (g.gameIdx) gamesData[id].gameIdx = g.gameIdx; } });
     renderGames(); renderCalendar(); renderTeamStats();
   }, () => { loadEntryFromLocal(entry); });
 
