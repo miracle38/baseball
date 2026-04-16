@@ -2837,7 +2837,8 @@ function openBoxScore(gameId, gameObj) {
   const overlay = document.getElementById('boxscoreOverlay');
   const bs = gameObj.boxScore;
   const isFuture = isScheduledGame(gameObj);
-  const isKsbsa = bs && bs.awayBatters; // ksbsa 형식 판별
+  const isKsbsa = bs && Array.isArray(bs.awayBatters) && bs.awayBatters.length > 0; // ksbsa 형식 판별 (타자 데이터 있어야 true)
+  const hasB = bs && bs.totals && (bs.totals.ourB || bs.totals.theirB); // B(볼넷) 컬럼 표시 여부
   // 박스스코어 세부 데이터 보유 여부 (이닝/타자/투수 중 어느 하나라도 있으면 true)
   const hasBoxData = !!bs && (
     (Array.isArray(bs.innings) && bs.innings.length > 0) ||
@@ -2885,7 +2886,7 @@ function openBoxScore(gameId, gameObj) {
     let headHtml = '<tr><th class="team-name-cell">팀</th>';
     for (let i = 1; i <= maxInning; i++) headHtml += `<th>${i}</th>`;
     headHtml += '<th class="total-col">R</th><th class="total-col">H</th><th class="total-col">E</th>';
-    if (isKsbsa) headHtml += '<th class="total-col">B</th>';
+    if (hasB) headHtml += '<th class="total-col">B</th>';
     headHtml += '</tr>';
 
     const ourRuns = inn.map(i => i[0]);
@@ -2895,13 +2896,13 @@ function openBoxScore(gameId, gameObj) {
     let bodyHtml = `<tr><td class="team-name-cell">와인드업</td>`;
     ourRuns.forEach(r => bodyHtml += `<td>${r != null ? r : '-'}</td>`);
     bodyHtml += `<td class="total-col">${gameObj.ourScore}</td><td class="total-col">${t.ourH ?? '-'}</td><td class="total-col">${t.ourE ?? '-'}</td>`;
-    if (isKsbsa) bodyHtml += `<td class="total-col">${t.ourB ?? '-'}</td>`;
+    if (hasB) bodyHtml += `<td class="total-col">${t.ourB ?? '-'}</td>`;
     bodyHtml += '</tr>';
 
     bodyHtml += `<tr><td class="team-name-cell">${escHtml(gameObj.opponent)}</td>`;
     theirRuns.forEach(r => bodyHtml += `<td>${r != null ? r : '-'}</td>`);
     bodyHtml += `<td class="total-col">${gameObj.theirScore}</td><td class="total-col">${t.theirH ?? '-'}</td><td class="total-col">${t.theirE ?? '-'}</td>`;
-    if (isKsbsa) bodyHtml += `<td class="total-col">${t.theirB ?? '-'}</td>`;
+    if (hasB) bodyHtml += `<td class="total-col">${t.theirB ?? '-'}</td>`;
     bodyHtml += '</tr>';
 
     lsEl.innerHTML = `<table class="bs-linescore"><thead>${headHtml}</thead><tbody>${bodyHtml}</tbody></table>`;
@@ -2928,6 +2929,28 @@ function openBoxScore(gameId, gameObj) {
     }
     hlEl.innerHTML = html;
     hlSection.style.display = '';
+  } else if (bs && Array.isArray(bs.highlights) && bs.highlights.length > 0 && typeof bs.highlights[0] === 'string') {
+    // gameone 형식 하이라이트 (문자열 배열: '[홈런]선수명(회차)', '[2루타]선수명(회차)...')
+    let html = '<table class="bs-detail-table"><thead><tr><th style="width:25%">항목</th><th style="text-align:left">내용</th></tr></thead><tbody>';
+    let hasContent = false;
+    bs.highlights.forEach(h => {
+      const m = h.match(/^\[(.+?)\](.*)$/);
+      if (m) {
+        const category = m[1];
+        const detail = m[2].trim();
+        if (detail) {
+          hasContent = true;
+          html += `<tr><td style="text-align:center;font-weight:600;color:var(--red)">${escHtml(category)}</td><td style="font-size:12px">${escHtml(detail)}</td></tr>`;
+        }
+      }
+    });
+    html += '</tbody></table>';
+    if (hasContent) {
+      hlEl.innerHTML = html;
+      hlSection.style.display = '';
+    } else {
+      hlSection.style.display = 'none';
+    }
   } else {
     hlSection.style.display = 'none';
   }
@@ -3036,9 +3059,13 @@ function openBoxScore(gameId, gameObj) {
 
   // Show/hide sections
   const hideDetail = isFuture || noDataMode;
+  const hasBatterData = (isKsbsa && (bs.awayBatters.length > 0 || bs.homeBatters.length > 0)) ||
+    (bs && bs.batters && bs.batters.length > 0);
+  const hasPitcherData = (isKsbsa && (bs.awayPitchers.length > 0 || bs.homePitchers.length > 0)) ||
+    (bs && bs.pitchers && bs.pitchers.length > 0);
   document.getElementById('bsLinescoreSection').style.display = hideDetail ? 'none' : '';
-  document.getElementById('bsBattersSection').style.display = hideDetail ? 'none' : '';
-  document.getElementById('bsPitchersSection').style.display = hideDetail ? 'none' : '';
+  document.getElementById('bsBattersSection').style.display = (hideDetail || !hasBatterData) ? 'none' : '';
+  document.getElementById('bsPitchersSection').style.display = (hideDetail || !hasPitcherData) ? 'none' : '';
   if (noDataMode) document.getElementById('bsHighlightsSection').style.display = 'none';
 
   // 박스스코어 데이터 없음 → 원본 사이트 새 탭으로 바로 열기
