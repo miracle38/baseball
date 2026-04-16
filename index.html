@@ -624,6 +624,10 @@ tr.highlight-row:hover{
 .toast.error{border-left:4px solid var(--red)}
 @keyframes toastIn{from{opacity:0;transform:translateY(20px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 
+/* ===== PLAYER LINK ===== */
+.player-link{color:var(--white);text-decoration:none;border-bottom:1px dashed transparent;transition:var(--transition)}
+.player-link:hover{color:var(--red);border-bottom-color:var(--red)}
+
 /* ===== LEAGUE TAGS ===== */
 .league-tag{
   display:inline-block;padding:2px 8px;border-radius:6px;
@@ -1962,7 +1966,7 @@ function renderPlayers() {
         return entry ? ` <span class="league-tag ${lk}">${escHtml(shortLeagueName(entry.league))}</span>` : '';
       }).join('');
     }
-    html += `<td class="name-cell">${escHtml(p.name)}${leagueTag}</td>`;
+    html += `<td class="name-cell"><a href="#" class="player-link" onclick="event.preventDefault();openPlayerProfile('${escHtml(p.name)}',${p.number || 0})">${escHtml(p.name)}</a>${leagueTag}</td>`;
     html += `<td>${p.number || ''}</td>`;
     html += `<td class="${(leaders['AVG'] !== undefined && Math.abs(p.AVG - leaders['AVG']) < 0.0001 && p.AVG > 0) ? ' stat-leader' : ''}">${fmtRate(p.AVG)}</td>`;
     ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => {
@@ -2054,7 +2058,7 @@ function renderPitchers() {
         return entry ? ` <span class="league-tag ${lk}">${escHtml(shortLeagueName(entry.league))}</span>` : '';
       }).join('');
     }
-    html += `<td class="name-cell">${escHtml(pt.name)}${leagueTag}</td>`;
+    html += `<td class="name-cell"><a href="#" class="player-link" onclick="event.preventDefault();openPlayerProfile('${escHtml(pt.name)}',${pt.number || 0})">${escHtml(pt.name)}</a>${leagueTag}</td>`;
     html += `<td>${pt.number || ''}</td>`;
     const eraLeader = (minERA !== null && pt.IP > 0 && Math.abs(pt.ERA - minERA) < 0.001) ? ' stat-leader-low' : '';
     html += `<td class="${eraLeader}">${pt.IP > 0 ? fmtERA(pt.ERA) : '-'}</td>`;
@@ -3114,7 +3118,7 @@ function closeBoxScore() {
   ifs.style.display = 'none';
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBoxScore(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeBoxScore(); closePlayerProfile(); } });
 
 // Patch renderGames to make rows clickable
 const _origRenderGames = renderGames;
@@ -3138,6 +3142,123 @@ renderGames = function() {
     }
   });
 };
+
+// === 선수 프로필 (연도별 기록) ===
+function openPlayerProfile(name, number) {
+  const overlay = document.getElementById('playerOverlay');
+  const modal = document.getElementById('playerModal');
+
+  // ALL_DATA에서 해당 선수의 전체 기록 검색
+  const batterRows = [];
+  const pitcherRows = [];
+  ALL_DATA.forEach(entry => {
+    // 타자 기록
+    if (entry.players) {
+      Object.values(entry.players).forEach(p => {
+        const pNum = p.number || p.num || 0;
+        if (p.name === name && pNum == number) {
+          batterRows.push({ year: entry.year, league: entry.league, ...p, number: pNum });
+        }
+      });
+    }
+    // 투수 기록
+    if (entry.pitchers) {
+      Object.values(entry.pitchers).forEach(pt => {
+        const ptNum = pt.number || pt.num || 0;
+        if (pt.name === name && ptNum == number) {
+          pitcherRows.push({ year: entry.year, league: entry.league, ...pt, number: ptNum });
+        }
+      });
+    }
+  });
+
+  // 연도 내림차순 정렬
+  batterRows.sort((a, b) => b.year - a.year || a.league.localeCompare(b.league));
+  pitcherRows.sort((a, b) => b.year - a.year || a.league.localeCompare(b.league));
+
+  document.getElementById('ppName').textContent = name;
+  document.getElementById('ppNumber').textContent = '#' + number;
+
+  // 첫 등장~마지막 등장 연도
+  const allYears = [...new Set([...batterRows.map(r => r.year), ...pitcherRows.map(r => r.year)])].sort();
+  document.getElementById('ppYears').textContent = allYears.length > 0 ? allYears[0] + '~' + allYears[allYears.length - 1] : '';
+  document.getElementById('ppSeasons').textContent = allYears.length + '시즌';
+
+  // 타자 기록 테이블
+  const batEl = document.getElementById('ppBatters');
+  const batSection = document.getElementById('ppBattersSection');
+  if (batterRows.length > 0) {
+    let html = '<div style="overflow-x:auto"><table class="bs-detail-table"><thead><tr>';
+    html += '<th>연도</th><th>리그</th><th>경기</th><th>타석</th><th>타수</th><th>안타</th><th>2B</th><th>3B</th><th>HR</th><th>타점</th><th>득점</th><th>도루</th><th>볼넷</th><th>삼진</th><th>타율</th>';
+    html += '</tr></thead><tbody>';
+    const totals = { G:0, PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, SO:0 };
+    batterRows.forEach(r => {
+      const avg = r.AB > 0 ? (r.H / r.AB) : 0;
+      html += `<tr>`;
+      html += `<td style="font-weight:600">${r.year}</td>`;
+      html += `<td style="font-size:12px;white-space:nowrap">${escHtml(r.league)}</td>`;
+      ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','SO'].forEach(k => {
+        html += `<td>${r[k] || 0}</td>`;
+        totals[k] += (r[k] || 0);
+      });
+      html += `<td style="font-weight:600">${fmtRate(avg)}</td>`;
+      html += '</tr>';
+    });
+    // 통산 합계
+    const tAvg = totals.AB > 0 ? (totals.H / totals.AB) : 0;
+    html += '<tr style="font-weight:700;border-top:2px solid var(--border)">';
+    html += `<td colspan="2">통산 (${allYears.length}시즌)</td>`;
+    ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','SO'].forEach(k => {
+      html += `<td>${totals[k]}</td>`;
+    });
+    html += `<td>${fmtRate(tAvg)}</td>`;
+    html += '</tr>';
+    html += '</tbody></table></div>';
+    batEl.innerHTML = html;
+    batSection.style.display = '';
+  } else {
+    batSection.style.display = 'none';
+  }
+
+  // 투수 기록 테이블
+  const pitEl = document.getElementById('ppPitchers');
+  const pitSection = document.getElementById('ppPitchersSection');
+  if (pitcherRows.length > 0) {
+    let html = '<div style="overflow-x:auto"><table class="bs-detail-table"><thead><tr>';
+    html += '<th>연도</th><th>리그</th><th>경기</th><th>승</th><th>패</th><th>세</th><th>피안타</th><th>삼진</th><th>볼넷</th><th>실점</th><th>자책</th>';
+    html += '</tr></thead><tbody>';
+    const totals = { G:0, W:0, L:0, SV:0, pH:0, K:0, pBB:0, R:0, ER:0 };
+    pitcherRows.forEach(r => {
+      html += `<tr>`;
+      html += `<td style="font-weight:600">${r.year}</td>`;
+      html += `<td style="font-size:12px;white-space:nowrap">${escHtml(r.league)}</td>`;
+      ['G','W','L','SV','pH','K','pBB','R','ER'].forEach(k => {
+        html += `<td>${r[k] || 0}</td>`;
+        totals[k] += (r[k] || 0);
+      });
+      html += '</tr>';
+    });
+    html += '<tr style="font-weight:700;border-top:2px solid var(--border)">';
+    html += `<td colspan="2">통산</td>`;
+    ['G','W','L','SV','pH','K','pBB','R','ER'].forEach(k => {
+      html += `<td>${totals[k]}</td>`;
+    });
+    html += '</tr>';
+    html += '</tbody></table></div>';
+    pitEl.innerHTML = html;
+    pitSection.style.display = '';
+  } else {
+    pitSection.style.display = 'none';
+  }
+
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePlayerProfile() {
+  document.getElementById('playerOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
 
 </script>
 
@@ -3177,6 +3298,29 @@ renderGames = function() {
       <div class="bs-section" id="bsPitchersSection">
         <div class="bs-section-title" id="bsPitchersTitle">투수 기록</div>
         <div id="bsPitchers"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYER PROFILE MODAL -->
+<div class="boxscore-overlay" id="playerOverlay" onclick="if(event.target===this)closePlayerProfile()">
+  <div class="boxscore-modal" id="playerModal">
+    <div class="bs-header">
+      <div>
+        <h3><span id="ppName"></span> <span id="ppNumber" style="color:var(--red);font-size:18px"></span></h3>
+        <div class="bs-meta"><span id="ppYears"></span> &nbsp;|&nbsp; <span id="ppSeasons"></span></div>
+      </div>
+      <button class="bs-close" onclick="closePlayerProfile()">&times;</button>
+    </div>
+    <div class="bs-body">
+      <div class="bs-section" id="ppBattersSection">
+        <div class="bs-section-title">타자 기록</div>
+        <div id="ppBatters"></div>
+      </div>
+      <div class="bs-section" id="ppPitchersSection">
+        <div class="bs-section-title">투수 기록</div>
+        <div id="ppPitchers"></div>
       </div>
     </div>
   </div>
