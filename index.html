@@ -3121,8 +3121,18 @@ renderGames = function() {
       return g.date === date && (g.opponent === opponent || opponent.startsWith(g.opponent));
     });
     if (entry) {
-      tr.classList.add('clickable');
-      tr.onclick = () => openBoxScore(entry[0], entry[1]);
+      const g = entry[1];
+      const isFuture = isScheduledGame(g);
+      if (isFuture) return;
+      // 원본 사이트 박스스코어 URL 생성
+      let url = g.boxScoreUrl || '';
+      if (!url && g.gameIdx) {
+        url = 'https://www.gameone.kr/club/info/schedule/boxscore?club_idx=7734&game_idx=' + g.gameIdx;
+      }
+      if (url) {
+        tr.classList.add('clickable');
+        tr.onclick = () => window.open(url, '_blank', 'noopener,noreferrer');
+      }
     }
   });
 };
