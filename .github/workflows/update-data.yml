@@ -14,7 +14,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
 
     steps:
       - name: 코드 체크아웃
@@ -31,17 +31,21 @@ jobs:
           npx playwright install chromium --with-deps
 
       - name: 전체 스크래핑 (2025 + 2026)
+        timeout-minutes: 15
         run: node scripts/scrape-all.js
 
       - name: 팀순위 스크래핑 (gameone 전체)
+        timeout-minutes: 10
         run: node scripts/scrape-rankings.js
         continue-on-error: true
 
       - name: 경기 기록 & RS/RA 스크래핑 (gameone 전체)
+        timeout-minutes: 15
         run: node scripts/scrape-games.js
         continue-on-error: true
 
       - name: 변경사항 커밋 & 푸시
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
