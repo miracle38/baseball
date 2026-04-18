@@ -1768,28 +1768,22 @@ function loadData() {
   const entry = entries.find(e => e.leagueKey === currentLeague);
   if (!entry) { playersData = {}; pitchersData = {}; gamesData = {}; renderAll(); return; }
 
-  if (firebaseReady && db && currentYear === CURRENT_YEAR) {
-    loadEntryFromFirebase(entry);
-  } else {
-    loadEntryFromLocal(entry);
-  }
+  // 스크래퍼가 ALL_DATA(index.html)를 직접 갱신하므로 Firebase overlay 는 사용하지 않음.
+  // (과거 UI 편집 기능이 남긴 stale 스냅샷 때문에 최신 경기 결과가 가려지는 문제 방지)
+  loadEntryFromLocal(entry);
 }
 
 function loadCombinedData() {
-  if (firebaseReady && db && currentYear === CURRENT_YEAR) {
-    loadCombinedFromFirebase();
-  } else {
-    loadCombinedFromLocal();
-  }
+  loadCombinedFromLocal();
 }
 
 function loadCombinedFromLocal() {
   const entries = getEntriesForYear(currentYear);
   leagueDataCache = {};
   entries.forEach(entry => {
-    leagueDataCache[entry.id + '_players'] = JSON.parse(localStorage.getItem('bb_' + entry.id + '_players') || 'null') || entry.players || {};
-    leagueDataCache[entry.id + '_pitchers'] = JSON.parse(localStorage.getItem('bb_' + entry.id + '_pitchers') || 'null') || entry.pitchers || {};
-    leagueDataCache[entry.id + '_games'] = JSON.parse(localStorage.getItem('bb_' + entry.id + '_games') || 'null') || entry.games || {};
+    leagueDataCache[entry.id + '_players'] = entry.players || {};
+    leagueDataCache[entry.id + '_pitchers'] = entry.pitchers || {};
+    leagueDataCache[entry.id + '_games'] = entry.games || {};
   });
   const combined = getCombinedData();
   playersData = combined.players;
@@ -1867,11 +1861,11 @@ function loadEntryFromFirebase(entry) {
 }
 
 function loadEntryFromLocal(entry) {
-  playersData = JSON.parse(localStorage.getItem('bb_' + entry.id + '_players') || 'null') || entry.players || {};
-  pitchersData = JSON.parse(localStorage.getItem('bb_' + entry.id + '_pitchers') || 'null') || entry.pitchers || {};
-  gamesData = JSON.parse(localStorage.getItem('bb_' + entry.id + '_games') || 'null') || entry.games || {};
-  // Overlay boxScore from original data
-  if (entry.games) Object.entries(entry.games).forEach(([id,g]) => { if (g.boxScore && gamesData[id]) gamesData[id].boxScore = g.boxScore; });
+  // ALL_DATA(index.html, 스크래퍼가 매일 자동 갱신) 를 최우선으로 사용.
+  // localStorage 는 이전 UI 편집 기능의 잔여 캐시로 오래된 데이터를 가릴 수 있어 무시.
+  playersData = entry.players || {};
+  pitchersData = entry.pitchers || {};
+  gamesData = entry.games || {};
   renderAll();
 }
 
