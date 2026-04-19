@@ -44,6 +44,11 @@ jobs:
         run: node scripts/scrape-games.js
         continue-on-error: true
 
+      - name: 예정 경기 구장 보강 (ksbsa)
+        timeout-minutes: 5
+        run: node scripts/fill-ksbsa-scheduled-locations.js
+        continue-on-error: true
+
       - name: 변경사항 커밋 & 푸시
         if: always()
         run: |
