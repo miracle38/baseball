@@ -178,6 +178,8 @@ async function scrapeDbsaRecentGames(browser, base, teamSeq, year) {
           if (!dm) return;
           if (parseInt(dm[1]) !== yr) return;
           const date = `${dm[1]}-${dm[2]}-${dm[3]}`;
+          const tm2 = dateText.match(/(\d{2}):(\d{2})/);
+          const time = tm2 ? `${tm2[1]}:${tm2[2]}` : '';
           const lName = tm.querySelector('.l-team .team-name')?.textContent.trim() || '';
           const rName = tm.querySelector('.r-team .team-name')?.textContent.trim() || '';
           const lPoint = tm.querySelector('.l-team .point')?.textContent.trim() || '';
@@ -200,7 +202,7 @@ async function scrapeDbsaRecentGames(browser, base, teamSeq, year) {
             boxScoreUrl = href.startsWith('http') ? href : (baseUrl + href);
           }
           out.push({
-            date, opponent,
+            date, time, opponent,
             ourScore: isNaN(ourScore) ? null : ourScore,
             theirScore: isNaN(theirScore) ? null : theirScore,
             result, location: place, boxScoreUrl
@@ -217,6 +219,8 @@ async function scrapeDbsaRecentGames(browser, base, teamSeq, year) {
           if (!dm) return;
           if (parseInt(dm[1]) !== yr) return;
           const date = `${dm[1]}-${dm[2]}-${dm[3]}`;
+          const tm = cells[0].match(/(\d{2}):(\d{2})/);
+          const time = tm ? `${tm[1]}:${tm[2]}` : '';
           const team1 = cells[1];
           const vsText = cells[2];
           const team2 = cells[3];
@@ -233,7 +237,7 @@ async function scrapeDbsaRecentGames(browser, base, teamSeq, year) {
             else if (ourScore < theirScore) result = '패';
             else result = '무';
           }
-          out.push({ date, opponent, ourScore, theirScore, result, location: '', boxScoreUrl: '' });
+          out.push({ date, time, opponent, ourScore, theirScore, result, location: '', boxScoreUrl: '' });
         } catch(e) {}
       });
       return out;
@@ -257,6 +261,8 @@ async function scrapeDbsaRecentGames(browser, base, teamSeq, year) {
           if (!dm) return;
           if (parseInt(dm[1]) !== yr) return;
           const date = `${dm[1]}-${dm[2]}-${dm[3]}`;
+          const tm = cells[0].match(/(\d{2}):(\d{2})/);
+          const time = tm ? `${tm[1]}:${tm[2]}` : '';
           const location = cells[2] || '';
           const gameText = cells[3] || '';
           const gm = gameText.match(/^(.+?)\s+(\d+)\s*VS\s*(\d+)\s+(.+?)$/);
@@ -274,7 +280,7 @@ async function scrapeDbsaRecentGames(browser, base, teamSeq, year) {
           else if (ourScore < theirScore) result = '패';
           const href = a.getAttribute('href') || '';
           const boxScoreUrl = href.startsWith('http') ? href : (baseUrl + href);
-          out.push({ date, opponent, ourScore, theirScore, result, location, boxScoreUrl });
+          out.push({ date, time, opponent, ourScore, theirScore, result, location, boxScoreUrl });
         } catch(e) {}
       });
       return out;
@@ -287,7 +293,14 @@ async function scrapeDbsaRecentGames(browser, base, teamSeq, year) {
       const key = g.date + '|' + g.opponent;
       const existing = map.get(key);
       if (!existing) map.set(key, g);
-      else if (!existing.boxScoreUrl && g.boxScoreUrl) map.set(key, g);
+      else {
+        // 누락된 필드만 채워 넣고 boxScoreUrl 은 있는 쪽 우선
+        if (!existing.time && g.time) existing.time = g.time;
+        if (!existing.location && g.location) existing.location = g.location;
+        if (!existing.boxScoreUrl && g.boxScoreUrl) {
+          existing.boxScoreUrl = g.boxScoreUrl;
+        }
+      }
     });
     const merged = Array.from(map.values()).sort((a, b) => a.date.localeCompare(b.date));
     return merged;
@@ -312,6 +325,8 @@ async function scrapeDbsaGames(browser, base, teamSeq, year) {
           const y = parseInt(m[1]);
           if (y !== yr) return;
           const date = `${m[1]}-${m[2]}-${m[3]}`;
+          const tm = text.match(/(\d{2}):(\d{2})/);
+          const time = tm ? `${tm[1]}:${tm[2]}` : '';
           const a = parseInt(m[4]);
           const b = parseInt(m[5]);
           const windupLeft = /와인드업\s*\d+\s*:/.test(text) || /^와인드업/.test(text);
@@ -324,7 +339,7 @@ async function scrapeDbsaGames(browser, base, teamSeq, year) {
           let result = '무';
           if (ourScore > theirScore) result = '승';
           else if (ourScore < theirScore) result = '패';
-          out.push({ date, opponent, ourScore, theirScore, result, location: '' });
+          out.push({ date, time, opponent, ourScore, theirScore, result, location: '' });
         } catch (e) { /* skip bad row */ }
       });
       // 날짜순 정렬
@@ -472,8 +487,9 @@ function gameToJs(g, i) {
   const loc = (g.location||'').replace(/'/g,"\\'");
   const osc = g.ourScore == null ? 'null' : g.ourScore;
   const tsc = g.theirScore == null ? 'null' : g.theirScore;
+  const time = g.time ? `,time:'${g.time.replace(/'/g,"\\'")}'` : '';
   const box = g.boxScoreUrl ? `,boxScoreUrl:'${g.boxScoreUrl.replace(/'/g,"\\'")}'` : '';
-  return `g${i+1}:{date:'${g.date}',opponent:'${opp}',ourScore:${osc},theirScore:${tsc},result:'${g.result}',location:'${loc}'${box}}`;
+  return `g${i+1}:{date:'${g.date}'${time},opponent:'${opp}',ourScore:${osc},theirScore:${tsc},result:'${g.result}',location:'${loc}'${box}}`;
 }
 
 function playersBlock(batters) {
