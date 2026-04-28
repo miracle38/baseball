@@ -13,6 +13,11 @@
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-04-28
+
+### Changed
+- 타자기록 / 투수기록 표의 순위 컬럼 — 정렬 키 값이 같으면 동점 처리(공동 순위, standard competition ranking). 부동소수점은 epsilon 0.0001로 비교
+
 ## [1.0.2] - 2026-04-28
 
 ### Added
@@ -35,7 +40,8 @@
 - 잔여 경기 일정 (시간/구장 정보 포함)
 - 팀 순위표 (시즌별)
 
-[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/miracle38/baseball/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/miracle38/baseball/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/miracle38/baseball/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/miracle38/baseball/releases/tag/v1.0.0

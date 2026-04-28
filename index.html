@@ -1290,7 +1290,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <strong>Windup Baseball Club</strong> &copy; 2026
-  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.2</span></a><br>
+  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.3</span></a><br>
   <span id="footerSourceWrap"></span>
 </footer>
 
@@ -2046,10 +2046,24 @@ function renderPlayers() {
     if (maxVal > 0) leaders[k] = maxVal;
   });
 
+  const sortKey = ss ? ss.key : null;
+  let lastVal = Symbol('init'), lastRank = 0;
   let html = '';
   computed.forEach((p, idx) => {
+    const cur = sortKey ? p[sortKey] : null;
+    let rank;
+    if (sortKey && idx > 0) {
+      const isEq = (typeof cur === 'number' && typeof lastVal === 'number')
+        ? Math.abs(cur - lastVal) < 0.0001
+        : cur === lastVal;
+      rank = isEq ? lastRank : idx + 1;
+    } else {
+      rank = idx + 1;
+    }
+    lastVal = cur;
+    lastRank = rank;
     html += `<tr>`;
-    html += `<td class="rank-col">${idx + 1}</td>`;
+    html += `<td class="rank-col">${rank}</td>`;
     let leagueTag = '';
     if (isCombinedView() && p._leagues && p._leagues.length > 0) {
       const yearEntries = getEntriesForYear(currentYear);
@@ -2139,10 +2153,24 @@ function renderPitchers() {
   const eraVals = computed.filter(p => p.IP > 0).map(p => p.ERA);
   const minERA = eraVals.length > 0 ? Math.min(...eraVals) : null;
 
+  const sortKey = ss ? ss.key : null;
+  let lastVal = Symbol('init'), lastRank = 0;
   let html = '';
   computed.forEach((pt, idx) => {
+    const cur = sortKey ? pt[sortKey] : null;
+    let rank;
+    if (sortKey && idx > 0) {
+      const isEq = (typeof cur === 'number' && typeof lastVal === 'number')
+        ? Math.abs(cur - lastVal) < 0.0001
+        : cur === lastVal;
+      rank = isEq ? lastRank : idx + 1;
+    } else {
+      rank = idx + 1;
+    }
+    lastVal = cur;
+    lastRank = rank;
     html += `<tr>`;
-    html += `<td class="rank-col">${idx + 1}</td>`;
+    html += `<td class="rank-col">${rank}</td>`;
     let leagueTag = '';
     if (isCombinedView() && pt._leagues && pt._leagues.length > 0) {
       const yearEntries = getEntriesForYear(currentYear);
@@ -3407,6 +3435,14 @@ function closePlayerProfile() {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.0.3',
+    date: '2026-04-28',
+    title: '동점 공동 순위 처리',
+    changed: [
+      '타자/투수 표 순위 컬럼 — 정렬 키 값이 같으면 공동 순위(예: 1, 1, 1, 4). 부동소수점은 epsilon 0.0001로 동점 비교',
+    ],
+  },
   {
     version: '1.0.2',
     date: '2026-04-28',
