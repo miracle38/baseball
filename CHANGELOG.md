@@ -13,6 +13,11 @@
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-04-28
+
+### Added
+- 타자기록 / 투수기록 / 경기기록 탭의 표 컬럼 헤더(thead)를 스크롤 시 상단 고정 — 표 영역 내부 스크롤 방식, 모바일 가로 스크롤도 그대로 동작
+
 ## [1.0.0] - 2026-04-28
 
 버전 관리를 시작하는 기준점. 이후 모든 변경은 이 문서에 누적 기록한다.
@@ -25,5 +30,6 @@
 - 잔여 경기 일정 (시간/구장 정보 포함)
 - 팀 순위표 (시즌별)
 
-[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/miracle38/baseball/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/miracle38/baseball/releases/tag/v1.0.0
