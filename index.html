@@ -657,7 +657,8 @@ tr.highlight-row:hover{
 #playerModal .bs-header .bs-meta{color:#6b7280}
 #playerModal .bs-close{color:#6b7280}
 #playerModal .bs-close:hover{color:#1f2937}
-#playerModal .bs-body{overflow-y:auto;max-height:calc(85vh - 80px)}
+#playerModal .bs-body{overflow:auto;max-height:calc(85vh - 80px)}
+#playerModal .pp-table-wrap{display:block}
 
 /* ===== PLAYER LINK ===== */
 .player-link{color:var(--white);text-decoration:none;border-bottom:1px dashed transparent;transition:var(--transition)}
@@ -3201,7 +3202,7 @@ function openPlayerProfile(name, number) {
     const grandTotal = sumRows(batterRows, batKeys);
     const gtAvg = grandTotal.AB > 0 ? grandTotal.H / grandTotal.AB : 0;
 
-    let html = '<div style="overflow-x:auto"><table class="pp-table"><thead><tr>';
+    let html = '<div class="pp-table-wrap"><table class="pp-table"><thead><tr>';
     html += '<th>연도</th><th>경기</th><th>타석</th><th>타수</th><th>안타</th><th>2B</th><th>3B</th><th>HR</th><th>타점</th><th>득점</th><th>도루</th><th>볼넷</th><th>삼진</th><th>타율</th>';
     html += '</tr></thead><tbody>';
 
@@ -3245,7 +3246,7 @@ function openPlayerProfile(name, number) {
     function sumIPRows(rows) { let t=0; rows.forEach(r => t += ipToThirds(r.IP || 0)); return t; }
     function fmtEraVal(er, ipThirds) { const dec = Math.floor(ipThirds/3) + (ipThirds%3)/3; return dec > 0 ? fmtERA(er*7/dec) : '-'; }
 
-    let html = '<div style="overflow-x:auto"><table class="pp-table"><thead><tr>';
+    let html = '<div class="pp-table-wrap"><table class="pp-table"><thead><tr>';
     html += '<th>연도</th><th>경기</th><th>승</th><th>패</th><th>세</th><th>이닝</th><th>피안타</th><th>삼진</th><th>볼넷</th><th>실점</th><th>자책</th><th>ERA</th>';
     html += '</tr></thead><tbody>';
 
