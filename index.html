@@ -312,6 +312,14 @@ button{cursor:pointer;font-family:inherit}
   position:sticky;top:0;z-index:5;
   background:#8b1a1a;
 }
+.rank-col{
+  width:42px;min-width:42px;
+  color:#94a3b8;font-weight:600;text-align:center;
+}
+th.rank-col{cursor:default}
+th.rank-col:hover{color:#cbd5e1}
+tbody td.rank-col{color:#94a3b8;font-weight:600}
+.totals-row td.rank-col{background:transparent}
 table{width:100%;border-collapse:collapse;min-width:1100px;font-size:14px;line-height:1.7}
 thead{background:linear-gradient(135deg, #8b1a1a, #c0282e, #a02020)}
 th{
@@ -1141,6 +1149,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
       <table id="playerTable">
         <thead>
           <tr>
+            <th class="rank-col">#</th>
             <th data-key="name" data-type="string">선수명 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="number" data-type="number">등번호 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="AVG" data-type="number">타율 <span class="sort-arrow">&#9650;</span></th>
@@ -1176,6 +1185,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
       <table id="pitcherTable">
         <thead>
           <tr>
+            <th class="rank-col">#</th>
             <th data-key="name" data-type="string">선수명 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="number" data-type="number">등번호 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="ERA" data-type="number">ERA <span class="sort-arrow">&#9650;</span></th>
@@ -1213,6 +1223,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
       <table id="gameTable">
         <thead>
           <tr>
+            <th class="rank-col">#</th>
             <th data-key="date" data-type="string">날짜 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="time" data-type="string">시간 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="opponent" data-type="string">상대팀 <span class="sort-arrow">&#9650;</span></th>
@@ -1279,7 +1290,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <strong>Windup Baseball Club</strong> &copy; 2026
-  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.1</span></a><br>
+  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.2</span></a><br>
   <span id="footerSourceWrap"></span>
 </footer>
 
@@ -1995,7 +2006,7 @@ function renderPlayers() {
   const tbody = document.getElementById('playerBody');
   const entries = Object.entries(playersData);
   if (entries.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="19" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="20" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
     return;
   }
 
@@ -2036,8 +2047,9 @@ function renderPlayers() {
   });
 
   let html = '';
-  computed.forEach(p => {
+  computed.forEach((p, idx) => {
     html += `<tr>`;
+    html += `<td class="rank-col">${idx + 1}</td>`;
     let leagueTag = '';
     if (isCombinedView() && p._leagues && p._leagues.length > 0) {
       const yearEntries = getEntriesForYear(currentYear);
@@ -2074,7 +2086,7 @@ function renderPlayers() {
   const tSLG = totals.AB > 0 ? (tTB / totals.AB) : 0;
   const tOPS = tOBP + tSLG;
 
-  html += '<tr class="totals-row"><td class="name-cell">합계</td><td></td>';
+  html += '<tr class="totals-row"><td class="rank-col"></td><td class="name-cell">합계</td><td></td>';
   html += `<td>${fmtRate(tAVG)}</td>`;
   ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => { html += `<td>${totals[k]}</td>`; });
   html += `<td>${fmtRate(tOBP)}</td><td>${fmtRate(tSLG)}</td><td>${fmtRate(tOPS)}</td></tr>`;
@@ -2087,7 +2099,7 @@ function renderPitchers() {
   const tbody = document.getElementById('pitcherBody');
   const entries = Object.entries(pitchersData);
   if (entries.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="20" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="21" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
     return;
   }
 
@@ -2128,8 +2140,9 @@ function renderPitchers() {
   const minERA = eraVals.length > 0 ? Math.min(...eraVals) : null;
 
   let html = '';
-  computed.forEach(pt => {
+  computed.forEach((pt, idx) => {
     html += `<tr>`;
+    html += `<td class="rank-col">${idx + 1}</td>`;
     let leagueTag = '';
     if (isCombinedView() && pt._leagues && pt._leagues.length > 0) {
       const yearEntries = getEntriesForYear(currentYear);
@@ -2169,7 +2182,7 @@ function renderPitchers() {
   const ptERA = ptTotals.IP > 0 ? (ptTotals.ER * 7 / ipForCalc(ptTotals.IP)) : 0;
   const ptWPCT = (ptTotals.W + ptTotals.L) > 0 ? (ptTotals.W / (ptTotals.W + ptTotals.L)) : 0;
 
-  html += '<tr class="totals-row"><td class="name-cell">합계</td><td></td>';
+  html += '<tr class="totals-row"><td class="rank-col"></td><td class="name-cell">합계</td><td></td>';
   html += `<td>${ptTotals.IP > 0 ? fmtERA(ptERA) : '-'}</td>`;
   html += `<td>${ptTotals.G}</td><td>${ptTotals.W}</td><td>${ptTotals.L}</td>`;
   html += `<td>${ptTotals.SV}</td><td>${ptTotals.HD}</td><td>${fmtIP(ptTotals.IP)}</td>`;
@@ -2245,7 +2258,7 @@ function renderGames() {
       tableEl.style.display = 'none';
       return;
     }
-    tbody.innerHTML = '<tr><td colspan="5" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
     summaryEl.innerHTML = '';
     // Clean up summary cards if they exist
     const tableEl = tbody.closest('table') || tbody.parentElement;
@@ -2338,7 +2351,7 @@ function renderGames() {
   summaryEl.innerHTML = summaryHtml;
 
   let html = '';
-  entries.forEach(([id, g]) => {
+  entries.forEach(([id, g], idx) => {
     const isFuture = isScheduledGame(g);
     let rowCls = 'game-row';
     if (isFuture) rowCls += ' future-game';
@@ -2368,6 +2381,7 @@ function renderGames() {
     }
 
     html += `<tr class="${rowCls}" data-game-id="${escHtml(id)}">`;
+    html += `<td class="rank-col">${idx + 1}</td>`;
     html += `<td>${escHtml(g.date)}</td>`;
     html += `<td>${escHtml(g.time || '')}</td>`;
     html += `<td>${escHtml(g.opponent)}${leagueTag}</td>`;
@@ -3393,6 +3407,14 @@ function closePlayerProfile() {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.0.2',
+    date: '2026-04-28',
+    title: '표 순위(넘버링) 컬럼 추가',
+    added: [
+      '타자기록 / 투수기록 / 경기기록 표 첫 컬럼에 순위(#) 추가 — 현재 정렬 기준에 따라 자동 갱신',
+    ],
+  },
   {
     version: '1.0.1',
     date: '2026-04-28',

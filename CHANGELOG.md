@@ -13,6 +13,11 @@
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-04-28
+
+### Added
+- 타자기록 / 투수기록 / 경기기록 표 첫 컬럼에 순위(`#`) 추가 — 현재 정렬 기준에 따라 자동 갱신 (예: ERA 정렬 → ERA 순위)
+
 ## [1.0.1] - 2026-04-28
 
 ### Added
@@ -30,6 +35,7 @@
 - 잔여 경기 일정 (시간/구장 정보 포함)
 - 팀 순위표 (시즌별)
 
-[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/miracle38/baseball/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/miracle38/baseball/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/miracle38/baseball/releases/tag/v1.0.0
