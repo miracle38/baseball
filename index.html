@@ -1236,9 +1236,9 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
             <th data-key="PA" data-type="number">타석 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="AB" data-type="number">타수 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="H" data-type="number">안타 <span class="sort-arrow">&#9650;</span></th>
-            <th data-key="2B" data-type="number">2B <span class="sort-arrow">&#9650;</span></th>
-            <th data-key="3B" data-type="number">3B <span class="sort-arrow">&#9650;</span></th>
-            <th data-key="HR" data-type="number">HR <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="2B" data-type="number">2루타 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="3B" data-type="number">3루타 <span class="sort-arrow">&#9650;</span></th>
+            <th data-key="HR" data-type="number">홈런 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="RBI" data-type="number">타점 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="R" data-type="number">득점 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="SB" data-type="number">도루 <span class="sort-arrow">&#9650;</span></th>
@@ -2935,7 +2935,7 @@ function renderHistoryPlayersTable(entry) {
 
   let html = '<div class="table-wrapper" style="margin-top:8px"><table style="min-width:900px"><thead><tr>';
   html += '<th>선수명</th><th>등번호</th><th>타율</th><th>G</th><th>타석</th><th>타수</th><th>안타</th>';
-  html += '<th>2B</th><th>3B</th><th>HR</th><th>타점</th><th>득점</th><th>도루</th>';
+  html += '<th>2루타</th><th>3루타</th><th>홈런</th><th>타점</th><th>득점</th><th>도루</th>';
   html += '<th>볼넷</th><th>사구</th><th>삼진</th><th>출루율</th><th>장타율</th><th>OPS</th>';
   html += '</tr></thead><tbody>';
 
@@ -3445,7 +3445,7 @@ function openPlayerProfile(name, number) {
     const gtAvg = grandTotal.AB > 0 ? grandTotal.H / grandTotal.AB : 0;
 
     let html = '<div class="pp-table-wrap"><table class="pp-table"><thead><tr>';
-    html += '<th>연도</th><th>타율</th><th>경기</th><th>타석</th><th>타수</th><th>안타</th><th>2B</th><th>3B</th><th>HR</th><th>타점</th><th>득점</th><th>도루</th><th>볼넷</th><th>삼진</th>';
+    html += '<th>연도</th><th>타율</th><th>경기</th><th>타석</th><th>타수</th><th>안타</th><th>2루타</th><th>3루타</th><th>홈런</th><th>타점</th><th>득점</th><th>도루</th><th>볼넷</th><th>삼진</th>';
     html += '</tr></thead><tbody>';
 
     yearGroups.forEach(([year, rows]) => {
