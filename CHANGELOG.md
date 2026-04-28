@@ -13,6 +13,11 @@
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-04-28
+
+### Changed
+- 선수 비교 모달의 모바일 대응 — 모달 폭/패딩 조정, 표 셀 폰트 축소, 첫 컬럼(지표명) sticky z-index/그림자 강화, 레이더 차트 라벨/legend 폰트 축소
+
 ## [1.0.6] - 2026-04-28
 
 ### Changed
@@ -58,7 +63,8 @@
 - 잔여 경기 일정 (시간/구장 정보 포함)
 - 팀 순위표 (시즌별)
 
-[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.6...HEAD
+[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.7...HEAD
+[1.0.7]: https://github.com/miracle38/baseball/compare/v1.0.6...v1.0.7
 [1.0.6]: https://github.com/miracle38/baseball/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/miracle38/baseball/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/miracle38/baseball/compare/v1.0.3...v1.0.4

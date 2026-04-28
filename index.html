@@ -372,16 +372,29 @@ th.compare-col:hover{color:#cbd5e1}
 }
 .compare-table tr:last-child td{border-bottom:none}
 .compare-table th:first-child, .compare-table td:first-child{
-  text-align:left;background:#fafbfc;font-weight:700;color:#1f2937;position:sticky;left:0;
+  text-align:left;background:#fafbfc;font-weight:700;color:#1f2937;position:sticky;left:0;z-index:2;
+  box-shadow:1px 0 0 #f0f0f0;
 }
+.compare-table thead th:first-child{z-index:3}
 .compare-table .compare-leader{color:#c0282e;font-weight:800}
 .compare-chart-wrap{
   background:#fff;border:1px solid #e5e7eb;border-radius:10px;
   padding:14px;height:380px;position:relative;
 }
 @media(max-width:640px){
-  .compare-chart-wrap{height:320px}
-  .compare-fab{right:14px;bottom:14px;padding:10px 16px;font-size:13px}
+  #compareModal{width:99%;max-width:none;border-radius:12px}
+  #compareModal .bs-header{padding:14px 16px}
+  #compareModal .bs-header h3{font-size:15px}
+  #compareModal .bs-header .bs-meta{font-size:11px}
+  #compareModal .bs-body{padding:14px;max-height:calc(95vh - 70px)}
+  .compare-section-title{font-size:13px;margin:10px 0 8px}
+  .compare-table th, .compare-table td{padding:6px 8px;font-size:12px}
+  .compare-table th{font-size:10px;padding:7px 6px}
+  .compare-chart-wrap{height:300px;padding:8px}
+  .compare-fab{right:12px;bottom:12px;padding:10px 16px;font-size:13px}
+  .compare-fab .compare-count{font-size:11px;padding:1px 7px}
+  .compare-col{width:28px;min-width:28px}
+  .compare-col input[type=checkbox]{width:14px;height:14px}
 }
 table{width:100%;border-collapse:collapse;min-width:1100px;font-size:14px;line-height:1.7}
 thead{background:linear-gradient(135deg, #8b1a1a, #c0282e, #a02020)}
@@ -1374,7 +1387,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <strong>Windup Baseball Club</strong> &copy; 2026
-  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.6</span></a><br>
+  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.7</span></a><br>
   <span id="footerSourceWrap"></span>
 </footer>
 
@@ -3752,23 +3765,28 @@ function renderCompareBody(kind, data) {
   if (compareChart) { compareChart.destroy(); compareChart = null; }
   if (typeof Chart !== 'undefined') {
     const ctx = document.getElementById('compareChart').getContext('2d');
+    const isMobile = window.matchMedia('(max-width:640px)').matches;
     compareChart = new Chart(ctx, {
       type: 'radar',
       data: { labels, datasets },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: { padding: isMobile ? 4 : 8 },
         scales: {
           r: {
             beginAtZero: true, max: 100,
-            ticks: { stepSize: 25, color: '#94a3b8', backdropColor: 'transparent' },
-            pointLabels: { font: { size: 12, weight: '600' }, color: '#1f2937' },
+            ticks: { stepSize: 25, color: '#94a3b8', backdropColor: 'transparent', font: { size: isMobile ? 9 : 10 } },
+            pointLabels: { font: { size: isMobile ? 10 : 12, weight: '600' }, color: '#1f2937' },
             grid: { color: '#e5e7eb' },
             angleLines: { color: '#e5e7eb' },
           },
         },
         plugins: {
-          legend: { position: 'top', labels: { font: { size: 12 } } },
+          legend: {
+            position: 'top',
+            labels: { font: { size: isMobile ? 11 : 12 }, boxWidth: isMobile ? 14 : 20, padding: isMobile ? 6 : 10 },
+          },
           tooltip: {
             callbacks: {
               label: (ctx) => {
@@ -3799,6 +3817,14 @@ if (_origSwitchTab) {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.0.7',
+    date: '2026-04-28',
+    title: '선수 비교 모달 모바일 대응',
+    changed: [
+      '모달 폭/패딩, 표 셀 폰트, 첫 컬럼 sticky 강화, 레이더 차트 라벨/legend 폰트를 모바일(≤640px)에서 축소',
+    ],
+  },
   {
     version: '1.0.6',
     date: '2026-04-28',
