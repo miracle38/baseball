@@ -13,6 +13,14 @@
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-04-28
+
+### Added
+- **선수 비교 기능** — 타자/투수 표에서 체크박스로 2~5명 선택하면 우측 하단 `📊 선수 비교` 버튼이 등장. 클릭 시 모달에서 다년도 통산 표(1위 강조) + 레이더 차트로 시각화
+- 레이더 차트(Chart.js) — 비교 그룹 내 상대값(max=100%) 기준
+  - 타자: 타율/OPS/홈런/타점/득점/도루/안타/볼넷
+  - 투수: 승/삼진/세이브/홀드/이닝
+
 ## [1.0.3] - 2026-04-28
 
 ### Changed
@@ -40,7 +48,8 @@
 - 잔여 경기 일정 (시간/구장 정보 포함)
 - 팀 순위표 (시즌별)
 
-[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/miracle38/baseball/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/miracle38/baseball/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/miracle38/baseball/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/miracle38/baseball/compare/v1.0.0...v1.0.1

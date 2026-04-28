@@ -320,6 +320,69 @@ th.rank-col{cursor:default}
 th.rank-col:hover{color:#cbd5e1}
 tbody td.rank-col{color:#94a3b8;font-weight:600}
 .totals-row td.rank-col{background:transparent}
+
+.compare-col{width:34px;min-width:34px;text-align:center}
+th.compare-col{cursor:default}
+th.compare-col:hover{color:#cbd5e1}
+.compare-col input[type=checkbox]{
+  width:16px;height:16px;cursor:pointer;accent-color:var(--red);
+  vertical-align:middle;
+}
+.totals-row td.compare-col{background:transparent}
+
+.compare-fab{
+  position:fixed;right:24px;bottom:24px;z-index:1500;
+  background:linear-gradient(135deg,#8b1a1a,#c0282e);
+  color:#fff;border:none;border-radius:30px;
+  padding:14px 22px;font-size:14px;font-weight:700;font-family:inherit;
+  cursor:pointer;box-shadow:0 8px 24px rgba(140,20,20,0.4);
+  display:none;align-items:center;gap:8px;
+  transition:transform 0.15s, box-shadow 0.15s;
+}
+.compare-fab:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(140,20,20,0.5)}
+.compare-fab.active{display:inline-flex}
+.compare-fab .compare-count{
+  background:#fff;color:#8b1a1a;border-radius:999px;
+  padding:1px 8px;font-size:12px;font-weight:800;min-width:20px;
+}
+
+#compareModal{max-width:1100px;width:96%}
+#compareModal .bs-header{
+  background:linear-gradient(135deg,#1f2937 0%,#334155 100%);
+}
+#compareModal .bs-body{padding:18px 22px;overflow-y:auto;max-height:calc(85vh - 80px)}
+.compare-section-title{
+  font-size:14px;font-weight:700;color:#1f2937;
+  margin:14px 0 10px;letter-spacing:0.3px;
+}
+.compare-section-title:first-child{margin-top:0}
+.compare-table-wrap{overflow-x:auto;margin-bottom:18px}
+.compare-table{
+  width:100%;border-collapse:collapse;font-size:13px;
+  background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;
+}
+.compare-table th, .compare-table td{
+  padding:7px 10px;text-align:center;
+  border-bottom:1px solid #f0f0f0;border-right:1px solid #f5f5f5;
+  white-space:nowrap;
+}
+.compare-table th{
+  background:#f8fafc;color:#475569;font-weight:700;font-size:11px;
+  text-transform:uppercase;letter-spacing:0.4px;
+}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table th:first-child, .compare-table td:first-child{
+  text-align:left;background:#fafbfc;font-weight:700;color:#1f2937;position:sticky;left:0;
+}
+.compare-table .compare-leader{color:#c0282e;font-weight:800}
+.compare-chart-wrap{
+  background:#fff;border:1px solid #e5e7eb;border-radius:10px;
+  padding:14px;height:380px;position:relative;
+}
+@media(max-width:640px){
+  .compare-chart-wrap{height:320px}
+  .compare-fab{right:14px;bottom:14px;padding:10px 16px;font-size:13px}
+}
 table{width:100%;border-collapse:collapse;min-width:1100px;font-size:14px;line-height:1.7}
 thead{background:linear-gradient(135deg, #8b1a1a, #c0282e, #a02020)}
 th{
@@ -1150,6 +1213,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
         <thead>
           <tr>
             <th class="rank-col">#</th>
+            <th class="compare-col" title="비교 대상 선택">✓</th>
             <th data-key="name" data-type="string">선수명 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="number" data-type="number">등번호 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="AVG" data-type="number">타율 <span class="sort-arrow">&#9650;</span></th>
@@ -1186,6 +1250,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
         <thead>
           <tr>
             <th class="rank-col">#</th>
+            <th class="compare-col" title="비교 대상 선택">✓</th>
             <th data-key="name" data-type="string">선수명 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="number" data-type="number">등번호 <span class="sort-arrow">&#9650;</span></th>
             <th data-key="ERA" data-type="number">ERA <span class="sort-arrow">&#9650;</span></th>
@@ -1287,10 +1352,29 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 
 </main>
 
+<!-- ===== COMPARE FAB ===== -->
+<button class="compare-fab" id="compareFab" onclick="openCompareModal()" title="선택한 선수 비교">
+  📊 선수 비교 <span class="compare-count" id="compareCount">0</span>
+</button>
+
+<!-- ===== COMPARE MODAL ===== -->
+<div class="boxscore-overlay" id="compareOverlay" onclick="if(event.target===this)closeCompareModal()">
+  <div class="boxscore-modal" id="compareModal">
+    <div class="bs-header">
+      <div>
+        <h3 id="compareTitle">선수 비교</h3>
+        <div class="bs-meta" id="compareSubtitle">다년도 통산 기록</div>
+      </div>
+      <button class="bs-close" onclick="closeCompareModal()">&times;</button>
+    </div>
+    <div class="bs-body" id="compareBody"></div>
+  </div>
+</div>
+
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <strong>Windup Baseball Club</strong> &copy; 2026
-  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.3</span></a><br>
+  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.4</span></a><br>
   <span id="footerSourceWrap"></span>
 </footer>
 
@@ -1312,6 +1396,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <script>
 // ===== FIREBASE CONFIG =====
@@ -2006,7 +2091,7 @@ function renderPlayers() {
   const tbody = document.getElementById('playerBody');
   const entries = Object.entries(playersData);
   if (entries.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="20" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="21" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
     return;
   }
 
@@ -2062,8 +2147,11 @@ function renderPlayers() {
     }
     lastVal = cur;
     lastRank = rank;
+    const compKey = p.name + '|' + (p.number || 0);
+    const isChecked = compareSelection.batter.has(compKey) ? 'checked' : '';
     html += `<tr>`;
     html += `<td class="rank-col">${rank}</td>`;
+    html += `<td class="compare-col"><input type="checkbox" data-compare-key="${escHtml(compKey)}" data-compare-kind="batter" ${isChecked} onclick="toggleCompareSelection(event,this)"></td>`;
     let leagueTag = '';
     if (isCombinedView() && p._leagues && p._leagues.length > 0) {
       const yearEntries = getEntriesForYear(currentYear);
@@ -2100,7 +2188,7 @@ function renderPlayers() {
   const tSLG = totals.AB > 0 ? (tTB / totals.AB) : 0;
   const tOPS = tOBP + tSLG;
 
-  html += '<tr class="totals-row"><td class="rank-col"></td><td class="name-cell">합계</td><td></td>';
+  html += '<tr class="totals-row"><td class="rank-col"></td><td class="compare-col"></td><td class="name-cell">합계</td><td></td>';
   html += `<td>${fmtRate(tAVG)}</td>`;
   ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => { html += `<td>${totals[k]}</td>`; });
   html += `<td>${fmtRate(tOBP)}</td><td>${fmtRate(tSLG)}</td><td>${fmtRate(tOPS)}</td></tr>`;
@@ -2113,7 +2201,7 @@ function renderPitchers() {
   const tbody = document.getElementById('pitcherBody');
   const entries = Object.entries(pitchersData);
   if (entries.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="21" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="22" style="padding:30px;color:var(--gray)">데이터가 없습니다.</td></tr>';
     return;
   }
 
@@ -2169,8 +2257,11 @@ function renderPitchers() {
     }
     lastVal = cur;
     lastRank = rank;
+    const compKey = pt.name + '|' + (pt.number || 0);
+    const isChecked = compareSelection.pitcher.has(compKey) ? 'checked' : '';
     html += `<tr>`;
     html += `<td class="rank-col">${rank}</td>`;
+    html += `<td class="compare-col"><input type="checkbox" data-compare-key="${escHtml(compKey)}" data-compare-kind="pitcher" ${isChecked} onclick="toggleCompareSelection(event,this)"></td>`;
     let leagueTag = '';
     if (isCombinedView() && pt._leagues && pt._leagues.length > 0) {
       const yearEntries = getEntriesForYear(currentYear);
@@ -2210,7 +2301,7 @@ function renderPitchers() {
   const ptERA = ptTotals.IP > 0 ? (ptTotals.ER * 7 / ipForCalc(ptTotals.IP)) : 0;
   const ptWPCT = (ptTotals.W + ptTotals.L) > 0 ? (ptTotals.W / (ptTotals.W + ptTotals.L)) : 0;
 
-  html += '<tr class="totals-row"><td class="rank-col"></td><td class="name-cell">합계</td><td></td>';
+  html += '<tr class="totals-row"><td class="rank-col"></td><td class="compare-col"></td><td class="name-cell">합계</td><td></td>';
   html += `<td>${ptTotals.IP > 0 ? fmtERA(ptERA) : '-'}</td>`;
   html += `<td>${ptTotals.G}</td><td>${ptTotals.W}</td><td>${ptTotals.L}</td>`;
   html += `<td>${ptTotals.SV}</td><td>${ptTotals.HD}</td><td>${fmtIP(ptTotals.IP)}</td>`;
@@ -3433,8 +3524,286 @@ function closePlayerProfile() {
   document.body.style.overflow = '';
 }
 
+// === 선수 비교 ===
+const compareSelection = { batter: new Set(), pitcher: new Set() };
+const COMPARE_MAX = 5;
+let compareChart = null;
+
+function getActiveCompareKind() {
+  const active = document.querySelector('.tab-content.active');
+  if (!active) return null;
+  if (active.id === 'tab-players') return 'batter';
+  if (active.id === 'tab-pitchers') return 'pitcher';
+  return null;
+}
+
+function toggleCompareSelection(e, el) {
+  const key = el.dataset.compareKey;
+  const kind = el.dataset.compareKind;
+  if (!key || !kind) return;
+  const set = compareSelection[kind];
+  if (el.checked) {
+    if (set.size >= COMPARE_MAX) {
+      el.checked = false;
+      alert(`최대 ${COMPARE_MAX}명까지 선택할 수 있습니다.`);
+      return;
+    }
+    set.add(key);
+  } else {
+    set.delete(key);
+  }
+  updateCompareFab();
+}
+
+function updateCompareFab() {
+  const fab = document.getElementById('compareFab');
+  const cnt = document.getElementById('compareCount');
+  const kind = getActiveCompareKind();
+  if (!fab || !cnt) return;
+  if (!kind || compareSelection[kind].size < 2) {
+    fab.classList.remove('active');
+    return;
+  }
+  cnt.textContent = compareSelection[kind].size;
+  fab.classList.add('active');
+}
+
+function collectCompareData(kind) {
+  const result = [];
+  compareSelection[kind].forEach(key => {
+    const [name, numStr] = key.split('|');
+    const number = parseInt(numStr, 10) || 0;
+    const seasons = [];
+    ALL_DATA.forEach(entry => {
+      const pool = kind === 'batter' ? entry.players : entry.pitchers;
+      if (!pool) return;
+      Object.values(pool).forEach(p => {
+        const pNum = p.number || p.num || 0;
+        if (p.name === name && pNum == number) {
+          seasons.push({ year: entry.year, league: entry.league, ...p, number: pNum });
+        }
+      });
+    });
+    if (seasons.length > 0) result.push({ name, number, seasons });
+  });
+  return result;
+}
+
+function sumBatterSeasons(seasons) {
+  const keys = ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'];
+  const t = {};
+  keys.forEach(k => t[k] = 0);
+  seasons.forEach(r => keys.forEach(k => t[k] += (r[k] || 0)));
+  t.AVG = t.AB > 0 ? t.H / t.AB : 0;
+  t.OBP = (t.AB + t.BB + t.HBP) > 0 ? (t.H + t.BB + t.HBP) / (t.AB + t.BB + t.HBP) : 0;
+  const singles = t.H - t['2B'] - t['3B'] - t.HR;
+  const TB = singles + t['2B']*2 + t['3B']*3 + t.HR*4;
+  t.SLG = t.AB > 0 ? TB / t.AB : 0;
+  t.OPS = t.OBP + t.SLG;
+  return t;
+}
+
+function sumPitcherSeasons(seasons) {
+  const keys = ['G','W','L','SV','HD','pH','pHR','K','pBB','pIBB','pHBP','R','ER','BF','NP'];
+  const t = {};
+  keys.forEach(k => t[k] = 0);
+  let ipThirds = 0;
+  seasons.forEach(r => {
+    keys.forEach(k => t[k] += (r[k] || 0));
+    ipThirds += ipToThirds(r.IP || 0);
+  });
+  t.IP = thirdsToIP(ipThirds);
+  t._ipThirds = ipThirds;
+  const dec = Math.floor(ipThirds/3) + (ipThirds%3)/3;
+  t.ERA = dec > 0 ? (t.ER * 7) / dec : 0;
+  t.WPCT = (t.W + t.L) > 0 ? t.W / (t.W + t.L) : 0;
+  return t;
+}
+
+const COMPARE_PALETTE = [
+  { border:'#c0282e', bg:'rgba(192,40,46,0.2)' },
+  { border:'#2563eb', bg:'rgba(37,99,235,0.2)' },
+  { border:'#059669', bg:'rgba(5,150,105,0.2)' },
+  { border:'#d97706', bg:'rgba(217,119,6,0.2)' },
+  { border:'#7c3aed', bg:'rgba(124,58,237,0.2)' },
+];
+
+function openCompareModal() {
+  const kind = getActiveCompareKind();
+  if (!kind) return;
+  if (compareSelection[kind].size < 2) {
+    alert('비교할 선수를 2명 이상 선택해주세요.');
+    return;
+  }
+  const data = collectCompareData(kind).map(d => ({
+    ...d,
+    totals: kind === 'batter' ? sumBatterSeasons(d.seasons) : sumPitcherSeasons(d.seasons),
+  }));
+
+  document.getElementById('compareTitle').textContent =
+    (kind === 'batter' ? '타자' : '투수') + ' 비교';
+  document.getElementById('compareSubtitle').textContent =
+    `다년도 통산 기록 · ${data.length}명`;
+
+  renderCompareBody(kind, data);
+
+  document.getElementById('compareOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCompareModal() {
+  document.getElementById('compareOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  if (compareChart) { compareChart.destroy(); compareChart = null; }
+}
+
+function renderCompareBody(kind, data) {
+  const body = document.getElementById('compareBody');
+  if (!body) return;
+
+  // 표 컬럼 정의 (key, label, fmt)
+  const cols = kind === 'batter' ? [
+    ['G','경기',v=>v],
+    ['PA','타석',v=>v], ['AB','타수',v=>v], ['H','안타',v=>v],
+    ['2B','2B',v=>v], ['3B','3B',v=>v], ['HR','HR',v=>v],
+    ['RBI','타점',v=>v], ['R','득점',v=>v], ['SB','도루',v=>v],
+    ['BB','볼넷',v=>v], ['HBP','사구',v=>v], ['SO','삼진',v=>v],
+    ['AVG','타율',fmtRate], ['OBP','출루',fmtRate], ['SLG','장타',fmtRate], ['OPS','OPS',fmtRate],
+  ] : [
+    ['G','경기',v=>v], ['W','승',v=>v], ['L','패',v=>v], ['SV','세',v=>v], ['HD','홀드',v=>v],
+    ['IP','이닝',v=>fmtIP(v)],
+    ['pH','피안타',v=>v], ['pHR','피홈런',v=>v],
+    ['K','삼진',v=>v], ['pBB','볼넷',v=>v], ['pHBP','사구',v=>v],
+    ['R','실점',v=>v], ['ER','자책',v=>v],
+    ['ERA','ERA',fmtERA], ['WPCT','승률',fmtRate],
+  ];
+  // 시즌수 추가
+  cols.unshift(['_seasons','시즌',v=>v]);
+
+  // leader (max/min) 계산 — ERA는 min, 그 외 max
+  const leaderKey = {};
+  cols.forEach(([k]) => {
+    const vals = data.map(d => k === '_seasons' ? d.seasons.length : (d.totals[k] || 0));
+    if (vals.length === 0) return;
+    if (k === 'ERA') {
+      const positives = vals.filter(v => v > 0);
+      leaderKey[k] = positives.length ? Math.min(...positives) : null;
+    } else {
+      leaderKey[k] = Math.max(...vals);
+    }
+  });
+
+  // 표 HTML
+  let tableHtml = '<div class="compare-section-title">📋 통산 기록 비교</div>';
+  tableHtml += '<div class="compare-table-wrap"><table class="compare-table"><thead><tr><th>지표</th>';
+  data.forEach(d => {
+    tableHtml += `<th>${escHtml(d.name)} <span style="color:#94a3b8;font-weight:500">#${d.number}</span></th>`;
+  });
+  tableHtml += '</tr></thead><tbody>';
+  cols.forEach(([k, label, fn]) => {
+    tableHtml += `<tr><td>${label}</td>`;
+    data.forEach(d => {
+      const raw = k === '_seasons' ? d.seasons.length : (d.totals[k] || 0);
+      const isLeader = leaderKey[k] != null && (
+        k === 'ERA' ? (raw > 0 && Math.abs(raw - leaderKey[k]) < 0.001)
+                    : (raw > 0 && Math.abs(raw - leaderKey[k]) < 0.0001)
+      );
+      const display = fn ? fn(raw) : raw;
+      tableHtml += `<td class="${isLeader ? 'compare-leader' : ''}">${display}</td>`;
+    });
+    tableHtml += '</tr>';
+  });
+  tableHtml += '</tbody></table></div>';
+
+  // 차트 컨테이너
+  tableHtml += '<div class="compare-section-title">📊 주요 지표 (비교 그룹 내 상대값)</div>';
+  tableHtml += '<div class="compare-chart-wrap"><canvas id="compareChart"></canvas></div>';
+
+  body.innerHTML = tableHtml;
+
+  // 레이더 차트 렌더
+  const radarMetrics = kind === 'batter'
+    ? [['AVG','타율'],['OPS','OPS'],['HR','홈런'],['RBI','타점'],['R','득점'],['SB','도루'],['H','안타'],['BB','볼넷']]
+    : [['W','승'],['K','삼진'],['SV','세이브'],['HD','홀드'],['_ipThirds','이닝(아웃)']];
+
+  const labels = radarMetrics.map(m => m[1]);
+  const maxes = {};
+  radarMetrics.forEach(([k]) => {
+    maxes[k] = Math.max(...data.map(d => d.totals[k] || 0)) || 1;
+  });
+  const datasets = data.map((d, i) => {
+    const color = COMPARE_PALETTE[i % COMPARE_PALETTE.length];
+    return {
+      label: `${d.name} #${d.number}`,
+      data: radarMetrics.map(([k]) => Math.round(((d.totals[k] || 0) / maxes[k]) * 100)),
+      borderColor: color.border,
+      backgroundColor: color.bg,
+      borderWidth: 2,
+      pointRadius: 3,
+      pointBackgroundColor: color.border,
+    };
+  });
+
+  if (compareChart) { compareChart.destroy(); compareChart = null; }
+  if (typeof Chart !== 'undefined') {
+    const ctx = document.getElementById('compareChart').getContext('2d');
+    compareChart = new Chart(ctx, {
+      type: 'radar',
+      data: { labels, datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            beginAtZero: true, max: 100,
+            ticks: { stepSize: 25, color: '#94a3b8', backdropColor: 'transparent' },
+            pointLabels: { font: { size: 12, weight: '600' }, color: '#1f2937' },
+            grid: { color: '#e5e7eb' },
+            angleLines: { color: '#e5e7eb' },
+          },
+        },
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 12 } } },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const m = radarMetrics[ctx.dataIndex];
+                const playerIdx = ctx.datasetIndex;
+                const raw = data[playerIdx].totals[m[0]] || 0;
+                const formatted = m[0] === 'AVG' || m[0] === 'OPS' ? fmtRate(raw)
+                                : m[0] === '_ipThirds' ? thirdsToIP(raw).toFixed(1)
+                                : raw;
+                return `${ctx.dataset.label}: ${formatted} (${ctx.formattedValue}%)`;
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+}
+
+// 탭 전환 시 FAB 갱신
+const _origSwitchTab = typeof switchTab === 'function' ? switchTab : null;
+if (_origSwitchTab) {
+  window.switchTab = function(tab) {
+    _origSwitchTab(tab);
+    updateCompareFab();
+  };
+}
+
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.0.4',
+    date: '2026-04-28',
+    title: '선수 비교 기능',
+    added: [
+      '타자/투수 표에서 체크박스로 2~5명 선택 → 우측 하단 📊 버튼 → 다년도 통산 비교 모달 (표 + 레이더 차트)',
+      '레이더 차트는 비교 그룹 내 상대값(max=100%) 기준 (타자 8지표, 투수 5지표)',
+      '비교 표에서는 각 지표 1위를 빨간 굵은 글씨로 강조',
+    ],
+  },
   {
     version: '1.0.3',
     date: '2026-04-28',
