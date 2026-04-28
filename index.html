@@ -34,13 +34,14 @@
   --row-hover:rgba(233,69,96,0.06);
   --transition:0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:clip}
 body{
   font-family:'Segoe UI','Malgun Gothic','맑은 고딕',sans-serif;
   background:var(--bg);
   background-image:none;
   color:var(--white);line-height:1.6;
   min-height:100vh;
+  overflow-x:clip;
 }
 a{color:var(--red);text-decoration:none;transition:var(--transition)}
 a:hover{color:#ff6b8a}
@@ -818,6 +819,7 @@ tr.highlight-row:hover{
 #playerModal .bs-close{color:#6b7280}
 #playerModal .bs-close:hover{color:#1f2937}
 #playerModal .bs-body{overflow:auto;max-height:calc(85vh - 80px)}
+.pp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 #playerModal .pp-table-wrap{display:block}
 
 /* ===== PLAYER LINK ===== */
