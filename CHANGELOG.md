@@ -13,6 +13,11 @@
 
 ## [Unreleased]
 
+## [1.0.8] - 2026-04-28
+
+### Changed
+- 선수 비교 표 폭을 인원 수에 따라 유동적으로 조정 — 기존엔 항상 100% 폭이라 2명일 때 모바일에서 컬럼 간격이 너무 떨어져 보이던 문제 해결. 셀 min-width 명시(데스크톱 80px / 모바일 68px)
+
 ## [1.0.7] - 2026-04-28
 
 ### Changed
@@ -63,7 +68,8 @@
 - 잔여 경기 일정 (시간/구장 정보 포함)
 - 팀 순위표 (시즌별)
 
-[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.7...HEAD
+[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.8...HEAD
+[1.0.8]: https://github.com/miracle38/baseball/compare/v1.0.7...v1.0.8
 [1.0.7]: https://github.com/miracle38/baseball/compare/v1.0.6...v1.0.7
 [1.0.6]: https://github.com/miracle38/baseball/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/miracle38/baseball/compare/v1.0.4...v1.0.5

@@ -358,14 +358,15 @@ th.compare-col:hover{color:#cbd5e1}
 .compare-section-title:first-child{margin-top:0}
 .compare-table-wrap{overflow-x:auto;margin-bottom:18px}
 .compare-table{
-  width:100%;border-collapse:collapse;font-size:13px;
+  width:auto;max-width:100%;border-collapse:collapse;font-size:13px;
   background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;
 }
 .compare-table th, .compare-table td{
-  padding:7px 10px;text-align:center;
+  padding:7px 12px;text-align:center;
   border-bottom:1px solid #f0f0f0;border-right:1px solid #f5f5f5;
-  white-space:nowrap;
+  white-space:nowrap;min-width:80px;
 }
+.compare-table th:first-child, .compare-table td:first-child{min-width:72px}
 .compare-table th{
   background:#f8fafc;color:#475569;font-weight:700;font-size:11px;
   text-transform:uppercase;letter-spacing:0.4px;
@@ -388,8 +389,9 @@ th.compare-col:hover{color:#cbd5e1}
   #compareModal .bs-header .bs-meta{font-size:11px}
   #compareModal .bs-body{padding:14px;max-height:calc(95vh - 70px)}
   .compare-section-title{font-size:13px;margin:10px 0 8px}
-  .compare-table th, .compare-table td{padding:6px 8px;font-size:12px}
+  .compare-table th, .compare-table td{padding:6px 8px;font-size:12px;min-width:68px}
   .compare-table th{font-size:10px;padding:7px 6px}
+  .compare-table th:first-child, .compare-table td:first-child{min-width:60px}
   .compare-chart-wrap{height:300px;padding:8px}
   .compare-fab{right:12px;bottom:12px;padding:10px 16px;font-size:13px}
   .compare-fab .compare-count{font-size:11px;padding:1px 7px}
@@ -1387,7 +1389,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <strong>Windup Baseball Club</strong> &copy; 2026
-  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.7</span></a><br>
+  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.8</span></a><br>
   <span id="footerSourceWrap"></span>
 </footer>
 
@@ -3817,6 +3819,14 @@ if (_origSwitchTab) {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.0.8',
+    date: '2026-04-28',
+    title: '비교 표 인원수에 따른 유동 폭',
+    changed: [
+      '비교 표 폭을 항상 100%가 아닌 콘텐츠 기반으로 변경 — 2명 비교 시 모바일에서 컬럼이 너무 멀리 떨어져 보이던 문제 해결. 셀 min-width 명시(데스크톱 80px / 모바일 68px)',
+    ],
+  },
   {
     version: '1.0.7',
     date: '2026-04-28',
