@@ -437,6 +437,65 @@ td.stat-leader-low{
   background:var(--red);transition:var(--transition);
 }
 .footer a:hover::after{width:100%}
+.footer .footer-version{
+  display:inline-block;margin-left:8px;color:var(--red);font-weight:700;cursor:pointer;
+  text-decoration:none;
+}
+.footer .footer-version:hover{text-decoration:underline}
+
+/* ===== VERSION MODAL ===== */
+.version-overlay{
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.5);z-index:1700;
+  justify-content:center;align-items:center;
+}
+.version-overlay.active{display:flex}
+.version-box{
+  background:#fff;border-radius:16px;width:94%;max-width:640px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);overflow:hidden;
+  display:flex;flex-direction:column;max-height:80vh;
+}
+.version-header{
+  background:linear-gradient(135deg,#8b1a1a 0%,#c0282e 50%,#a02020 100%);
+  color:#fff;padding:16px 22px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.version-header h2{font-size:1.1em;font-weight:700;margin:0}
+.version-header .version-close{
+  background:none;border:none;color:#fff;font-size:1.5em;
+  cursor:pointer;opacity:0.85;line-height:1;padding:0;
+}
+.version-header .version-close:hover{opacity:1}
+.version-body{padding:18px 22px;overflow-y:auto}
+.version-entry{padding:14px 0;border-bottom:1px solid #f0f0f0}
+.version-entry:first-child{padding-top:4px}
+.version-entry:last-child{border-bottom:none;padding-bottom:4px}
+.version-entry-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.version-tag{
+  display:inline-block;padding:2px 10px;border-radius:999px;
+  background:#8b1a1a;color:#fff;font-weight:700;
+  font-size:0.88em;font-family:Consolas,monospace;
+}
+.version-tag.current{background:#059669}
+.version-date{color:#999;font-size:0.85em}
+.version-title{color:#333;font-weight:600;font-size:0.95em}
+.version-note{color:#555;font-size:0.9em;margin:4px 0 8px}
+.version-section{margin-top:8px}
+.version-section-label{
+  display:inline-block;padding:1px 8px;border-radius:4px;
+  font-size:0.78em;font-weight:700;letter-spacing:0.3px;margin-bottom:4px;
+}
+.version-section-label.added{background:#d1fae5;color:#065f46}
+.version-section-label.changed{background:#dbeafe;color:#1e40af}
+.version-section-label.fixed{background:#fee2e2;color:#991b1b}
+.version-section ul{margin:2px 0 0 4px;padding-left:1.4em;color:#444;font-size:0.9em;line-height:1.6}
+.version-section li{margin:1px 0}
+.version-footer{
+  padding:10px 22px 16px;text-align:right;
+  border-top:1px solid #f0f0f0;font-size:0.82em;color:#888;
+}
+.version-footer a{color:var(--red);text-decoration:none}
+.version-footer a:hover{text-decoration:underline}
 
 /* ===== LOADING ===== */
 .loading{text-align:center;padding:60px;color:#64748b}
@@ -1204,9 +1263,24 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
-  <strong>Windup Baseball Club</strong> &copy; 2026<br>
+  <strong>Windup Baseball Club</strong> &copy; 2026
+  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.0</span></a><br>
   <span id="footerSourceWrap"></span>
 </footer>
+
+<!-- ===== VERSION MODAL ===== -->
+<div class="version-overlay" id="versionOverlay" onclick="if(event.target===this)closeVersionModal()">
+  <div class="version-box">
+    <div class="version-header">
+      <h2>📋 버전 정보</h2>
+      <button class="version-close" onclick="closeVersionModal()" aria-label="닫기">&times;</button>
+    </div>
+    <div class="version-body" id="versionBody"></div>
+    <div class="version-footer">
+      <a href="https://github.com/miracle38/baseball/releases" target="_blank" rel="noopener">GitHub Releases에서 전체 이력 보기 ↗</a>
+    </div>
+  </div>
+</div>
 
 
 <!-- Firebase SDK -->
@@ -3300,6 +3374,59 @@ function openPlayerProfile(name, number) {
 function closePlayerProfile() {
   document.getElementById('playerOverlay').classList.remove('active');
   document.body.style.overflow = '';
+}
+
+// === 버전 정보 모달 ===
+const VERSION_HISTORY = [
+  {
+    version: '1.0.0',
+    date: '2026-04-28',
+    title: '버전 관리 시작',
+    note: '이 시점부터 모든 변경사항을 이 목록에 누적 기록합니다.',
+    added: [
+      'Windup Baseball Club 시즌별/선수별 통계 시각화',
+      '선수 프로필 모달 — 다년도 타격/투구 기록 통합 (확장형 리그별 분해 + 통산)',
+      '경기 박스스코어 모달',
+      'KSBSA / GameOne 자동 데이터 수집 (GitHub Actions 일일 업데이트)',
+      '잔여 경기 일정 (시간/구장 정보 포함)',
+      '팀 순위표 (시즌별)',
+    ],
+  },
+];
+
+function renderVersionBody() {
+  const body = document.getElementById('versionBody');
+  if (!body) return;
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const section = (label, items, cls) => {
+    if (!items || !items.length) return '';
+    return `<div class="version-section">
+      <span class="version-section-label ${cls}">${label}</span>
+      <ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
+    </div>`;
+  };
+  body.innerHTML = VERSION_HISTORY.map((v, idx) => `
+    <div class="version-entry">
+      <div class="version-entry-head">
+        <span class="version-tag${idx === 0 ? ' current' : ''}">v${esc(v.version)}</span>
+        <span class="version-date">${esc(v.date)}</span>
+        ${v.title ? `<span class="version-title">${esc(v.title)}</span>` : ''}
+      </div>
+      ${v.note ? `<div class="version-note">${esc(v.note)}</div>` : ''}
+      ${section('추가', v.added, 'added')}
+      ${section('변경', v.changed, 'changed')}
+      ${section('수정', v.fixed, 'fixed')}
+    </div>
+  `).join('');
+}
+
+function openVersionModal() {
+  renderVersionBody();
+  document.getElementById('versionOverlay').classList.add('active');
+}
+
+function closeVersionModal() {
+  document.getElementById('versionOverlay').classList.remove('active');
 }
 
 </script>
