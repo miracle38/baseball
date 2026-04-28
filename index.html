@@ -1374,7 +1374,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <strong>Windup Baseball Club</strong> &copy; 2026
-  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.5</span></a><br>
+  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.6</span></a><br>
   <span id="footerSourceWrap"></span>
 </footer>
 
@@ -3682,9 +3682,11 @@ function renderCompareBody(kind, data) {
   cols.unshift(['_seasons','시즌',v=>v]);
 
   // leader (max/min) 계산 — ERA는 min, 그 외 max
+  const _yearsCount = new Map();
+  data.forEach(d => _yearsCount.set(d, new Set(d.seasons.map(s => s.year)).size));
   const leaderKey = {};
   cols.forEach(([k]) => {
-    const vals = data.map(d => k === '_seasons' ? d.seasons.length : (d.totals[k] || 0));
+    const vals = data.map(d => k === '_seasons' ? _yearsCount.get(d) : (d.totals[k] || 0));
     if (vals.length === 0) return;
     if (k === 'ERA') {
       const positives = vals.filter(v => v > 0);
@@ -3701,10 +3703,12 @@ function renderCompareBody(kind, data) {
     tableHtml += `<th>${escHtml(d.name)} <span style="color:#94a3b8;font-weight:500">#${d.number}</span></th>`;
   });
   tableHtml += '</tr></thead><tbody>';
+  const seasonYears = new Map();
+  data.forEach(d => seasonYears.set(d, new Set(d.seasons.map(s => s.year)).size));
   cols.forEach(([k, label, fn]) => {
     tableHtml += `<tr><td>${label}</td>`;
     data.forEach(d => {
-      const raw = k === '_seasons' ? d.seasons.length : (d.totals[k] || 0);
+      const raw = k === '_seasons' ? seasonYears.get(d) : (d.totals[k] || 0);
       const isLeader = leaderKey[k] != null && (
         k === 'ERA' ? (raw > 0 && Math.abs(raw - leaderKey[k]) < 0.001)
                     : (raw > 0 && Math.abs(raw - leaderKey[k]) < 0.0001)
@@ -3795,6 +3799,14 @@ if (_origSwitchTab) {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.0.6',
+    date: '2026-04-28',
+    title: '비교 모달 시즌 카운트 통일',
+    changed: [
+      '선수 비교 모달의 시즌 컬럼을 고유 연도 기준으로 변경 — 선수 프로필 모달과 일치 (같은 해 두 리그 출전 시 1시즌)',
+    ],
+  },
   {
     version: '1.0.5',
     date: '2026-04-28',

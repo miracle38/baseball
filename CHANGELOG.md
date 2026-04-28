@@ -13,6 +13,11 @@
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-04-28
+
+### Changed
+- 선수 비교 모달의 `시즌` 컬럼 — 고유 연도 기준으로 변경 (선수 프로필 모달과 동일). 같은 해에 두 리그를 뛴 경우 1시즌으로 카운트
+
 ## [1.0.5] - 2026-04-28
 
 ### Fixed
@@ -53,7 +58,8 @@
 - 잔여 경기 일정 (시간/구장 정보 포함)
 - 팀 순위표 (시즌별)
 
-[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.5...HEAD
+[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.6...HEAD
+[1.0.6]: https://github.com/miracle38/baseball/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/miracle38/baseball/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/miracle38/baseball/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/miracle38/baseball/compare/v1.0.2...v1.0.3
