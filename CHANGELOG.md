@@ -13,6 +13,11 @@
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-04-28
+
+### Fixed
+- 선수 비교 기능에서 `Cannot access 'compareSelection' before initialization` TDZ 에러로 표/그래프가 비어 보이던 문제 — 변수 선언을 `renderPlayers` 정의 전으로 이동
+
 ## [1.0.4] - 2026-04-28
 
 ### Added
@@ -48,7 +53,8 @@
 - 잔여 경기 일정 (시간/구장 정보 포함)
 - 팀 순위표 (시즌별)
 
-[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.4...HEAD
+[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.5...HEAD
+[1.0.5]: https://github.com/miracle38/baseball/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/miracle38/baseball/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/miracle38/baseball/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/miracle38/baseball/compare/v1.0.1...v1.0.2

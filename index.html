@@ -1374,7 +1374,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <strong>Windup Baseball Club</strong> &copy; 2026
-  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.4</span></a><br>
+  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.5</span></a><br>
   <span id="footerSourceWrap"></span>
 </footer>
 
@@ -2085,6 +2085,11 @@ function calcERA(pt) { const dec=ipForCalc(pt.IP); return dec>0?(pt.ER*7/dec):0;
 
 function fmtRate(val) { return val === 0 ? '.000' : (val >= 1 ? val.toFixed(3) : val.toFixed(3).substring(1)); }
 function fmtERA(val) { return val.toFixed(2); }
+
+// ===== COMPARE STATE (renderPlayers/renderPitchers에서 참조하므로 선언을 미리) =====
+const compareSelection = { batter: new Set(), pitcher: new Set() };
+const COMPARE_MAX = 5;
+let compareChart = null;
 
 // ===== RENDER PLAYERS =====
 function renderPlayers() {
@@ -3525,10 +3530,6 @@ function closePlayerProfile() {
 }
 
 // === 선수 비교 ===
-const compareSelection = { batter: new Set(), pitcher: new Set() };
-const COMPARE_MAX = 5;
-let compareChart = null;
-
 function getActiveCompareKind() {
   const active = document.querySelector('.tab-content.active');
   if (!active) return null;
@@ -3794,6 +3795,14 @@ if (_origSwitchTab) {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.0.5',
+    date: '2026-04-28',
+    title: '선수 비교 TDZ 에러 수정',
+    fixed: [
+      '선수 비교 기능에서 표·그래프가 비어 보이던 TDZ 에러(`Cannot access compareSelection before initialization`) 수정 — 변수 선언을 렌더 함수 정의 전으로 이동',
+    ],
+  },
   {
     version: '1.0.4',
     date: '2026-04-28',
