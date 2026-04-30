@@ -13,6 +13,34 @@
 
 ## [Unreleased]
 
+## [1.0.13] - 2026-04-29
+
+### Added
+- 화면 폭 1300px 미만에서 타자/투수 표의 부수 지표 컬럼을 자동 숨김 — 핵심 지표(타자 12개·투수 10개)만 남겨 가로 스크롤 없이 가독성 확보. 1300px 이상에서는 다시 모든 컬럼 표시
+  - 타자 숨김: 등번호/2루타/3루타/도루/볼넷/사구/삼진/출루율/장타율
+  - 투수 숨김: 등번호/세/홀드/피안타/피홈런/고4/사구/실점/자책/승률/타자/투구수
+
+## [1.0.12] - 2026-04-29
+
+### Fixed
+- 타자 21개·투수 22개 컬럼이 컬럼당 약 50px로 너무 좁게 압축돼 가독성이 떨어지던 문제 — 표 min-width를 1500px / 1600px로 설정해 컬럼당 약 70px 이상 확보. 좁은 뷰포트에서는 wrapper 내부 가로 스크롤로 처리
+
+## [1.0.11] - 2026-04-29
+
+### Fixed
+- 가로 스크롤 차단에 폴백 추가 — `overflow-x:clip` 미지원 브라우저용으로 `overflow-x:hidden` + `max-width:100%`
+
+## [1.0.10] - 2026-04-29
+
+### Fixed
+- 페이지 레벨 가로 스크롤 제거 — html/body에 `overflow-x:clip`
+- `.pp-table-wrap`에 `overflow-x:auto`로 선수 프로필 테이블이 좁은 뷰포트에서 자체 스크롤
+
+## [1.0.9] - 2026-04-29
+
+### Changed
+- 타자 기록 컬럼 라벨을 한글화 — `2B / 3B / HR` → `2루타 / 3루타 / 홈런`
+
 ## [1.0.8] - 2026-04-28
 
 ### Changed
@@ -68,7 +96,12 @@
 - 잔여 경기 일정 (시간/구장 정보 포함)
 - 팀 순위표 (시즌별)
 
-[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.8...HEAD
+[Unreleased]: https://github.com/miracle38/baseball/compare/v1.0.13...HEAD
+[1.0.13]: https://github.com/miracle38/baseball/compare/v1.0.12...v1.0.13
+[1.0.12]: https://github.com/miracle38/baseball/compare/v1.0.11...v1.0.12
+[1.0.11]: https://github.com/miracle38/baseball/compare/v1.0.10...v1.0.11
+[1.0.10]: https://github.com/miracle38/baseball/compare/v1.0.9...v1.0.10
+[1.0.9]: https://github.com/miracle38/baseball/compare/v1.0.8...v1.0.9
 [1.0.8]: https://github.com/miracle38/baseball/compare/v1.0.7...v1.0.8
 [1.0.7]: https://github.com/miracle38/baseball/compare/v1.0.6...v1.0.7
 [1.0.6]: https://github.com/miracle38/baseball/compare/v1.0.5...v1.0.6

@@ -1419,7 +1419,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <strong>Windup Baseball Club</strong> &copy; 2026
-  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.8</span></a><br>
+  <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.13</span></a><br>
   <span id="footerSourceWrap"></span>
 </footer>
 
@@ -3849,6 +3849,48 @@ if (_origSwitchTab) {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.0.13',
+    date: '2026-04-29',
+    title: '좁은 뷰포트에서 부수 컬럼 자동 숨김',
+    added: [
+      '화면 폭 1300px 미만에서 타자/투수 표의 부수 지표 컬럼을 자동 숨김 — 핵심 지표(타자 12개·투수 10개)만 남겨 가로 스크롤 없이 가독성 확보',
+      '1300px 이상에서는 모든 컬럼 다시 표시',
+    ],
+  },
+  {
+    version: '1.0.12',
+    date: '2026-04-29',
+    title: '타자/투수 기록 테이블 최소 폭 확대',
+    fixed: [
+      '타자 21개·투수 22개 컬럼이 컬럼당 약 50px로 너무 좁게 압축돼 가독성이 떨어지던 문제 — 표 min-width를 1500px / 1600px로 설정해 컬럼당 약 70px 이상 확보',
+    ],
+  },
+  {
+    version: '1.0.11',
+    date: '2026-04-29',
+    title: '가로 스크롤 차단 폴백',
+    fixed: [
+      'overflow-x:clip 미지원 브라우저용 폴백으로 overflow-x:hidden + max-width:100% 추가',
+    ],
+  },
+  {
+    version: '1.0.10',
+    date: '2026-04-29',
+    title: '페이지 가로 스크롤 차단',
+    fixed: [
+      'html/body에 overflow-x:clip로 페이지 레벨 가로 스크롤 제거',
+      '.pp-table-wrap에 overflow-x:auto로 선수 프로필 테이블이 좁은 뷰포트에서 자체 스크롤되도록 함',
+    ],
+  },
+  {
+    version: '1.0.9',
+    date: '2026-04-29',
+    title: '통계 표 헤더 라벨 한글화',
+    changed: [
+      "타자 기록 컬럼 라벨 '2B / 3B / HR' → '2루타 / 3루타 / 홈런'",
+    ],
+  },
   {
     version: '1.0.8',
     date: '2026-04-28',
