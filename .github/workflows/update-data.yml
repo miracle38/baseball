@@ -39,6 +39,11 @@ jobs:
         run: node scripts/scrape-rankings.js
         continue-on-error: true
 
+      - name: 팀순위 스크래핑 (ksbsa / dbsa)
+        timeout-minutes: 10
+        run: node scripts/scrape-rankings-ksbsa-dbsa.js
+        continue-on-error: true
+
       - name: 경기 기록 & RS/RA 스크래핑 (gameone 전체)
         timeout-minutes: 15
         run: node scripts/scrape-games.js
