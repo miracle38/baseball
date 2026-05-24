@@ -392,9 +392,12 @@ th.compare-col:hover{color:#cbd5e1}
   #compareModal .bs-header .bs-meta{font-size:11px}
   #compareModal .bs-body{padding:14px;max-height:calc(95vh - 70px)}
   .compare-section-title{font-size:13px;margin:10px 0 8px}
+  /* 모바일에서 2-3명 비교 시 테이블이 화면 왼쪽에 몰리지 않도록 가용 폭 채움. */
+  /* 4-5명일 땐 min-width 합계가 폭을 초과하므로 wrap의 overflow-x로 자연스럽게 스크롤. */
+  .compare-table{width:100%}
   .compare-table th, .compare-table td{padding:6px 8px;font-size:12px;min-width:68px}
   .compare-table th{font-size:10px;padding:7px 6px}
-  .compare-table th:first-child, .compare-table td:first-child{min-width:60px}
+  .compare-table th:first-child, .compare-table td:first-child{min-width:60px;width:1%;white-space:nowrap}
   .compare-chart-wrap{height:300px;padding:8px}
   .compare-fab{right:12px;bottom:12px;padding:10px 16px;font-size:13px}
   .compare-fab .compare-count{font-size:11px;padding:1px 7px}
