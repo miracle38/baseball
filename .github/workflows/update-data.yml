@@ -54,6 +54,10 @@ jobs:
         run: node scripts/fill-ksbsa-scheduled-locations.js
         continue-on-error: true
 
+      - name: 엔트리 헤더 재계산 (record / W / L / D / G)
+        timeout-minutes: 2
+        run: node scripts/recalc-headers.js
+
       - name: 변경사항 커밋 & 푸시
         if: always()
         run: |
