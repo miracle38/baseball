@@ -902,6 +902,19 @@ tr.highlight-row:hover{
 .game-row .score-vs{
   font-weight:600;font-size:14px;color:var(--gray);
 }
+/* 홈런 발생 경기 표시 아이콘 — 스코어 옆에 작은 빨간 뱃지 */
+.hr-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-left:6px;
+  min-width:22px;height:18px;padding:0 5px;
+  border-radius:9px;
+  background:linear-gradient(135deg,#c0282e,#8b1a1a);
+  color:#fff;font-size:9px;font-weight:800;letter-spacing:0.4px;
+  vertical-align:middle;cursor:help;
+  box-shadow:0 1px 3px rgba(140,20,20,0.4);
+  line-height:1;
+}
+.hr-badge::before{content:"⚾";margin-right:2px;font-size:10px}
 
 /* Calendar future game */
 .calendar-grid .cal-day .game-badge.scheduled{background:linear-gradient(135deg, #3b82f6, #60a5fa)}
@@ -2114,6 +2127,30 @@ function fmtHR(obj) {
   const ghr = (obj && obj.GHR) || 0;
   return ghr > 0 ? `${hr}(${ghr})` : `${hr}`;
 }
+
+// 게임 boxScore 에서 홈런이 나왔는지 + 친 선수 정보 추출.
+// gameone: highlights = ['[홈런]박철우(3회) 김경필(2회)', ...] (문자열 배열)
+// ksbsa  : highlights = [{ category: '홈런', away: '...', home: '...' }, ...] (객체 배열)
+// 반환: { hit: bool, detail: string } 또는 null (boxScore 없음)
+function getGameHomerInfo(g) {
+  if (!g || !g.boxScore) return null;
+  const hl = g.boxScore.highlights;
+  if (!Array.isArray(hl) || hl.length === 0) return null;
+  const parts = [];
+  hl.forEach(h => {
+    if (typeof h === 'string') {
+      const m = h.match(/^\[홈런\](.*)$/);
+      if (m && m[1].trim()) parts.push(m[1].trim());
+    } else if (h && typeof h === 'object' && h.category === '홈런') {
+      const segs = [];
+      if (h.away && h.away !== '-') segs.push(h.away);
+      if (h.home && h.home !== '-') segs.push(h.home);
+      if (segs.length) parts.push(segs.join(' / '));
+    }
+  });
+  if (parts.length === 0) return null;
+  return { hit: true, detail: parts.join(', ') };
+}
 function ipForCalc(ip) { return Math.floor(ip) + Math.round((ip%1)*10)/3; }
 function calcERA(pt) { const dec=ipForCalc(pt.IP); return dec>0?(pt.ER*7/dec):0; }
 
@@ -2534,6 +2571,13 @@ function renderGames() {
     } else {
       result = '무'; resultCls = 'result-draw';
       scoreHtml = `${g.ourScore} - ${g.theirScore}`;
+    }
+    // 홈런 발생 경기 뱃지 (boxScore highlights 에서 감지)
+    if (!isFuture) {
+      const hr = getGameHomerInfo(g);
+      if (hr && hr.hit) {
+        scoreHtml += ` <span class="hr-badge" title="${escHtml('홈런: ' + hr.detail)}">HR</span>`;
+      }
     }
 
     let leagueTag = '';
