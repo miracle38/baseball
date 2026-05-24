@@ -1262,6 +1262,9 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
     </div>
     <!-- Detail area for expanded season -->
     <div id="historyDetail" style="display:none"></div>
+
+    <!-- 현재 팀원 통산 -->
+    <div id="historyCareerSection" style="margin-top:32px"></div>
   </div>
 
   <!-- PLAYER STATS TAB -->
@@ -2889,6 +2892,9 @@ function renderHistory() {
   } else {
     document.getElementById('historyDetail').style.display = 'none';
   }
+
+  // Render current team members' career totals
+  renderHistoryCareerSection();
 }
 
 function toggleHistoryDetail(id) {
@@ -2994,6 +3000,130 @@ function renderHistoryPitchersTable(entry) {
 
   html += '</tbody></table></div>';
   return html;
+}
+
+// ===== 현재 팀원 통산 (역대 기록 페이지) =====
+// 가장 최근 연도(currentYear가 'career'이므로 별도로 산출)의 엔트리에서
+// 활동한 선수들을 "현재 팀원"으로 보고, 이들의 전 연도 합산 기록을 표시.
+function getCurrentTeamMembers() {
+  const years = ALL_DATA.map(e => e.year).filter(y => typeof y === 'number');
+  if (years.length === 0) return { batters: [], pitchers: [] };
+  const latestYear = Math.max(...years);
+  const latestEntries = ALL_DATA.filter(e => e.year === latestYear);
+
+  const batterKeys = new Set(); // "name|number"
+  const pitcherKeys = new Set();
+  latestEntries.forEach(e => {
+    Object.values(e.players || {}).forEach(p => {
+      const num = p.number || p.num || 0;
+      if (p.name) batterKeys.add(`${p.name}|${num}`);
+    });
+    Object.values(e.pitchers || {}).forEach(p => {
+      const num = p.number || p.num || 0;
+      if (p.name) pitcherKeys.add(`${p.name}|${num}`);
+    });
+  });
+  return { batters: Array.from(batterKeys), pitchers: Array.from(pitcherKeys), latestYear };
+}
+
+function collectCareerSeasons(name, number, kind) {
+  const seasons = [];
+  ALL_DATA.forEach(entry => {
+    const pool = kind === 'batter' ? entry.players : entry.pitchers;
+    if (!pool) return;
+    Object.values(pool).forEach(p => {
+      const pNum = p.number || p.num || 0;
+      if (p.name === name && pNum == number) {
+        seasons.push({ year: entry.year, ...p, number: pNum });
+      }
+    });
+  });
+  return seasons;
+}
+
+function renderHistoryCareerSection() {
+  const section = document.getElementById('historyCareerSection');
+  if (!section) return;
+  const { batters, pitchers, latestYear } = getCurrentTeamMembers();
+  if (batters.length === 0 && pitchers.length === 0) {
+    section.innerHTML = '';
+    return;
+  }
+
+  // 타자 통산 집계
+  const batterRows = batters.map(key => {
+    const [name, numStr] = key.split('|');
+    const number = parseInt(numStr, 10) || 0;
+    const seasons = collectCareerSeasons(name, number, 'batter');
+    const totals = sumBatterSeasons(seasons);
+    const yearsCount = new Set(seasons.map(s => s.year)).size;
+    return { name, number, yearsCount, totals };
+  }).filter(r => r.totals.PA > 0 || r.totals.G > 0);
+
+  // 투수 통산 집계
+  const pitcherRows = pitchers.map(key => {
+    const [name, numStr] = key.split('|');
+    const number = parseInt(numStr, 10) || 0;
+    const seasons = collectCareerSeasons(name, number, 'pitcher');
+    const totals = sumPitcherSeasons(seasons);
+    const yearsCount = new Set(seasons.map(s => s.year)).size;
+    return { name, number, yearsCount, totals };
+  }).filter(r => r.totals._ipThirds > 0 || r.totals.G > 0);
+
+  let html = '';
+  if (batterRows.length > 0) {
+    // PA desc 정렬
+    batterRows.sort((a, b) => (b.totals.PA || 0) - (a.totals.PA || 0));
+    html += `<div class="section-header" style="margin-top:0">
+      <div class="section-title">현재 팀원 통산 — 타자 (${latestYear} 시즌 기준 · ${batterRows.length}명)</div>
+    </div>`;
+    html += '<div class="table-wrapper"><table style="min-width:1000px"><thead><tr>';
+    html += '<th>선수명</th><th>등번호</th><th>시즌</th>';
+    html += '<th>AVG</th><th>OBP</th><th>SLG</th><th>OPS</th>';
+    html += '<th>G</th><th>PA</th><th>AB</th><th>H</th>';
+    html += '<th>2B</th><th>3B</th><th>HR</th>';
+    html += '<th>RBI</th><th>R</th><th>SB</th>';
+    html += '<th>BB</th><th>HBP</th><th>SO</th>';
+    html += '</tr></thead><tbody>';
+    batterRows.forEach(r => {
+      const t = r.totals;
+      html += `<tr><td class="name-cell">${escHtml(r.name)}</td><td>${r.number}</td><td>${r.yearsCount}</td>`;
+      html += `<td>${fmtRate(t.AVG)}</td><td>${fmtRate(t.OBP)}</td><td>${fmtRate(t.SLG)}</td><td>${fmtRate(t.OPS)}</td>`;
+      html += `<td>${t.G}</td><td>${t.PA}</td><td>${t.AB}</td><td>${t.H}</td>`;
+      html += `<td>${t['2B']}</td><td>${t['3B']}</td><td>${t.HR}</td>`;
+      html += `<td>${t.RBI}</td><td>${t.R}</td><td>${t.SB}</td>`;
+      html += `<td>${t.BB}</td><td>${t.HBP}</td><td>${t.SO}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  }
+
+  if (pitcherRows.length > 0) {
+    // IP thirds desc 정렬
+    pitcherRows.sort((a, b) => (b.totals._ipThirds || 0) - (a.totals._ipThirds || 0));
+    html += `<div class="section-header" style="margin-top:24px">
+      <div class="section-title">현재 팀원 통산 — 투수 (${latestYear} 시즌 기준 · ${pitcherRows.length}명)</div>
+    </div>`;
+    html += '<div class="table-wrapper"><table style="min-width:900px"><thead><tr>';
+    html += '<th>선수명</th><th>등번호</th><th>시즌</th>';
+    html += '<th>ERA</th><th>승률</th>';
+    html += '<th>G</th><th>승</th><th>패</th><th>세</th><th>홀드</th>';
+    html += '<th>이닝</th><th>피안타</th><th>피홈런</th>';
+    html += '<th>삼진</th><th>볼넷</th><th>사구</th>';
+    html += '<th>실점</th><th>자책</th>';
+    html += '</tr></thead><tbody>';
+    pitcherRows.forEach(r => {
+      const t = r.totals;
+      html += `<tr><td class="name-cell">${escHtml(r.name)}</td><td>${r.number}</td><td>${r.yearsCount}</td>`;
+      html += `<td>${t._ipThirds > 0 ? fmtERA(t.ERA) : '-'}</td><td>${(t.W + t.L) > 0 ? fmtRate(t.WPCT) : '-'}</td>`;
+      html += `<td>${t.G}</td><td>${t.W}</td><td>${t.L}</td><td>${t.SV}</td><td>${t.HD}</td>`;
+      html += `<td>${t._ipThirds > 0 ? fmtIP(t.IP) : '-'}</td><td>${t.pH}</td><td>${t.pHR}</td>`;
+      html += `<td>${t.K}</td><td>${t.pBB}</td><td>${t.pHBP}</td>`;
+      html += `<td>${t.R}</td><td>${t.ER}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  }
+
+  section.innerHTML = html;
 }
 
 
