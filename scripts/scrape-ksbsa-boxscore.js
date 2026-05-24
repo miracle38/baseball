@@ -1,17 +1,18 @@
 /**
- * ksbsa.or.kr 박스스코어 전체 스크래퍼
+ * ksbsa / donggu.dbsa / daedeokgu.dbsa 박스스코어 전체 스크래퍼
+ * - ALL_DATA 에서 ksbsa/dbsa 출처 게임을 자동 수집 (final_games.json 의존성 제거)
  * - 각 경기 상세 페이지에서 라인스코어, 하이라이트, 양팀 타자/투수 기록 수집
+ * - boxScore 가 이미 있으면 스킵 (재실행 시 비용 절약)
  * - index.html 게임 데이터에 boxScore 프로퍼티 추가
  */
 const { chromium } = require('playwright');
+const vm = require('vm');
 const fs = require('fs');
 const path = require('path');
 
 const INDEX_FILE = path.join(__dirname, '..', 'index.html');
-const GAMES_FILE = path.join(__dirname, '..', 'scrape_debug', 'ksbsa', 'final_games.json');
 
-async function scrapeBoxScore(page, seq, leagueCat) {
-  const url = `https://www.ksbsa.or.kr/schedule/getGameRecord.hs?gameScheduleSeq=${seq}&leagueCategory=${leagueCat}`;
+async function scrapeBoxScore(page, url) {
   await page.goto(url, { waitUntil: 'networkidle', timeout: 20000 }).catch(() => {});
   await page.waitForTimeout(2000);
 
@@ -237,16 +238,19 @@ function buildBoxScoreJs(bs, game) {
   const homeName = bs.lineScore?.home?.teamName || '';
   const isHome = /와인드업/.test(homeName);
 
-  const ourLS = isHome ? bs.lineScore.home : bs.lineScore.away;
-  const theirLS = isHome ? bs.lineScore.away : bs.lineScore.home;
+  // lineScore 가 불완전한 경기 (한쪽 데이터 누락 등) 도 안전하게 처리
+  const ourLS = (isHome ? bs.lineScore?.home : bs.lineScore?.away) || { innings: [], R: 0, H: 0, E: 0, B: 0 };
+  const theirLS = (isHome ? bs.lineScore?.away : bs.lineScore?.home) || { innings: [], R: 0, H: 0, E: 0, B: 0 };
 
   // innings array: [our, their] per inning
-  const maxInnings = Math.max(ourLS.innings.length, theirLS.innings.length);
+  const ourInnings = ourLS.innings || [];
+  const theirInnings = theirLS.innings || [];
+  const maxInnings = Math.max(ourInnings.length, theirInnings.length);
   const innings = [];
   for (let i = 0; i < maxInnings; i++) {
     innings.push([
-      ourLS.innings[i] != null ? ourLS.innings[i] : null,
-      theirLS.innings[i] != null ? theirLS.innings[i] : null
+      ourInnings[i] != null ? ourInnings[i] : null,
+      theirInnings[i] != null ? theirInnings[i] : null
     ]);
   }
 
@@ -297,29 +301,71 @@ function buildBoxScoreJs(bs, game) {
     `}`;
 }
 
+// ALL_DATA 파싱 — index.html 에서 추출
+function loadAllData(htmlText) {
+  const m = htmlText.match(/const\s+ALL_DATA\s*=\s*\[/);
+  if (!m) return [];
+  const start = m.index + m[0].length - 1;
+  let i = start + 1, depth = 1, inStr = false, strCh = null;
+  while (i < htmlText.length && depth > 0) {
+    const c = htmlText[i];
+    if (inStr) {
+      if (c === '\\') { i += 2; continue; }
+      if (c === strCh) inStr = false;
+      i++; continue;
+    }
+    if (c === '"' || c === "'" || c === '`') { inStr = true; strCh = c; i++; continue; }
+    if (c === '[') depth++;
+    else if (c === ']') depth--;
+    i++;
+  }
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext('var ALL_DATA = ' + htmlText.substring(start, i) + ';', ctx);
+  return ctx.ALL_DATA;
+}
+
 async function main() {
-  console.log('=== ksbsa 박스스코어 스크래퍼 ===\n');
-
-  const gamesData = JSON.parse(fs.readFileSync(GAMES_FILE, 'utf-8'));
-  const games = gamesData.allGames.filter(g => g.gameScheduleSeq);
-
-  console.log(`${games.length}경기 박스스코어 수집 시작\n`);
-
-  const browser = await chromium.launch({ headless: true, args: ['--ignore-certificate-errors'] });
-  const page = await browser.newPage();
+  console.log('=== ksbsa / dbsa 박스스코어 스크래퍼 ===\n');
 
   let html = fs.readFileSync(INDEX_FILE, 'utf-8');
+  const ALL_DATA = loadAllData(html);
+
+  // 처리 대상 게임 추출: source 가 ksbsa.or.kr / dbsa 계열 + boxScoreUrl 있음 + 결과 있음 + boxScore 없음
+  const games = [];
+  ALL_DATA.forEach(entry => {
+    if (!/ksbsa\.or\.kr|dbsa\.kr/.test(entry.source || '')) return;
+    Object.entries(entry.games || {}).forEach(([gk, g]) => {
+      if (!g.boxScoreUrl || g.result === '예정') return;
+      if (g.boxScore) return; // 이미 있으면 스킵
+      games.push({
+        entryId: entry.id,
+        date: g.date,
+        opponent: g.opponent,
+        boxScoreUrl: g.boxScoreUrl
+      });
+    });
+  });
+
+  console.log(`${games.length}경기 박스스코어 수집 시작 (이미 있는 경기는 자동 스킵)\n`);
+  if (games.length === 0) { console.log('처리할 게임 없음'); return; }
+
+  const browser = await chromium.launch({ headless: true, args: ['--ignore-certificate-errors'] });
+  const ctx = await browser.newContext({ ignoreHTTPSErrors: true });
+  const page = await ctx.newPage();
+
   const debugDir = path.join(__dirname, '..', 'scrape_debug', 'ksbsa', 'boxscores');
   if (!fs.existsSync(debugDir)) fs.mkdirSync(debugDir, { recursive: true });
 
   let successCount = 0;
 
   for (const game of games) {
-    const seq = game.gameScheduleSeq;
-    const cat = /시장기/.test(game.league) || /협회장기/.test(game.league) ? 'NORMAL' : 'NORMAL';
+    // URL 에서 seq 추출 (디버그 파일명용)
+    const seqMatch = game.boxScoreUrl.match(/gameScheduleSeq=(\d+)/);
+    const seq = seqMatch ? seqMatch[1] : 'unknown';
     console.log(`[${seq}] ${game.date} vs ${game.opponent}...`);
 
-    const bs = await scrapeBoxScore(page, seq, cat);
+    const bs = await scrapeBoxScore(page, game.boxScoreUrl);
     if (!bs) {
       console.log('  ❌ 데이터 없음');
       continue;
