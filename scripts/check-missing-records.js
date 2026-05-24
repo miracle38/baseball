@@ -62,12 +62,11 @@ data.forEach(e => {
 });
 if (pastSchedCount === 0) console.log('  ✓ 없음');
 
-console.log('\n=== 4. 완료 경기인데 boxScoreUrl 없음 (2024+) ===');
+console.log('\n=== 4. 완료 경기인데 boxScore/boxScoreUrl 모두 없음 ===');
 let missBox = 0;
 data.forEach(e => {
-  if (e.year < 2024) return;
   Object.entries(e.games || {}).forEach(([gk, g]) => {
-    if (g.result && g.result !== '예정' && !g.boxScoreUrl) {
+    if (g.result && g.result !== '예정' && !g.boxScoreUrl && !g.boxScore) {
       console.log(`  - ${e.id} ${gk} ${g.date} vs ${g.opponent} (${g.ourScore}-${g.theirScore})`);
       missBox++;
     }

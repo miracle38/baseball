@@ -4,4 +4,6 @@
 scrape_*.js
 gameone_*.txt
 scrape_log.txt
+scrape_*.log
 data.json
+node_modules/
