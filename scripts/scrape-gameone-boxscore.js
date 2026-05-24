@@ -139,12 +139,10 @@ async function scrapeBoxScore(page, gameIdx) {
     }
 
     // === BATTING & PITCHING TABLES ===
-    // Tables are in div.record blocks, each preceded by h3 with team name
-    const recordDiv = document.querySelector('.record');
-    if (!recordDiv) return result;
-
-    const allH3s = Array.from(recordDiv.querySelectorAll('h3'));
-    const allTables = Array.from(recordDiv.querySelectorAll('table.record_table'));
+    // 페이지에 div.record 가 여러 개 있고 첫 번째에는 record_table 이 없는 경우가
+    // 있어 .record 선택자에 의존하지 않고 document 전체에서 record_table 을 직접 수집.
+    const allTables = Array.from(document.querySelectorAll('table.record_table'));
+    if (allTables.length === 0) return result;
 
     // Pair each table with its preceding h3 (team name)
     const sections = [];
@@ -518,26 +516,44 @@ async function main() {
           continue;
         }
 
-        // Check if boxScore already exists for this game
+        // Check if boxScore already exists AND has batter data.
+        // 빈 boxScore (awayBatters:[], homeBatters:[]) 는 G홈 토큰을 못 가져온 옛 캐시
+        // 일 가능성이 있으므로 재스크래핑 한다.
         const gameSpanInEntry = findGameSpan(currentEntry, game.date);
         if (gameSpanInEntry) {
           const gameText = currentEntry.substring(gameSpanInEntry.start, gameSpanInEntry.end);
           if (/boxScore\s*:\s*\{/.test(gameText)) {
-            console.log(`    ${game.date} vs ${game.opponent || '?'} - boxScore 이미 있음, 스킵`);
-            totalSkipped++;
-            continue;
+            // batter 명단이 비어 있지 않은지 확인 — 비어있으면 재처리
+            const emptyBatters = /awayBatters\s*:\s*\[\s*\]/.test(gameText)
+              && /homeBatters\s*:\s*\[\s*\]/.test(gameText);
+            if (!emptyBatters) {
+              console.log(`    ${game.date} vs ${game.opponent || '?'} - boxScore 이미 있음, 스킵`);
+              totalSkipped++;
+              continue;
+            }
+            // 비어 있는 경우는 통과 → 재스크래핑 진행
+            console.log(`    ${game.date} vs ${game.opponent || '?'} - 빈 boxScore 재스크래핑`);
           }
         }
 
         console.log(`    ${game.date} vs ${game.opponent || '?'} [${game.gameIdx}]...`);
 
-        // Check if we have cached debug data for this boxscore
+        // Check if we have cached debug data for this boxscore.
+        // 단, 타자 명단이 0명인 빈 캐시는 무시하고 재스크래핑 (예전에 셀렉터 매칭
+        // 실패로 빈 채로 저장된 옛 게임들 — inningResults 의 G홈 같은 토큰 회수 필요).
         const bsDebugFile = path.join(DEBUG_DIR, `${game.gameIdx}.json`);
         let bs = null;
         if (fs.existsSync(bsDebugFile)) {
           try {
-            bs = JSON.parse(fs.readFileSync(bsDebugFile, 'utf-8'));
-            console.log(`      캐시된 데이터 사용`);
+            const cached = JSON.parse(fs.readFileSync(bsDebugFile, 'utf-8'));
+            const bat1 = cached?.team1Batting?.batters?.length || 0;
+            const bat2 = cached?.team2Batting?.batters?.length || 0;
+            if (bat1 + bat2 > 0) {
+              bs = cached;
+              console.log(`      캐시된 데이터 사용`);
+            } else {
+              console.log(`      빈 캐시 무시 — 재스크래핑`);
+            }
           } catch (e) { bs = null; }
         }
 
