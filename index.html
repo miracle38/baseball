@@ -3005,6 +3005,31 @@ function renderHistoryPitchersTable(entry) {
 // ===== 현재 팀원 통산 (역대 기록 페이지) =====
 // 가장 최근 연도(currentYear가 'career'이므로 별도로 산출)의 엔트리에서
 // 활동한 선수들을 "현재 팀원"으로 보고, 이들의 전 연도 합산 기록을 표시.
+
+// 정렬 상태 — key 는 totals 의 키 또는 'name'/'number'/'yearsCount'
+let careerSortState = {
+  batter:  { key: 'PA', dir: 'desc' },
+  pitcher: { key: '_ipThirds', dir: 'desc' }
+};
+
+function sortCareerColumn(kind, key) {
+  const s = careerSortState[kind];
+  if (s.key === key) {
+    s.dir = s.dir === 'desc' ? 'asc' : 'desc';
+  } else {
+    s.key = key;
+    s.dir = (key === 'name') ? 'asc' : 'desc';
+  }
+  renderHistoryCareerSection();
+}
+
+function careerThHtml(kind, key, label) {
+  const s = careerSortState[kind];
+  const active = s.key === key;
+  const arrow = active ? (s.dir === 'desc' ? '▼' : '▲') : '▲';
+  return `<th class="${active ? 'sorted' : ''}" onclick="sortCareerColumn('${kind}','${key}')" style="cursor:pointer;user-select:none">${label} <span class="sort-arrow">${arrow}</span></th>`;
+}
+
 function getCurrentTeamMembers() {
   const years = ALL_DATA.map(e => e.year).filter(y => typeof y === 'number');
   if (years.length === 0) return { batters: [], pitchers: [] };
@@ -3070,20 +3095,49 @@ function renderHistoryCareerSection() {
     return { name, number, yearsCount, totals };
   }).filter(r => r.totals._ipThirds > 0 || r.totals.G > 0);
 
+  // 정렬 적용
+  function sortRows(rows, state) {
+    const dir = state.dir === 'desc' ? -1 : 1;
+    rows.sort((a, b) => {
+      let va, vb;
+      if (state.key === 'name') { va = a.name; vb = b.name; }
+      else if (state.key === 'number') { va = a.number; vb = b.number; }
+      else if (state.key === 'yearsCount') { va = a.yearsCount; vb = b.yearsCount; }
+      else { va = a.totals[state.key]; vb = b.totals[state.key]; }
+      if (va == null) va = (typeof vb === 'string') ? '' : 0;
+      if (vb == null) vb = (typeof va === 'string') ? '' : 0;
+      if (typeof va === 'string') return va.localeCompare(vb) * dir;
+      return ((va || 0) - (vb || 0)) * dir;
+    });
+  }
+
   let html = '';
   if (batterRows.length > 0) {
-    // PA desc 정렬
-    batterRows.sort((a, b) => (b.totals.PA || 0) - (a.totals.PA || 0));
+    sortRows(batterRows, careerSortState.batter);
     html += `<div class="section-header" style="margin-top:0">
       <div class="section-title">현재 팀원 통산 — 타자 (${latestYear} 시즌 기준 · ${batterRows.length}명)</div>
     </div>`;
     html += '<div class="table-wrapper"><table style="min-width:1000px"><thead><tr>';
-    html += '<th>선수명</th><th>등번호</th><th>시즌</th>';
-    html += '<th>AVG</th><th>OBP</th><th>SLG</th><th>OPS</th>';
-    html += '<th>G</th><th>PA</th><th>AB</th><th>H</th>';
-    html += '<th>2B</th><th>3B</th><th>HR</th>';
-    html += '<th>RBI</th><th>R</th><th>SB</th>';
-    html += '<th>BB</th><th>HBP</th><th>SO</th>';
+    html += careerThHtml('batter','name','선수명');
+    html += careerThHtml('batter','number','등번호');
+    html += careerThHtml('batter','yearsCount','시즌');
+    html += careerThHtml('batter','AVG','AVG');
+    html += careerThHtml('batter','OBP','OBP');
+    html += careerThHtml('batter','SLG','SLG');
+    html += careerThHtml('batter','OPS','OPS');
+    html += careerThHtml('batter','G','G');
+    html += careerThHtml('batter','PA','PA');
+    html += careerThHtml('batter','AB','AB');
+    html += careerThHtml('batter','H','H');
+    html += careerThHtml('batter','2B','2B');
+    html += careerThHtml('batter','3B','3B');
+    html += careerThHtml('batter','HR','HR');
+    html += careerThHtml('batter','RBI','RBI');
+    html += careerThHtml('batter','R','R');
+    html += careerThHtml('batter','SB','SB');
+    html += careerThHtml('batter','BB','BB');
+    html += careerThHtml('batter','HBP','HBP');
+    html += careerThHtml('batter','SO','SO');
     html += '</tr></thead><tbody>';
     batterRows.forEach(r => {
       const t = r.totals;
@@ -3098,18 +3152,29 @@ function renderHistoryCareerSection() {
   }
 
   if (pitcherRows.length > 0) {
-    // IP thirds desc 정렬
-    pitcherRows.sort((a, b) => (b.totals._ipThirds || 0) - (a.totals._ipThirds || 0));
+    sortRows(pitcherRows, careerSortState.pitcher);
     html += `<div class="section-header" style="margin-top:24px">
       <div class="section-title">현재 팀원 통산 — 투수 (${latestYear} 시즌 기준 · ${pitcherRows.length}명)</div>
     </div>`;
     html += '<div class="table-wrapper"><table style="min-width:900px"><thead><tr>';
-    html += '<th>선수명</th><th>등번호</th><th>시즌</th>';
-    html += '<th>ERA</th><th>승률</th>';
-    html += '<th>G</th><th>승</th><th>패</th><th>세</th><th>홀드</th>';
-    html += '<th>이닝</th><th>피안타</th><th>피홈런</th>';
-    html += '<th>삼진</th><th>볼넷</th><th>사구</th>';
-    html += '<th>실점</th><th>자책</th>';
+    html += careerThHtml('pitcher','name','선수명');
+    html += careerThHtml('pitcher','number','등번호');
+    html += careerThHtml('pitcher','yearsCount','시즌');
+    html += careerThHtml('pitcher','ERA','ERA');
+    html += careerThHtml('pitcher','WPCT','승률');
+    html += careerThHtml('pitcher','G','G');
+    html += careerThHtml('pitcher','W','승');
+    html += careerThHtml('pitcher','L','패');
+    html += careerThHtml('pitcher','SV','세');
+    html += careerThHtml('pitcher','HD','홀드');
+    html += careerThHtml('pitcher','_ipThirds','이닝');
+    html += careerThHtml('pitcher','pH','피안타');
+    html += careerThHtml('pitcher','pHR','피홈런');
+    html += careerThHtml('pitcher','K','삼진');
+    html += careerThHtml('pitcher','pBB','볼넷');
+    html += careerThHtml('pitcher','pHBP','사구');
+    html += careerThHtml('pitcher','R','실점');
+    html += careerThHtml('pitcher','ER','자책');
     html += '</tr></thead><tbody>';
     pitcherRows.forEach(r => {
       const t = r.totals;
