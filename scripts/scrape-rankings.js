@@ -16,8 +16,12 @@ const CLUB_IDX = 7734;
 // 기본값: 엔트리의 league 값을 그대로 regex로 사용
 // 연도별 엔트리 → {pattern, groupHint} 매칭
 // groupHint가 있으면 여러 매칭 중 group 값으로 추가 필터링
+//
+// skip:true 가 있으면 외부 스크래핑이 불가능한 엔트리 — silently 스킵.
+// skipReason 에 사유 기록 (gameone 데이터 없음 / 권한 차단 등).
 const LEAGUE_MATCHERS = {
-  '2025_gongju':         { pattern: /금강토요|공주.*금강/ },
+  // gameone 비공개 리그 — "비로그인 손님은 리그 회원 이상만 가능" 으로 ranking 페이지 차단
+  '2025_gongju':         { skip: true, skipReason: 'gameone 비공개 리그 (권한 차단)' },
   '2022_daedeok':        { pattern: /대덕구.*토요\s*4부/ },
   '2022_sejong_1':       { pattern: /세종.*토요\s*4부\)$/ },  // 끝이 ) - 전기/일반
   '2022_sejong_2':       { pattern: /세종.*토요\s*4부\(/ },   // ( 로 시작하는 후기
@@ -44,8 +48,9 @@ const LEAGUE_MATCHERS = {
   '2013_myeongpum':      { pattern: /명품/ },
   '2012_kukmin_chugye':  { pattern: /추계|토요추계/ },
   '2012_daejeon':        { pattern: /대전.*토요/, textMatch: /^(?!.*추계)/ },
-  '2011_geumgang':       { pattern: /금강|대전/ },
-  '2010_geumgang':       { pattern: /금강|대전/ }
+  // gameone 에 해당 연도 와인드업 클럽의 리그/토너먼트/원외 옵션 자체가 없음
+  '2011_geumgang':       { skip: true, skipReason: 'gameone에 해당 연도 리그 데이터 없음' },
+  '2010_geumgang':       { skip: true, skipReason: 'gameone에 해당 연도 리그 데이터 없음' }
 };
 
 async function getLeagueOptionsForYear(browser, year) {
@@ -415,6 +420,11 @@ async function main() {
 
     for (const entry of byYear[year]) {
       const mDef = LEAGUE_MATCHERS[entry.id] || { pattern: new RegExp(entry.league.replace(/[()]/g, '.?')) };
+      if (mDef.skip) {
+        console.log(`  [${entry.id}] 스킵: ${mDef.skipReason || '사유 미기재'}`);
+        summary.push(`${entry.id}: 스킵 (${mDef.skipReason || ''})`);
+        continue;
+      }
       let candidates = leagueOpts.filter(o => mDef.pattern.test(o.text));
       if (mDef.textMatch) candidates = candidates.filter(o => mDef.textMatch.test(o.text));
       let matched = null;
