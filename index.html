@@ -2145,29 +2145,61 @@ function getOurPlayerNames() {
   return set;
 }
 
+// 텍스트에서 한글 이름 후보 추출 (2-5자, 회차/숫자/괄호는 무시)
+function extractKoreanNames(text) {
+  if (!text || typeof text !== 'string') return [];
+  const out = [];
+  const re = /([가-힣]{2,5})/g;
+  let m;
+  while ((m = re.exec(text)) !== null) out.push(m[1]);
+  return out;
+}
+
 function getGameHomerInfo(g) {
   if (!g || !g.boxScore) return null;
   const bs = g.boxScore;
   const ourNames = getOurPlayerNames();
+  const hitters = new Map(); // name → count
+
+  // 1차: batter inningResults 기반 (정확). 2023+ 데이터.
   const allBatters = [...(bs.awayBatters || []), ...(bs.homeBatters || [])];
-  if (allBatters.length === 0) return null;
-
-  const hitters = [];
-  allBatters.forEach(b => {
-    if (!b.name || !ourNames.has(b.name)) return;
-    const ir = b.inningResults || [];
-    let count = 0;
-    ir.forEach(s => {
-      if (!s) return;
-      s.split(/[,\s]+/).forEach(tok => {
-        if (/^(홈런|좌홈|중홈|우홈)$/.test(tok.trim())) count++;
+  if (allBatters.length > 0) {
+    allBatters.forEach(b => {
+      if (!b.name || !ourNames.has(b.name)) return;
+      const ir = b.inningResults || [];
+      let count = 0;
+      ir.forEach(s => {
+        if (!s) return;
+        s.split(/[,\s]+/).forEach(tok => {
+          if (/^(홈런|좌홈|중홈|우홈)$/.test(tok.trim())) count++;
+        });
       });
+      if (count > 0) hitters.set(b.name, (hitters.get(b.name) || 0) + count);
     });
-    if (count > 0) hitters.push({ name: b.name, count });
-  });
+  } else {
+    // 2차: highlights 기반 (옛 gameone 데이터 — batter 명단 없음).
+    // gameone 형식: '[홈런]박철우(3회) 김경필(2회)'
+    // ksbsa  형식: {category:'홈런', away:'...', home:'...'}
+    const hl = bs.highlights;
+    if (Array.isArray(hl)) {
+      hl.forEach(h => {
+        let candidateText = '';
+        if (typeof h === 'string') {
+          const mm = h.match(/^\[홈런\](.*)$/);
+          if (mm) candidateText = mm[1];
+        } else if (h && typeof h === 'object' && h.category === '홈런') {
+          candidateText = [h.away, h.home].filter(Boolean).join(' ');
+        }
+        if (!candidateText) return;
+        extractKoreanNames(candidateText).forEach(name => {
+          if (ourNames.has(name)) hitters.set(name, (hitters.get(name) || 0) + 1);
+        });
+      });
+    }
+  }
 
-  if (hitters.length === 0) return null;
-  const detail = hitters.map(h => h.count > 1 ? `${h.name}×${h.count}` : h.name).join(', ');
+  if (hitters.size === 0) return null;
+  const detail = [...hitters.entries()].map(([n, c]) => c > 1 ? `${n}×${c}` : n).join(', ');
   return { hit: true, detail };
 }
 function ipForCalc(ip) { return Math.floor(ip) + Math.round((ip%1)*10)/3; }
