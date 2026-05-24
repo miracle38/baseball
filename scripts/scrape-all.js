@@ -477,7 +477,23 @@ async function scrapeGameoneLeague(browser, clubIdx, year, leagueOpt) {
 
 // ===== JS 리터럴 직렬화 =====
 function batterToJs(p, i) {
-  return `p${i+1}:{name:'${p.name.replace(/'/g,"\\'")}',number:${p.num},G:${p.G},PA:${p.PA},AB:${p.AB},H:${p.H},'2B':${p['2B']},'3B':${p['3B']},HR:${p.HR},RBI:${p.RBI},R:${p.R},SB:${p.SB},BB:${p.BB},HBP:${p.HBP},SO:${p.SO},kOBP:${p.kOBP||0},kSLG:${p.kSLG||0},kOPS:${p.kOPS||0}}`;
+  // GHR(그라운드 홈런) 은 외부 스크래핑 소스에 없는 수동 입력 필드.
+  // 기존 값이 있으면(>0) 그대로 보존, 0/없음 이면 생략하여 데이터 부풀리기 방지.
+  const ghrPart = (p.GHR && p.GHR > 0) ? `,GHR:${p.GHR}` : '';
+  return `p${i+1}:{name:'${p.name.replace(/'/g,"\\'")}',number:${p.num},G:${p.G},PA:${p.PA},AB:${p.AB},H:${p.H},'2B':${p['2B']},'3B':${p['3B']},HR:${p.HR}${ghrPart},RBI:${p.RBI},R:${p.R},SB:${p.SB},BB:${p.BB},HBP:${p.HBP},SO:${p.SO},kOBP:${p.kOBP||0},kSLG:${p.kSLG||0},kOPS:${p.kOPS||0}}`;
+}
+
+// 기존 entryText 의 players 블록에서 name|number → GHR 매핑 추출 (보존용)
+function extractExistingGHR(entryText) {
+  const map = new Map();
+  // players:{...} 블록 안쪽만 검사하기엔 부담스러우니 entryText 전체에서 player 객체 패턴 매칭.
+  // name 다음에 number 가 오고 같은 객체 안에 GHR 이 있는 경우만 매칭.
+  const re = /name:'([^']+)',number:(\d+)[^}]*?GHR:(\d+)/g;
+  let m;
+  while ((m = re.exec(entryText)) !== null) {
+    map.set(`${m[1]}|${m[2]}`, parseInt(m[3], 10));
+  }
+  return map;
 }
 function pitcherToJs(p, i) {
   return `pt${i+1}:{name:'${p.name.replace(/'/g,"\\'")}',number:${p.num},G:${p.G},W:${p.W},L:${p.L},SV:${p.SV},HD:${p.HD},IP:${p.IP},pH:${p.pH},pHR:${p.pHR||0},K:${p.K},pBB:${p.pBB},pIBB:${p.pIBB||0},pHBP:${p.pHBP||0},R:${p.R},ER:${p.ER}}`;
@@ -571,6 +587,15 @@ function updateEntryInHtml(html, entryId, data) {
   let entryText = html.substring(span.start, span.end);
 
   if (data.players) {
+    // 기존 entry 의 GHR 값 보존 — 외부 소스에는 그라운드 홈런 정보가 없으므로
+    // 매번 스크래핑 시 덮어쓰지 않도록 player name+number 키로 merge.
+    const existingGHR = extractExistingGHR(entryText);
+    if (existingGHR.size > 0) {
+      data.players.forEach(p => {
+        const key = `${p.name}|${p.num}`;
+        if (existingGHR.has(key)) p.GHR = existingGHR.get(key);
+      });
+    }
     const newText = replaceBalanced(entryText, 'players', 0, playersBlock(data.players));
     if (newText) entryText = newText;
   }

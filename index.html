@@ -1459,6 +1459,11 @@ let firebaseReady = false;
 const CURRENT_YEAR = 2026;
 
 // ===== ALL DATA =====
+// 그라운드 홈런(GHR) 추가하기:
+//   player 객체에 GHR:N 필드를 추가하면 홈런 표시가 자동으로 "HR(GHR)" 형식이 됨.
+//   예) HR:7,GHR:2 → 화면에 "7(2)" 로 표시.
+//   GHR 필드는 외부 스크래퍼(scrape-all.js)가 자동 보존하므로 한 번 입력하면 유지됨.
+//   GHR 가 0 이거나 없으면 일반 HR 만 표시.
 const ALL_DATA = [
   // === 2026 ===
   {
@@ -1873,7 +1878,7 @@ let leagueDataCache = {};
 
 function getCombinedData() {
   const entries = getEntriesForYear(currentYear);
-  const countingKeys = ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'];
+  const countingKeys = ['G','PA','AB','H','2B','3B','HR','GHR','RBI','R','SB','BB','HBP','SO'];
   const pitcherCountingKeys = ['G','W','L','SV','HD','pH','pHR','K','pBB','pIBB','pHBP','R','ER','BF','NP'];
 
   // Merge players by name+number
@@ -2103,6 +2108,12 @@ function ipToThirds(ip) { return Math.floor(ip) * 3 + Math.round((ip % 1) * 10);
 function thirdsToIP(t) { return Math.floor(t / 3) + (t % 3) * 0.1; }
 function sumIP() { let t=0; for(const a of arguments) t+=ipToThirds(a); return thirdsToIP(t); }
 function fmtIP(val) { const t=ipToThirds(val); return Math.floor(t/3)+'.'+(t%3); }
+// HR 표시 — 그라운드 홈런(GHR)이 있으면 "7(2)" 형식, 없으면 "7"
+function fmtHR(obj) {
+  const hr = (obj && obj.HR) || 0;
+  const ghr = (obj && obj.GHR) || 0;
+  return ghr > 0 ? `${hr}(${ghr})` : `${hr}`;
+}
 function ipForCalc(ip) { return Math.floor(ip) + Math.round((ip%1)*10)/3; }
 function calcERA(pt) { const dec=ipForCalc(pt.IP); return dec>0?(pt.ER*7/dec):0; }
 
@@ -2194,7 +2205,8 @@ function renderPlayers() {
     ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => {
       const val = p[k] || 0;
       const isLeader = (!['SO','HBP'].includes(k) && leaders[k] !== undefined && val === leaders[k] && val > 0) ? ' stat-leader' : '';
-      html += `<td class="${isLeader}">${val}</td>`;
+      const display = (k === 'HR') ? fmtHR(p) : val;
+      html += `<td class="${isLeader}">${display}</td>`;
     });
     ['OBP','SLG','OPS'].forEach(k => {
       const val = p[k];
@@ -2205,9 +2217,9 @@ function renderPlayers() {
   });
 
   // Totals
-  const totals = { G:0, PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:0 };
+  const totals = { G:0, PA:0, AB:0, H:0, '2B':0, '3B':0, HR:0, GHR:0, RBI:0, R:0, SB:0, BB:0, HBP:0, SO:0 };
   computed.forEach(p => {
-    ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => { totals[k] += (p[k] || 0); });
+    ['G','PA','AB','H','2B','3B','HR','GHR','RBI','R','SB','BB','HBP','SO'].forEach(k => { totals[k] += (p[k] || 0); });
   });
   const tAVG = totals.AB > 0 ? (totals.H / totals.AB) : 0;
   const tOBP = (totals.AB + totals.BB + totals.HBP) > 0 ? ((totals.H + totals.BB + totals.HBP) / (totals.AB + totals.BB + totals.HBP)) : 0;
@@ -2218,7 +2230,10 @@ function renderPlayers() {
 
   html += '<tr class="totals-row"><td class="rank-col"></td><td class="compare-col"></td><td class="name-cell">합계</td><td></td>';
   html += `<td>${fmtRate(tAVG)}</td>`;
-  ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => { html += `<td>${totals[k]}</td>`; });
+  ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'].forEach(k => {
+    const display = (k === 'HR') ? fmtHR(totals) : totals[k];
+    html += `<td>${display}</td>`;
+  });
   html += `<td>${fmtRate(tOBP)}</td><td>${fmtRate(tSLG)}</td><td>${fmtRate(tOPS)}</td></tr>`;
 
   tbody.innerHTML = html;
@@ -2641,10 +2656,10 @@ function renderTeamStats() {
     games.forEach(g => { totalScored += (g.ourScore || 0); totalAllowed += (g.theirScore || 0); });
   }
 
-  let totalH = 0, totalAB = 0, totalBB = 0, totalHBP = 0, totalHR = 0, totalRBI = 0, totalSB = 0, totalSO = 0, totalR = 0;
+  let totalH = 0, totalAB = 0, totalBB = 0, totalHBP = 0, totalHR = 0, totalGHR = 0, totalRBI = 0, totalSB = 0, totalSO = 0, totalR = 0;
   players.forEach(p => {
     totalH += (p.H || 0); totalAB += (p.AB || 0); totalBB += (p.BB || 0);
-    totalHBP += (p.HBP || 0); totalHR += (p.HR || 0); totalRBI += (p.RBI || 0);
+    totalHBP += (p.HBP || 0); totalHR += (p.HR || 0); totalGHR += (p.GHR || 0); totalRBI += (p.RBI || 0);
     totalSB += (p.SB || 0); totalSO += (p.SO || 0); totalR += (p.R || 0);
   });
   const teamAVG = totalAB > 0 ? (totalH / totalAB) : 0;
@@ -2665,7 +2680,7 @@ function renderTeamStats() {
     <div class="stat-card"><div class="stat-label">팀 타율</div><div class="stat-value">${fmtRate(teamAVG)}</div><div class="stat-sub">${totalH}안타 / ${totalAB}타수</div></div>
     <div class="stat-card"><div class="stat-label">팀 출루율</div><div class="stat-value">${fmtRate(teamOBP)}</div><div class="stat-sub">(안타+볼넷+사구) / (타수+볼넷+사구)</div></div>
     <div class="stat-card"><div class="stat-label">팀 ERA</div><div class="stat-value">${fmtERA(teamERA)}</div><div class="stat-sub">자책 ${totalER} / ${fmtIP(totalIP)}이닝</div></div>
-    <div class="stat-card"><div class="stat-label">팀 홈런</div><div class="stat-value accent">${totalHR}</div><div class="stat-sub">시즌 합계</div></div>
+    <div class="stat-card"><div class="stat-label">팀 홈런</div><div class="stat-value accent">${totalHR}${totalGHR > 0 ? `<span style="font-size:0.55em;opacity:0.7">(${totalGHR})</span>` : ''}</div><div class="stat-sub">시즌 합계${totalGHR > 0 ? ' · 괄호는 그라운드 홈런' : ''}</div></div>
     <div class="stat-card"><div class="stat-label">팀 타점</div><div class="stat-value">${totalRBI}</div><div class="stat-sub">시즌 합계</div></div>
     <div class="stat-card"><div class="stat-label">팀 득점</div><div class="stat-value">${totalScored}</div><div class="stat-sub">시즌 합계</div></div>
     <div class="stat-card"><div class="stat-label">팀 도루</div><div class="stat-value">${totalSB}</div><div class="stat-sub">시즌 합계</div></div>
@@ -2958,7 +2973,7 @@ function renderHistoryPlayersTable(entry) {
     const ops = p.kOPS != null ? p.kOPS : (obp + slg);
     html += `<tr><td class="name-cell">${escHtml(p.name)}</td><td>${num}</td><td>${fmtRate(avg)}</td>`;
     html += `<td>${p.G||0}</td><td>${p.PA||0}</td><td>${p.AB||0}</td><td>${p.H||0}</td>`;
-    html += `<td>${p['2B']||0}</td><td>${p['3B']||0}</td><td>${p.HR||0}</td>`;
+    html += `<td>${p['2B']||0}</td><td>${p['3B']||0}</td><td>${fmtHR(p)}</td>`;
     html += `<td>${p.RBI||0}</td><td>${p.R||0}</td><td>${p.SB||0}</td>`;
     html += `<td>${p.BB||0}</td><td>${p.HBP||0}</td><td>${p.SO||0}</td>`;
     html += `<td>${fmtRate(obp)}</td><td>${fmtRate(slg)}</td><td>${fmtRate(ops)}</td></tr>`;
@@ -3135,7 +3150,7 @@ function renderHistoryCareerSection() {
       html += `<tr><td class="name-cell">${escHtml(r.name)}</td><td>${r.number}</td><td>${r.yearsCount}</td>`;
       html += `<td>${fmtRate(t.AVG)}</td><td>${fmtRate(t.OBP)}</td><td>${fmtRate(t.SLG)}</td><td>${fmtRate(t.OPS)}</td>`;
       html += `<td>${t.G}</td><td>${t.PA}</td><td>${t.AB}</td><td>${t.H}</td>`;
-      html += `<td>${t['2B']}</td><td>${t['3B']}</td><td>${t.HR}</td>`;
+      html += `<td>${t['2B']}</td><td>${t['3B']}</td><td>${fmtHR(t)}</td>`;
       html += `<td>${t.RBI}</td><td>${t.R}</td><td>${t.SB}</td>`;
       html += `<td>${t.BB}</td><td>${t.HBP}</td><td>${t.SO}</td></tr>`;
     });
@@ -3633,6 +3648,9 @@ function openPlayerProfile(name, number) {
     const t = {};
     keys.forEach(k => t[k] = 0);
     rows.forEach(r => keys.forEach(k => t[k] += (r[k] || 0)));
+    // GHR 은 batKeys에 포함시키지 않지만 (헤더 컬럼 정렬 유지) 항상 합산해서
+    // HR 셀에서 fmtHR(t) 가 그라운드 홈런 정보를 표시할 수 있게 함.
+    t.GHR = rows.reduce((s, r) => s + (r.GHR || 0), 0);
     return t;
   }
 
@@ -3656,7 +3674,7 @@ function openPlayerProfile(name, number) {
       html += `<tr class="pp-year-row${multi ? ' pp-expandable' : ''}" ${multi ? `onclick="document.querySelectorAll('.${uid}').forEach(r=>r.classList.toggle('pp-hidden'))"` : ''}>`;
       html += `<td class="pp-year">${year}${multi ? ' <span class="pp-toggle">▸</span>' : ''}</td>`;
       html += `<td class="pp-avg">${fmtRate(yAvg)}</td>`;
-      batKeys.forEach(k => html += `<td>${yt[k]}</td>`);
+      batKeys.forEach(k => html += `<td>${k === 'HR' ? fmtHR(yt) : yt[k]}</td>`);
       html += `</tr>`;
       if (multi) {
         rows.forEach(r => {
@@ -3664,7 +3682,7 @@ function openPlayerProfile(name, number) {
           html += `<tr class="pp-league-row ${uid} pp-hidden">`;
           html += `<td class="pp-league-name">${escHtml(shortLeagueName(r.league))}</td>`;
           html += `<td>${fmtRate(rAvg)}</td>`;
-          batKeys.forEach(k => html += `<td>${r[k] || 0}</td>`);
+          batKeys.forEach(k => html += `<td>${k === 'HR' ? fmtHR(r) : (r[k] || 0)}</td>`);
           html += `</tr>`;
         });
       }
@@ -3672,7 +3690,7 @@ function openPlayerProfile(name, number) {
 
     html += `<tr class="pp-total-row"><td class="pp-year">통산</td>`;
     html += `<td class="pp-avg">${fmtRate(gtAvg)}</td>`;
-    batKeys.forEach(k => html += `<td>${grandTotal[k]}</td>`);
+    batKeys.forEach(k => html += `<td>${k === 'HR' ? fmtHR(grandTotal) : grandTotal[k]}</td>`);
     html += `</tr>`;
     html += '</tbody></table></div>';
     batEl.innerHTML = html;
@@ -3806,7 +3824,7 @@ function collectCompareData(kind) {
 }
 
 function sumBatterSeasons(seasons) {
-  const keys = ['G','PA','AB','H','2B','3B','HR','RBI','R','SB','BB','HBP','SO'];
+  const keys = ['G','PA','AB','H','2B','3B','HR','GHR','RBI','R','SB','BB','HBP','SO'];
   const t = {};
   keys.forEach(k => t[k] = 0);
   seasons.forEach(r => keys.forEach(k => t[k] += (r[k] || 0)));
