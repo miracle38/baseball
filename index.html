@@ -8,7 +8,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f3f4f8;
+  --bg:#faf7f5;
   --navy:#1e293b;
   --navy-light:#334155;
   --navy-mid:#1e3a5f;
@@ -18,32 +18,50 @@
   --white:#1e293b;
   --gray:#64748b;
   --gray-light:#94a3b8;
-  --border:rgba(0,0,0,0.08);
-  --border-light:rgba(0,0,0,0.12);
+  --border:rgba(0,0,0,0.06);
+  --border-light:rgba(0,0,0,0.10);
   --gold:#d97706;
   --silver:#6b7280;
   --bronze:#b45309;
   --accent-blue:#3b82f6;
   --accent-green:#16a34a;
   --accent-cyan:#0891b2;
-  --card-bg:linear-gradient(145deg, #ffffff, #f8fafc);
+  --card-bg:linear-gradient(145deg, rgba(255,255,255,0.85), rgba(248,250,252,0.85));
   --card:#ffffff;
-  --card-border:rgba(0,0,0,0.06);
+  --card-border:rgba(0,0,0,0.05);
   --shadow:0 4px 24px rgba(0,0,0,0.08);
   --row-alt:rgba(0,0,0,0.02);
   --row-hover:rgba(233,69,96,0.06);
   --transition:0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* === Glassmorphism === */
+  --glass-bg:rgba(255,255,255,0.7);
+  --glass-bg-strong:rgba(255,255,255,0.82);
+  --glass-border:rgba(255,255,255,0.55);
+  --glass-border-soft:rgba(255,255,255,0.35);
+  --glass-blur:saturate(180%) blur(20px);
+  --glass-shadow:0 8px 32px rgba(140,20,20,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  --glass-shadow-strong:0 14px 40px rgba(140,20,20,0.12), 0 4px 12px rgba(0,0,0,0.06);
 }
 html{scroll-behavior:smooth;overflow-x:hidden;overflow-x:clip;max-width:100%}
 body{
   font-family:'Segoe UI','Malgun Gothic','맑은 고딕',sans-serif;
-  background:var(--bg);
-  background-image:none;
+  background:
+    linear-gradient(135deg, #fff5f5 0%, #fdf4f1 25%, #fffaf2 60%, #fef3f2 100%);
   color:var(--white);line-height:1.6;
   min-height:100vh;
   overflow-x:hidden;
   overflow-x:clip;
   max-width:100%;
+  position:relative;
+}
+/* 페이지 전체에 부드러운 컬러 블롭 — 글래스 카드 뒤에서 살짝 비쳐 깊이감 */
+body::before{
+  content:'';
+  position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(233,69,96,0.18) 0%, transparent 45%),
+    radial-gradient(circle at 88% 80%, rgba(217,119,6,0.14) 0%, transparent 45%),
+    radial-gradient(circle at 60% 50%, rgba(59,130,246,0.08) 0%, transparent 55%);
 }
 a{color:var(--red);text-decoration:none;transition:var(--transition)}
 a:hover{color:#ff6b8a}
@@ -57,10 +75,12 @@ button{cursor:pointer;font-family:inherit}
 
 /* ===== HEADER ===== */
 .header{
-  background:linear-gradient(135deg, #8b1a1a 0%, #c0282e 50%, #a02020 100%);
-  border-bottom:3px solid #ffd700;
+  background:linear-gradient(135deg, rgba(139,26,26,0.92) 0%, rgba(192,40,46,0.92) 50%, rgba(160,32,32,0.92) 100%);
+  -webkit-backdrop-filter:saturate(180%) blur(16px);
+  backdrop-filter:saturate(180%) blur(16px);
+  border-bottom:1px solid rgba(255,215,0,0.55);
   position:sticky;top:0;z-index:100;
-  box-shadow:0 4px 20px rgba(140,20,20,0.4);
+  box-shadow:0 8px 28px rgba(140,20,20,0.28), 0 1px 0 rgba(255,215,0,0.15) inset;
 }
 .header::before{
   content:'';position:absolute;inset:0;
@@ -97,9 +117,12 @@ button{cursor:pointer;font-family:inherit}
 /* ===== SEASON SELECTOR ===== */
 .season-selector{
   display:flex;flex-direction:column;align-items:center;
-  background:#ffffff;
-  padding:12px 0 0;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  background:rgba(255,255,255,0.55);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  backdrop-filter:saturate(180%) blur(14px);
+  padding:14px 0 2px;
+  box-shadow:0 2px 8px rgba(140,20,20,0.04);
+  border-bottom:1px solid rgba(255,255,255,0.5);
 }
 .year-controls{
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
@@ -109,17 +132,22 @@ button{cursor:pointer;font-family:inherit}
 }
 .career-btn{
   appearance:none;-webkit-appearance:none;
-  background:#fff;color:#8b1a1a;
-  border:2px solid #8b1a1a;
+  background:rgba(255,255,255,0.78);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);
+  backdrop-filter:saturate(180%) blur(10px);
+  color:#8b1a1a;
+  border:1.5px solid rgba(139,26,26,0.7);
   padding:9px 22px;border-radius:24px;
   font-size:15px;font-weight:700;
   cursor:pointer;font-family:inherit;
   transition:var(--transition);
-  box-shadow:0 2px 8px rgba(140,20,20,0.15);
+  box-shadow:0 2px 10px rgba(140,20,20,0.12);
   outline:none;
 }
 .career-btn:hover{
-  background:#fff7f7;box-shadow:0 4px 14px rgba(140,20,20,0.25);
+  background:rgba(255,255,255,0.92);
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(140,20,20,0.22);
 }
 .career-btn:focus-visible{
   box-shadow:0 0 0 3px rgba(255,215,0,0.3), 0 2px 8px rgba(140,20,20,0.2);
@@ -163,8 +191,10 @@ button{cursor:pointer;font-family:inherit}
   display:flex;gap:0;padding:8px 0 12px;
 }
 .league-pill{
-  background:#f8fafc;
-  border:1px solid #e2e8f0;
+  background:rgba(255,255,255,0.55);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);
+  backdrop-filter:saturate(180%) blur(10px);
+  border:1px solid rgba(255,255,255,0.55);
   color:#64748b;padding:5px 18px;font-size:12px;font-weight:600;
   cursor:pointer;transition:var(--transition);
   font-family:inherit;
@@ -188,10 +218,12 @@ button{cursor:pointer;font-family:inherit}
 
 /* ===== HISTORY TABLE ===== */
 .history-container{
-  background:#ffffff;
-  border:1px solid #e2e8f0;
-  border-radius:14px;overflow:hidden;
-  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur);
+  backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);
+  border-radius:20px;overflow:hidden;
+  box-shadow:var(--glass-shadow);
   margin-bottom:24px;
 }
 .history-table{
@@ -276,10 +308,13 @@ button{cursor:pointer;font-family:inherit}
 /* ===== NAV TABS ===== */
 .nav-tabs{
   display:flex;justify-content:center;
-  background:linear-gradient(135deg, #6b1515 0%, #8b1a1a 50%, #7a1818 100%);
-  border-bottom:1px solid rgba(0,0,0,0.2);
+  background:linear-gradient(135deg, rgba(107,21,21,0.92) 0%, rgba(139,26,26,0.92) 50%, rgba(122,24,24,0.92) 100%);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid rgba(255,215,0,0.18);
   overflow-x:auto;
   position:relative;
+  box-shadow:0 4px 16px rgba(140,20,20,0.18);
 }
 .nav-tab{
   background:none;border:none;color:#94a3b8;
@@ -325,15 +360,18 @@ button{cursor:pointer;font-family:inherit}
 
 /* ===== TABLES ===== */
 .table-wrapper{
-  overflow-x:auto;border-radius:14px;
-  background:#ffffff;
-  box-shadow:0 2px 12px rgba(0,0,0,0.06);
-  border:1px solid #e2e8f0;
+  overflow-x:auto;border-radius:20px;
+  background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur);
+  backdrop-filter:var(--glass-blur);
+  box-shadow:var(--glass-shadow);
+  border:1px solid var(--glass-border);
   position:relative;
 }
 .table-wrapper::before{
-  content:'';position:absolute;inset:0;border-radius:14px;
+  content:'';position:absolute;inset:0;border-radius:20px;
   pointer-events:none;z-index:1;
+  background:linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 50%);
 }
 /* 타자기록 / 투수기록 / 경기기록 — 기본: 표 내부 스크롤 + thead wrapper-sticky */
 #tab-players .table-wrapper,
@@ -415,10 +453,13 @@ th.compare-col:hover{color:#cbd5e1}
 
 .compare-fab{
   position:fixed;right:24px;bottom:24px;z-index:1500;
-  background:linear-gradient(135deg,#8b1a1a,#c0282e);
-  color:#fff;border:none;border-radius:30px;
+  background:linear-gradient(135deg, rgba(139,26,26,0.92), rgba(192,40,46,0.92));
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  backdrop-filter:saturate(180%) blur(14px);
+  color:#fff;border:1px solid rgba(255,215,0,0.35);border-radius:30px;
   padding:14px 22px;font-size:14px;font-weight:700;font-family:inherit;
-  cursor:pointer;box-shadow:0 8px 24px rgba(140,20,20,0.4);
+  cursor:pointer;
+  box-shadow:0 12px 32px rgba(140,20,20,0.35), 0 2px 8px rgba(0,0,0,0.06);
   display:none;align-items:center;gap:8px;
   transition:transform 0.15s, box-shadow 0.15s;
 }
@@ -585,12 +626,18 @@ td.stat-leader-low{
   gap:18px;margin-top:20px;
 }
 .stat-card{
-  background:#ffffff;
-  border:1px solid #e2e8f0;
-  border-radius:14px;padding:28px;text-align:center;
-  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  background:var(--glass-bg-strong);
+  -webkit-backdrop-filter:var(--glass-blur);
+  backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);
+  border-radius:18px;padding:28px;text-align:center;
+  box-shadow:var(--glass-shadow);
   transition:var(--transition);
   position:relative;overflow:hidden;
+}
+.stat-card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--glass-shadow-strong);
 }
 .stat-card::before{
   display:none;
