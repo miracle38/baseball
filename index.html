@@ -101,8 +101,33 @@ button{cursor:pointer;font-family:inherit}
   padding:12px 0 0;
   box-shadow:0 2px 8px rgba(0,0,0,0.06);
 }
+.year-controls{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+}
 .year-select-wrap{
   position:relative;display:inline-block;
+}
+.career-btn{
+  appearance:none;-webkit-appearance:none;
+  background:#fff;color:#8b1a1a;
+  border:2px solid #8b1a1a;
+  padding:9px 22px;border-radius:24px;
+  font-size:15px;font-weight:700;
+  cursor:pointer;font-family:inherit;
+  transition:var(--transition);
+  box-shadow:0 2px 8px rgba(140,20,20,0.15);
+  outline:none;
+}
+.career-btn:hover{
+  background:#fff7f7;box-shadow:0 4px 14px rgba(140,20,20,0.25);
+}
+.career-btn:focus-visible{
+  box-shadow:0 0 0 3px rgba(255,215,0,0.3), 0 2px 8px rgba(140,20,20,0.2);
+}
+.career-btn.active{
+  background:linear-gradient(135deg, #8b1a1a, #c0282e);
+  color:#fff;border-color:#ffd700;
+  box-shadow:0 4px 16px rgba(140,20,20,0.3);
 }
 .year-select-wrap select{
   appearance:none;-webkit-appearance:none;
@@ -157,6 +182,7 @@ button{cursor:pointer;font-family:inherit}
 }
 @media(max-width:480px){
   .year-select-wrap select{padding:7px 32px 7px 14px;font-size:13px}
+  .career-btn{padding:7px 16px;font-size:13px}
   .league-pill{padding:4px 12px;font-size:11px}
 }
 
@@ -1233,10 +1259,13 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 
 <!-- ===== SEASON SELECTOR ===== -->
 <div class="season-selector" id="seasonSelector">
-  <div class="year-select-wrap">
-    <select id="yearSelect" onchange="switchYear(this.value)">
-      <!-- populated dynamically from ALL_DATA years -->
-    </select>
+  <div class="year-controls">
+    <div class="year-select-wrap">
+      <select id="yearSelect" onchange="switchYear(this.value)">
+        <!-- populated dynamically from ALL_DATA years -->
+      </select>
+    </div>
+    <button type="button" id="careerBtn" class="career-btn" onclick="switchYear('career')">통산</button>
   </div>
   <div class="league-pills" id="leaguePills"></div>
 </div>
@@ -1788,12 +1817,16 @@ function switchYear(val) {
     document.querySelectorAll('.tab-content').forEach(el => { el.style.display = 'none'; });
     document.getElementById('leaguePills').style.display = 'none';
     document.getElementById('leagueSubtitle').textContent = '통산 기록';
+    const careerBtn = document.getElementById('careerBtn');
+    if (careerBtn) careerBtn.classList.add('active');
     renderHistory();
   } else {
     const year = parseInt(val);
     if (currentYear === year) return;
     currentYear = year;
     currentLeague = 'all';
+    const careerBtn = document.getElementById('careerBtn');
+    if (careerBtn) careerBtn.classList.remove('active');
     // Set calendar to appropriate year
     if (year === new Date().getFullYear()) {
       calendarYear = year;
@@ -3295,7 +3328,8 @@ function renderHistoryCareerSection() {
     html += `<div class="section-header" style="margin-top:0">
       <div class="section-title">현재 팀원 통산 — 타자 (${latestYear} 시즌 기준 · ${batterRows.length}명)</div>
     </div>`;
-    html += '<div class="table-wrapper"><table style="min-width:1000px"><thead><tr>';
+    html += '<div class="table-wrapper"><table style="min-width:1040px"><thead><tr>';
+    html += '<th class="compare-col" title="비교 대상 선택">✓</th>';
     html += careerThHtml('batter','name','선수명');
     html += careerThHtml('batter','number','등번호');
     html += careerThHtml('batter','yearsCount','시즌');
@@ -3319,7 +3353,11 @@ function renderHistoryCareerSection() {
     html += '</tr></thead><tbody>';
     batterRows.forEach(r => {
       const t = r.totals;
-      html += `<tr><td class="name-cell">${escHtml(r.name)}</td><td>${r.number}</td><td>${r.yearsCount}</td>`;
+      const compKey = r.name + '|' + (r.number || 0);
+      const isChecked = compareSelection.batter.has(compKey) ? 'checked' : '';
+      html += `<tr>`;
+      html += `<td class="compare-col"><input type="checkbox" data-compare-key="${escHtml(compKey)}" data-compare-kind="batter" ${isChecked} onclick="toggleCompareSelection(event,this)"></td>`;
+      html += `<td class="name-cell">${escHtml(r.name)}</td><td>${r.number}</td><td>${r.yearsCount}</td>`;
       html += `<td>${fmtRate(t.AVG)}</td><td>${fmtRate(t.OBP)}</td><td>${fmtRate(t.SLG)}</td><td>${fmtRate(t.OPS)}</td>`;
       html += `<td>${t.G}</td><td>${t.PA}</td><td>${t.AB}</td><td>${t.H}</td>`;
       html += `<td>${t['2B']}</td><td>${t['3B']}</td><td>${fmtHR(t)}</td>`;
@@ -3334,7 +3372,8 @@ function renderHistoryCareerSection() {
     html += `<div class="section-header" style="margin-top:24px">
       <div class="section-title">현재 팀원 통산 — 투수 (${latestYear} 시즌 기준 · ${pitcherRows.length}명)</div>
     </div>`;
-    html += '<div class="table-wrapper"><table style="min-width:900px"><thead><tr>';
+    html += '<div class="table-wrapper"><table style="min-width:940px"><thead><tr>';
+    html += '<th class="compare-col" title="비교 대상 선택">✓</th>';
     html += careerThHtml('pitcher','name','선수명');
     html += careerThHtml('pitcher','number','등번호');
     html += careerThHtml('pitcher','yearsCount','시즌');
@@ -3356,7 +3395,11 @@ function renderHistoryCareerSection() {
     html += '</tr></thead><tbody>';
     pitcherRows.forEach(r => {
       const t = r.totals;
-      html += `<tr><td class="name-cell">${escHtml(r.name)}</td><td>${r.number}</td><td>${r.yearsCount}</td>`;
+      const compKey = r.name + '|' + (r.number || 0);
+      const isChecked = compareSelection.pitcher.has(compKey) ? 'checked' : '';
+      html += `<tr>`;
+      html += `<td class="compare-col"><input type="checkbox" data-compare-key="${escHtml(compKey)}" data-compare-kind="pitcher" ${isChecked} onclick="toggleCompareSelection(event,this)"></td>`;
+      html += `<td class="name-cell">${escHtml(r.name)}</td><td>${r.number}</td><td>${r.yearsCount}</td>`;
       html += `<td>${t._ipThirds > 0 ? fmtERA(t.ERA) : '-'}</td><td>${(t.W + t.L) > 0 ? fmtRate(t.WPCT) : '-'}</td>`;
       html += `<td>${t.G}</td><td>${t.W}</td><td>${t.L}</td><td>${t.SV}</td><td>${t.HD}</td>`;
       html += `<td>${t._ipThirds > 0 ? fmtIP(t.IP) : '-'}</td><td>${t.pH}</td><td>${t.pHR}</td>`;
@@ -3459,7 +3502,7 @@ function initYearSelect() {
   years.forEach(y => {
     html += `<option value="${y}"${y === CURRENT_YEAR ? ' selected' : ''}>${y}년 시즌</option>`;
   });
-  html += `<option value="career">통산</option>`;
+  // '통산' 은 더 이상 select 옵션이 아니라 별도 버튼(#careerBtn)으로 제공.
   sel.innerHTML = html;
 }
 
@@ -3935,7 +3978,19 @@ function closePlayerProfile() {
 }
 
 // === 선수 비교 ===
+// 통산 페이지(historyView)는 .tab-content 가 아니므로 active tab 만으로 kind 를
+// 판별할 수 없다. 마지막으로 토글된 kind 를 추적해 fallback 으로 사용.
+let _lastSelectedCompareKind = null;
 function getActiveCompareKind() {
+  if (currentYear === 'career') {
+    // 통산: 마지막 토글된 종류 우선. 없으면 비어있지 않은 쪽.
+    if (_lastSelectedCompareKind && compareSelection[_lastSelectedCompareKind].size > 0) {
+      return _lastSelectedCompareKind;
+    }
+    if (compareSelection.batter.size > 0 && compareSelection.batter.size >= compareSelection.pitcher.size) return 'batter';
+    if (compareSelection.pitcher.size > 0) return 'pitcher';
+    return _lastSelectedCompareKind;
+  }
   const active = document.querySelector('.tab-content.active');
   if (!active) return null;
   if (active.id === 'tab-players') return 'batter';
@@ -3958,6 +4013,7 @@ function toggleCompareSelection(e, el) {
   } else {
     set.delete(key);
   }
+  _lastSelectedCompareKind = kind;
   updateCompareFab();
 }
 
