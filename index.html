@@ -343,28 +343,34 @@ button{cursor:pointer;font-family:inherit}
   position:sticky;top:0;z-index:5;
   background:#8b1a1a;
 }
-/* 역대 기록 탭의 "현재 팀원 통산" 표 — 페이지 스크롤 시 thead 가 viewport 상단에 고정.
-   .table-wrapper 의 기본 overflow:auto 가 sticky 기준을 wrapper 내부로 가두므로,
-   여기서는 모든 ancestor 의 overflow 를 visible 로 강제하여 viewport 가 스크롤 컨테이너가 되도록 한다.
-   top 값은 sticky 헤더(.header) 높이만큼 띄움. */
+/* 역대 기록 탭의 "현재 팀원 통산" 표.
+   데스크탑: 페이지 viewport 가 스크롤 컨테이너 — wrapper overflow:visible 로 풀고,
+            thead 는 viewport 기준 sticky (top = 페이지 헤더 높이, JS 가 --header-h 갱신).
+   모바일:  wrapper 가 자체 스크롤 컨테이너 — 가로 스크롤 + 세로 스크롤 가능.
+            thead 는 wrapper 내부 기준 sticky (top:0). */
 #historyView,
-#historyCareerSection,
+#historyCareerSection{
+  overflow:visible !important;
+}
 #historyCareerSection .table-wrapper{
   overflow:visible !important;
 }
 #historyCareerSection table{
   border-collapse:separate !important;border-spacing:0 !important;
 }
-#historyCareerSection thead{
-  position:sticky;top:100px;z-index:5;
-}
+#historyCareerSection thead,
 #historyCareerSection thead th{
-  position:sticky;top:100px;z-index:5;
-  background:#8b1a1a;
+  position:sticky;top:var(--header-h, 100px);z-index:5;
 }
+#historyCareerSection thead th{background:#8b1a1a}
 @media (max-width:768px){
+  #historyCareerSection .table-wrapper{
+    overflow:auto !important;
+    max-height:calc(100vh - var(--header-h, 75px) - 40px);
+    -webkit-overflow-scrolling:touch;
+  }
   #historyCareerSection thead,
-  #historyCareerSection thead th{top:75px}
+  #historyCareerSection thead th{top:0}
 }
 .rank-col{
   width:42px;min-width:42px;
@@ -3505,6 +3511,18 @@ function initYearSelect() {
   // '통산' 은 더 이상 select 옵션이 아니라 별도 버튼(#careerBtn)으로 제공.
   sel.innerHTML = html;
 }
+
+// ===== 페이지 헤더 높이 측정 → CSS 변수 --header-h 갱신.
+// 통산 표 thead 가 .header 바로 아래에 정확히 박히게 하려면 실제 높이가 필요.
+function updateHeaderHeight() {
+  const header = document.querySelector('.header');
+  if (!header) return;
+  const h = header.offsetHeight;
+  document.documentElement.style.setProperty('--header-h', h + 'px');
+}
+window.addEventListener('load', updateHeaderHeight);
+window.addEventListener('resize', updateHeaderHeight);
+updateHeaderHeight();
 
 // ===== INIT =====
 initYearSelect();
