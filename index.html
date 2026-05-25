@@ -3337,16 +3337,12 @@ function getCurrentTeamMembers() {
   const years = ALL_DATA.map(e => e.year).filter(y => typeof y === 'number');
   if (years.length === 0) return { batters: [], pitchers: [] };
   const latestYear = Math.max(...years);
-  // "현재 팀원" 을 최신 연도뿐 아니라 직전 연도까지(2개 시즌) 활동한 (name|number)
-  // 쌍의 합집합으로 본다. 동명이인이 다른 등번호로 한 해만 출전한 경우에도
-  // 통산표에 누락되지 않게 — 예: 99번/100번 김종원은 2025년만 출전했고
-  // 2026년 entry 에는 없지만 같은 인물 통산 행은 표시되어야 한다.
-  // 또 batter 표 후보에는 pitchers 등록된 선수도 포함(투수도 타석 가능). */
-  const recentEntries = ALL_DATA.filter(e => typeof e.year === 'number' && e.year >= latestYear - 1);
-
+  // 통산 표 멤버 풀: ALL_DATA 전 시즌에 한 번이라도 등록된 (name|number) 합집합.
+  // 현재 활동 중이 아닌(과거에만 뛴) 선수도 모두 표시한다.
+  // batter 표 후보에는 pitchers 등록자도 포함(투수도 타석에 설 수 있음).
   const batterKeys = new Set(); // "name|number"
   const pitcherKeys = new Set();
-  recentEntries.forEach(e => {
+  ALL_DATA.forEach(e => {
     Object.values(e.players || {}).forEach(p => {
       const num = p.number || p.num || 0;
       if (p.name) batterKeys.add(`${p.name}|${num}`);
@@ -3355,7 +3351,7 @@ function getCurrentTeamMembers() {
       const num = p.number || p.num || 0;
       if (p.name) {
         pitcherKeys.add(`${p.name}|${num}`);
-        batterKeys.add(`${p.name}|${num}`); // 투수도 타석 통산 후보
+        batterKeys.add(`${p.name}|${num}`);
       }
     });
   });
@@ -3454,7 +3450,7 @@ function renderHistoryCareerSection() {
     sortRows(batterRows, careerSortState.batter);
     const ranked = assignCareerRanks(batterRows, 'batter', careerSortState.batter.key);
     html += `<div class="section-header" style="margin-top:0">
-      <div class="section-title">현재 팀원 통산 — 타자 (${latestYear} 시즌 기준 · ${batterRows.length}명)</div>
+      <div class="section-title">역대 팀원 통산 — 타자 (총 ${batterRows.length}명)</div>
     </div>`;
     html += '<div class="table-wrapper"><table style="min-width:1080px"><thead><tr>';
     html += '<th class="rank-col">#</th>';
@@ -3502,7 +3498,7 @@ function renderHistoryCareerSection() {
     sortRows(pitcherRows, careerSortState.pitcher);
     const rankedP = assignCareerRanks(pitcherRows, 'pitcher', careerSortState.pitcher.key);
     html += `<div class="section-header" style="margin-top:24px">
-      <div class="section-title">현재 팀원 통산 — 투수 (${latestYear} 시즌 기준 · ${pitcherRows.length}명)</div>
+      <div class="section-title">역대 팀원 통산 — 투수 (총 ${pitcherRows.length}명)</div>
     </div>`;
     html += '<div class="table-wrapper"><table style="min-width:980px"><thead><tr>';
     html += '<th class="rank-col">#</th>';
