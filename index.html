@@ -216,6 +216,13 @@ button{cursor:pointer;font-family:inherit}
   background:rgba(233,69,96,0.06);
   border-left:3px solid var(--red);
 }
+/* 연도 그룹 시각화: 새 연도 시작 행 위에 두꺼운 가로선 */
+.history-table tbody tr.year-group-start td{
+  border-top:2px solid rgba(192,40,46,0.5);
+}
+.history-table tbody tr.year-group-start:first-child td{
+  border-top:none;
+}
 .history-table tbody tr.history-totals{
   background:rgba(233,69,96,0.06)!important;
   border-top:2px solid var(--red);
@@ -3058,6 +3065,7 @@ function renderHistory() {
   const tbody = document.getElementById('historyBody');
   let html = '';
   let totalW = 0, totalL = 0, totalD = 0, totalG = 0;
+  let prevYear = null;
 
   ALL_DATA.forEach(entry => {
     totalW += entry.W; totalL += entry.L; totalD += entry.D; totalG += entry.G;
@@ -3066,9 +3074,14 @@ function renderHistory() {
     const clickable = hasData(entry);
     const rowCls = clickable ? 'clickable-row' : '';
     const expanded = historyExpandedId === entry.id;
+    const isNewYear = entry.year !== prevYear;
+    const groupCls = isNewYear ? ' year-group-start' : ' year-group-cont';
+    prevYear = entry.year;
 
-    html += `<tr class="${rowCls}${expanded ? ' expanded-row' : ''}" ${clickable ? `onclick="toggleHistoryDetail('${entry.id}')"` : ''}>`;
-    html += `<td class="year-cell">${entry.year}</td>`;
+    html += `<tr class="${rowCls}${expanded ? ' expanded-row' : ''}${groupCls}" ${clickable ? `onclick="toggleHistoryDetail('${entry.id}')"` : ''}>`;
+    html += isNewYear
+      ? `<td class="year-cell">${entry.year}</td>`
+      : `<td class="year-cell year-cell-continued"></td>`;
     html += `<td class="league-cell">${escHtml(entry.league)}${clickable ? ' <span style="font-size:10px;color:#94a3b8">&#9654;</span>' : ''}</td>`;
     html += `<td class="record-cell">${escHtml(entry.record)} <span class="winrate-bar" style="width:${Math.max(winPct * 0.6, 2)}px"></span></td>`;
     html += `<td>${winRate > 0 ? fmtRate(winRate) : '-'}</td>`;
