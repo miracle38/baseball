@@ -1037,6 +1037,14 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
   .stats-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
   .history-table{font-size:12px}
   .history-table th,.history-table td{padding:8px 6px}
+  /* 모바일에서는 메인 탭 표의 wrapper max-height 를 풀어
+     모든 행이 페이지 스크롤로 자연스럽게 보이게 한다.
+     thead sticky 는 wrapper 내부 기준으로 그대로 유지. */
+  #tab-players .table-wrapper,
+  #tab-pitchers .table-wrapper,
+  #tab-games .table-wrapper{
+    max-height:none;
+  }
 }
 @media(max-width:480px){
   .brand-text h1{font-size:20px}
