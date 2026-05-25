@@ -227,7 +227,7 @@ button{cursor:pointer;font-family:inherit}
   -webkit-backdrop-filter:var(--glass-blur);
   backdrop-filter:var(--glass-blur);
   border:1px solid var(--glass-border);
-  border-radius:20px;overflow:hidden;
+  border-radius:20px;overflow:visible;
   box-shadow:var(--glass-shadow);
   margin-bottom:24px;
 }
@@ -291,9 +291,44 @@ button{cursor:pointer;font-family:inherit}
 .source-badge.gameone{background:linear-gradient(135deg, #f59e0b, #fbbf24)}
 .source-badge.daedeok{background:linear-gradient(135deg, #8b5cf6, #a78bfa)}
 .history-detail{padding:0 16px 16px}
+.history-detail-row td.history-detail-cell{
+  padding:0 16px 16px;background:transparent;cursor:default;
+}
+.history-detail-row:hover td{background:transparent !important}
 .history-detail-inner{
   background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
   padding:16px;margin-top:8px;
+}
+/* 펼친 상세 표 헤더 — 페이지 스크롤 시에도 컬럼 타이틀 유지 (sticky)
+   데스크탑: wrapper overflow:visible 로 풀어 페이지 viewport 기준 sticky
+   모바일:   wrapper 가 자체 스크롤 컨테이너 — sticky 는 wrapper 내부 기준 */
+.history-detail-inner .table-wrapper{
+  overflow:visible !important;
+}
+.history-detail-inner table{
+  border-collapse:separate;border-spacing:0;
+}
+.history-detail-inner thead,
+.history-detail-inner thead th{
+  position:sticky;top:var(--header-h, 100px);z-index:4;
+}
+.history-detail-inner thead th{
+  background:linear-gradient(135deg, #0F1B2D, #1E3A5F);
+}
+@media (max-width:768px){
+  /* 모바일도 데스크탑과 동일하게 페이지 viewport 기준 sticky.
+     wrapper overflow 가 hidden/auto/scroll 이면 sticky 가 wrapper 안에 갇혀서
+     페이지 스크롤 시 thead 가 같이 사라진다. overflow:visible 유지.
+     표 폭이 화면보다 크면 페이지 자체가 가로 스크롤되지만,
+     thead 는 viewport 기준 세로 sticky 로 따라옴. */
+  .history-detail-inner .table-wrapper{
+    overflow:visible !important;
+    max-height:none;
+  }
+  .history-detail-inner thead,
+  .history-detail-inner thead th{
+    top:var(--header-h, 75px);
+  }
 }
 .history-detail-tabs{
   display:flex;gap:8px;margin-bottom:12px;
@@ -1378,20 +1413,19 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
       <table class="history-table">
         <thead>
           <tr>
-            <th>연도</th>
-            <th style="text-align:left;padding-left:16px">리그</th>
-            <th>성적</th>
-            <th>승률</th>
-            <th>경기</th>
-            <th>출처</th>
+            <th class="rank-col">#</th>
+            <th data-history-sort="year" onclick="sortHistoryColumn('year')" style="cursor:pointer;user-select:none">연도 <span class="sort-arrow">&#9650;</span></th>
+            <th data-history-sort="league" onclick="sortHistoryColumn('league')" style="cursor:pointer;user-select:none;text-align:left;padding-left:16px">리그 <span class="sort-arrow">&#9650;</span></th>
+            <th data-history-sort="wins" onclick="sortHistoryColumn('wins')" style="cursor:pointer;user-select:none">성적 <span class="sort-arrow">&#9650;</span></th>
+            <th data-history-sort="winrate" onclick="sortHistoryColumn('winrate')" style="cursor:pointer;user-select:none">승률 <span class="sort-arrow">&#9650;</span></th>
+            <th data-history-sort="rank" onclick="sortHistoryColumn('rank')" style="cursor:pointer;user-select:none">순위 <span class="sort-arrow">&#9650;</span></th>
+            <th data-history-sort="games" onclick="sortHistoryColumn('games')" style="cursor:pointer;user-select:none">경기 <span class="sort-arrow">&#9650;</span></th>
+            <th data-history-sort="source" onclick="sortHistoryColumn('source')" style="cursor:pointer;user-select:none">출처 <span class="sort-arrow">&#9650;</span></th>
           </tr>
         </thead>
         <tbody id="historyBody"></tbody>
       </table>
     </div>
-    <!-- Detail area for expanded season -->
-    <div id="historyDetail" style="display:none"></div>
-
     <!-- 현재 팀원 통산 -->
     <div id="historyCareerSection" style="margin-top:32px"></div>
   </div>
@@ -3148,33 +3182,101 @@ function getSourceBadgeClass(source) {
   return 'ksbsa';
 }
 
+let historySortState = { key: 'year', dir: 'desc' };
+
+function sortHistoryColumn(key) {
+  if (historySortState.key === key) {
+    historySortState.dir = historySortState.dir === 'desc' ? 'asc' : 'desc';
+  } else {
+    historySortState.key = key;
+    historySortState.dir = (key === 'league' || key === 'source' || key === 'rank') ? 'asc' : 'desc';
+  }
+  renderHistory();
+}
+
+function getHistorySortValue(entry, key) {
+  if (key === 'year') return entry.year || 0;
+  if (key === 'league') return entry.league || '';
+  if (key === 'wins') return entry.W || 0;
+  if (key === 'winrate') return (entry.W + entry.L) > 0 ? entry.W / (entry.W + entry.L) : 0;
+  if (key === 'rank') {
+    const r = entry.seasonSummary && entry.seasonSummary.rank;
+    return r > 0 ? r : Number.MAX_SAFE_INTEGER;
+  }
+  if (key === 'games') return entry.G || 0;
+  if (key === 'source') return entry.source || '';
+  return 0;
+}
+
 function renderHistory() {
+  // Update header sort arrows
+  document.querySelectorAll('.history-table thead th[data-history-sort]').forEach(th => {
+    const isActive = th.dataset.historySort === historySortState.key;
+    th.classList.toggle('sorted', isActive);
+    const arrow = th.querySelector('.sort-arrow');
+    if (arrow) {
+      arrow.textContent = isActive
+        ? (historySortState.dir === 'desc' ? '▼' : '▲')
+        : '▲';
+    }
+  });
+
   const tbody = document.getElementById('historyBody');
   let html = '';
   let totalW = 0, totalL = 0, totalD = 0, totalG = 0;
-  let prevYear = null;
-
   ALL_DATA.forEach(entry => {
     totalW += entry.W; totalL += entry.L; totalD += entry.D; totalG += entry.G;
+  });
+
+  const dir = historySortState.dir === 'desc' ? -1 : 1;
+  const sortByYear = historySortState.key === 'year';
+  const indexed = ALL_DATA.map((e, i) => ({ entry: e, _i: i }));
+  indexed.sort((a, b) => {
+    const va = getHistorySortValue(a.entry, historySortState.key);
+    const vb = getHistorySortValue(b.entry, historySortState.key);
+    let cmp;
+    if (typeof va === 'string' || typeof vb === 'string') {
+      cmp = String(va).localeCompare(String(vb));
+    } else {
+      cmp = (va || 0) - (vb || 0);
+    }
+    if (cmp !== 0) return cmp * dir;
+    return a._i - b._i;
+  });
+  const data = indexed.map(x => x.entry);
+
+  let prevYear = null;
+  data.forEach((entry, idx) => {
     const winRate = (entry.W + entry.L) > 0 ? entry.W / (entry.W + entry.L) : 0;
     const winPct = Math.round(winRate * 100);
     const clickable = hasData(entry);
     const rowCls = clickable ? 'clickable-row' : '';
     const expanded = historyExpandedId === entry.id;
     const isNewYear = entry.year !== prevYear;
-    const groupCls = isNewYear ? ' year-group-start' : ' year-group-cont';
+    const groupCls = sortByYear ? (isNewYear ? ' year-group-start' : ' year-group-cont') : '';
     prevYear = entry.year;
 
     html += `<tr class="${rowCls}${expanded ? ' expanded-row' : ''}${groupCls}" ${clickable ? `onclick="toggleHistoryDetail('${entry.id}')"` : ''}>`;
-    html += isNewYear
-      ? `<td class="year-cell">${entry.year}</td>`
-      : `<td class="year-cell year-cell-continued"></td>`;
-    html += `<td class="league-cell">${escHtml(entry.league)}${clickable ? ' <span style="font-size:10px;color:#94a3b8">&#9654;</span>' : ''}</td>`;
+    html += `<td class="rank-col">${idx + 1}</td>`;
+    html += sortByYear && !isNewYear
+      ? `<td class="year-cell year-cell-continued"></td>`
+      : `<td class="year-cell">${entry.year}</td>`;
+    html += `<td class="league-cell">${escHtml(entry.league)}</td>`;
     html += `<td class="record-cell">${escHtml(entry.record)} <span class="winrate-bar" style="width:${Math.max(winPct * 0.6, 2)}px"></span></td>`;
     html += `<td>${winRate > 0 ? fmtRate(winRate) : '-'}</td>`;
+    const seasonRank = entry.seasonSummary && entry.seasonSummary.rank ? entry.seasonSummary.rank : 0;
+    let rankIcon = '';
+    if (seasonRank === 1) rankIcon = '<span class="rank-icon">&#127942;</span>';
+    else if (seasonRank === 2) rankIcon = '<span class="rank-icon">&#129352;</span>';
+    else if (seasonRank === 3) rankIcon = '<span class="rank-icon">&#129353;</span>';
+    html += `<td>${seasonRank > 0 ? rankIcon + seasonRank : '-'}</td>`;
     html += `<td>${entry.G}</td>`;
     html += `<td><a href="${escHtml(entry.sourceUrl)}" target="_blank" rel="noopener noreferrer" class="source-badge ${getSourceBadgeClass(entry.source)}" onclick="event.stopPropagation()">${escHtml(entry.source)}</a></td>`;
     html += '</tr>';
+
+    if (expanded && clickable) {
+      html += `<tr class="history-detail-row"><td colspan="8" class="history-detail-cell">${renderHistoryDetail(entry.id)}</td></tr>`;
+    }
   });
 
   // Totals row
@@ -3182,19 +3284,14 @@ function renderHistory() {
   let totalRecord = `${totalW}승 ${totalL}패`;
   if (totalD > 0) totalRecord += ` ${totalD}무`;
   html += `<tr class="history-totals">`;
+  html += `<td class="rank-col"></td>`;
   html += `<td></td><td class="league-cell" style="color:var(--red)">통산</td>`;
   html += `<td class="record-cell">${totalRecord}</td>`;
   html += `<td>${fmtRate(totalRate)}</td>`;
+  html += `<td>-</td>`;
   html += `<td>${totalG}</td><td></td></tr>`;
 
   tbody.innerHTML = html;
-
-  // Render detail if expanded
-  if (historyExpandedId) {
-    renderHistoryDetail(historyExpandedId);
-  } else {
-    document.getElementById('historyDetail').style.display = 'none';
-  }
 
   // Render current team members' career totals
   renderHistoryCareerSection();
@@ -3213,18 +3310,12 @@ let historyDetailTab = 'players';
 
 function switchHistoryDetailTab(tab) {
   historyDetailTab = tab;
-  if (historyExpandedId) renderHistoryDetail(historyExpandedId);
+  if (historyExpandedId) renderHistory();
 }
 
 function renderHistoryDetail(id) {
   const entry = getEntry(id);
-  if (!entry || !hasData(entry)) {
-    document.getElementById('historyDetail').style.display = 'none';
-    return;
-  }
-
-  const detailEl = document.getElementById('historyDetail');
-  detailEl.style.display = 'block';
+  if (!entry || !hasData(entry)) return '';
 
   const hasPlayers = hasPlayerData(entry);
   const hasPitchers = hasPitcherData(entry);
@@ -3232,8 +3323,8 @@ function renderHistoryDetail(id) {
   let html = `<div class="history-detail-inner">`;
   html += `<div style="font-weight:700;font-size:16px;margin-bottom:12px;color:#1e293b">${entry.year} ${escHtml(entry.league)} - ${escHtml(entry.record)}</div>`;
   html += `<div class="history-detail-tabs">`;
-  if (hasPlayers) html += `<button class="history-detail-tab${historyDetailTab === 'players' ? ' active' : ''}" onclick="switchHistoryDetailTab('players')">타자 기록</button>`;
-  if (hasPitchers) html += `<button class="history-detail-tab${historyDetailTab === 'pitchers' ? ' active' : ''}" onclick="switchHistoryDetailTab('pitchers')">투수 기록</button>`;
+  if (hasPlayers) html += `<button class="history-detail-tab${historyDetailTab === 'players' ? ' active' : ''}" onclick="event.stopPropagation();switchHistoryDetailTab('players')">타자 기록</button>`;
+  if (hasPitchers) html += `<button class="history-detail-tab${historyDetailTab === 'pitchers' ? ' active' : ''}" onclick="event.stopPropagation();switchHistoryDetailTab('pitchers')">투수 기록</button>`;
   html += `</div>`;
 
   if (historyDetailTab === 'players' && hasPlayers) {
@@ -3249,31 +3340,87 @@ function renderHistoryDetail(id) {
   }
 
   html += `</div>`;
-  detailEl.innerHTML = html;
+  return html;
+}
+
+// 시즌 상세 표(타자/투수)의 정렬 상태 — 시즌/탭 전환 후에도 유지됨
+let historyDetailSortState = {
+  players:  { key: 'AVG', dir: 'desc' },
+  pitchers: { key: 'IP',  dir: 'desc' }
+};
+
+function sortHistoryDetailColumn(kind, key) {
+  const s = historyDetailSortState[kind];
+  if (s.key === key) {
+    s.dir = s.dir === 'desc' ? 'asc' : 'desc';
+  } else {
+    s.key = key;
+    s.dir = (key === 'name') ? 'asc' : 'desc';
+  }
+  if (historyExpandedId) renderHistory();
+}
+
+function detailThHtml(kind, key, label) {
+  const s = historyDetailSortState[kind];
+  const active = s.key === key;
+  const arrow = active ? (s.dir === 'desc' ? '▼' : '▲') : '▲';
+  return `<th class="${active ? 'sorted' : ''}" onclick="event.stopPropagation();sortHistoryDetailColumn('${kind}','${key}')" style="cursor:pointer;user-select:none">${label} <span class="sort-arrow">${arrow}</span></th>`;
 }
 
 function renderHistoryPlayersTable(entry) {
-  const players = Object.values(entry.players);
+  const players = Object.values(entry.players).map(p => {
+    const num = p.number || p.num || 0;
+    const AVG = p.AB > 0 ? (p.H / p.AB) : 0;
+    const OBP = p.kOBP != null ? p.kOBP : calcOBP(p);
+    const SLG = p.kSLG != null ? p.kSLG : calcSLG(p);
+    const OPS = p.kOPS != null ? p.kOPS : (OBP + SLG);
+    return { ...p, number: num, AVG, OBP, SLG, OPS };
+  });
   if (players.length === 0) return '<div class="history-no-data">데이터 없음</div>';
 
-  let html = '<div class="table-wrapper" style="margin-top:8px"><table style="min-width:900px"><thead><tr>';
-  html += '<th>선수명</th><th>등번호</th><th>타율</th><th>G</th><th>타석</th><th>타수</th><th>안타</th>';
-  html += '<th>2루타</th><th>3루타</th><th>홈런</th><th>타점</th><th>득점</th><th>도루</th>';
-  html += '<th>볼넷</th><th>사구</th><th>삼진</th><th>출루율</th><th>장타율</th><th>OPS</th>';
+  const s = historyDetailSortState.players;
+  const dir = s.dir === 'desc' ? -1 : 1;
+  players.sort((a, b) => {
+    let va = a[s.key], vb = b[s.key];
+    if (va == null) va = (typeof vb === 'string') ? '' : 0;
+    if (vb == null) vb = (typeof va === 'string') ? '' : 0;
+    if (typeof va === 'string' || typeof vb === 'string') {
+      return String(va).localeCompare(String(vb)) * dir;
+    }
+    return ((va || 0) - (vb || 0)) * dir;
+  });
+
+  let html = '<div class="table-wrapper" style="margin-top:8px"><table style="min-width:940px"><thead><tr>';
+  html += '<th class="rank-col">#</th>';
+  html += detailThHtml('players','name','선수명');
+  html += detailThHtml('players','number','등번호');
+  html += detailThHtml('players','AVG','타율');
+  html += detailThHtml('players','G','G');
+  html += detailThHtml('players','PA','타석');
+  html += detailThHtml('players','AB','타수');
+  html += detailThHtml('players','H','안타');
+  html += detailThHtml('players','2B','2루타');
+  html += detailThHtml('players','3B','3루타');
+  html += detailThHtml('players','HR','홈런');
+  html += detailThHtml('players','RBI','타점');
+  html += detailThHtml('players','R','득점');
+  html += detailThHtml('players','SB','도루');
+  html += detailThHtml('players','BB','볼넷');
+  html += detailThHtml('players','HBP','사구');
+  html += detailThHtml('players','SO','삼진');
+  html += detailThHtml('players','OBP','출루율');
+  html += detailThHtml('players','SLG','장타율');
+  html += detailThHtml('players','OPS','OPS');
   html += '</tr></thead><tbody>';
 
-  players.forEach(p => {
-    const num = p.number || p.num || '';
-    const avg = p.AB > 0 ? (p.H / p.AB) : 0;
-    const obp = p.kOBP != null ? p.kOBP : calcOBP(p);
-    const slg = p.kSLG != null ? p.kSLG : calcSLG(p);
-    const ops = p.kOPS != null ? p.kOPS : (obp + slg);
-    html += `<tr><td class="name-cell">${escHtml(p.name)}</td><td>${num}</td><td>${fmtRate(avg)}</td>`;
+  players.forEach((p, idx) => {
+    html += `<tr><td class="rank-col">${idx + 1}</td>`;
+    html += `<td class="name-cell">${escHtml(p.name)}</td><td>${p.number||''}</td><td>${fmtRate(p.AVG)}</td>`;
     html += `<td>${p.G||0}</td><td>${p.PA||0}</td><td>${p.AB||0}</td><td>${p.H||0}</td>`;
     html += `<td>${p['2B']||0}</td><td>${p['3B']||0}</td><td>${fmtHR(p)}</td>`;
     html += `<td>${p.RBI||0}</td><td>${p.R||0}</td><td>${p.SB||0}</td>`;
     html += `<td>${p.BB||0}</td><td>${p.HBP||0}</td><td>${p.SO||0}</td>`;
-    html += `<td>${fmtRate(obp)}</td><td>${fmtRate(slg)}</td><td>${fmtRate(ops)}</td></tr>`;
+    html += `<td>${fmtRate(p.OBP)}</td><td>${fmtRate(p.SLG)}</td><td>${fmtRate(p.OPS)}</td></tr>`;
   });
 
   html += '</tbody></table></div>';
@@ -3281,20 +3428,49 @@ function renderHistoryPlayersTable(entry) {
 }
 
 function renderHistoryPitchersTable(entry) {
-  const pitchers = Object.values(entry.pitchers);
+  const pitchers = Object.values(entry.pitchers).map(pt => {
+    const num = pt.number || pt.num || 0;
+    const ERA = pt.IP > 0 ? calcERA(pt) : Number.MAX_SAFE_INTEGER;
+    return { ...pt, number: num, ERA };
+  });
   if (pitchers.length === 0) return '<div class="history-no-data">데이터 없음</div>';
 
-  let html = '<div class="table-wrapper" style="margin-top:8px"><table style="min-width:800px"><thead><tr>';
-  html += '<th>선수명</th><th>등번호</th><th>ERA</th><th>G</th><th>승</th><th>패</th>';
-  html += '<th>세</th><th>홀드</th><th>이닝</th><th>피안타</th><th>피홈런</th><th>삼진</th>';
-  html += '<th>볼넷</th><th>사구</th><th>실점</th><th>자책</th>';
+  const s = historyDetailSortState.pitchers;
+  const dir = s.dir === 'desc' ? -1 : 1;
+  pitchers.sort((a, b) => {
+    let va = a[s.key], vb = b[s.key];
+    if (va == null) va = (typeof vb === 'string') ? '' : 0;
+    if (vb == null) vb = (typeof va === 'string') ? '' : 0;
+    if (typeof va === 'string' || typeof vb === 'string') {
+      return String(va).localeCompare(String(vb)) * dir;
+    }
+    return ((va || 0) - (vb || 0)) * dir;
+  });
+
+  let html = '<div class="table-wrapper" style="margin-top:8px"><table style="min-width:840px"><thead><tr>';
+  html += '<th class="rank-col">#</th>';
+  html += detailThHtml('pitchers','name','선수명');
+  html += detailThHtml('pitchers','number','등번호');
+  html += detailThHtml('pitchers','ERA','ERA');
+  html += detailThHtml('pitchers','G','G');
+  html += detailThHtml('pitchers','W','승');
+  html += detailThHtml('pitchers','L','패');
+  html += detailThHtml('pitchers','SV','세');
+  html += detailThHtml('pitchers','HD','홀드');
+  html += detailThHtml('pitchers','IP','이닝');
+  html += detailThHtml('pitchers','pH','피안타');
+  html += detailThHtml('pitchers','pHR','피홈런');
+  html += detailThHtml('pitchers','K','삼진');
+  html += detailThHtml('pitchers','pBB','볼넷');
+  html += detailThHtml('pitchers','pHBP','사구');
+  html += detailThHtml('pitchers','R','실점');
+  html += detailThHtml('pitchers','ER','자책');
   html += '</tr></thead><tbody>';
 
-  pitchers.forEach(pt => {
-    const num = pt.number || pt.num || '';
-    const era = pt.IP > 0 ? calcERA(pt) : 0;
-    html += `<tr><td class="name-cell">${escHtml(pt.name)}</td><td>${num}</td>`;
-    html += `<td>${pt.IP > 0 ? fmtERA(era) : '-'}</td>`;
+  pitchers.forEach((pt, idx) => {
+    html += `<tr><td class="rank-col">${idx + 1}</td>`;
+    html += `<td class="name-cell">${escHtml(pt.name)}</td><td>${pt.number||''}</td>`;
+    html += `<td>${pt.IP > 0 ? fmtERA(pt.ERA) : '-'}</td>`;
     html += `<td>${pt.G||0}</td><td>${pt.W||0}</td><td>${pt.L||0}</td>`;
     html += `<td>${pt.SV||0}</td><td>${pt.HD||0}</td><td>${pt.IP||0}</td>`;
     html += `<td>${pt.pH||0}</td><td>${pt.pHR||0}</td><td>${pt.K||0}</td>`;
