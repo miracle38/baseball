@@ -3326,9 +3326,6 @@ function renderHistoryCareerSection() {
     html += careerThHtml('batter','number','등번호');
     html += careerThHtml('batter','yearsCount','시즌');
     html += careerThHtml('batter','AVG','타율');
-    html += careerThHtml('batter','OBP','출루율');
-    html += careerThHtml('batter','SLG','장타율');
-    html += careerThHtml('batter','OPS','OPS');
     html += careerThHtml('batter','G','경기');
     html += careerThHtml('batter','PA','타석');
     html += careerThHtml('batter','AB','타수');
@@ -3342,6 +3339,9 @@ function renderHistoryCareerSection() {
     html += careerThHtml('batter','BB','볼넷');
     html += careerThHtml('batter','HBP','사구');
     html += careerThHtml('batter','SO','삼진');
+    html += careerThHtml('batter','OBP','출루율');
+    html += careerThHtml('batter','SLG','장타율');
+    html += careerThHtml('batter','OPS','OPS');
     html += '</tr></thead><tbody>';
     batterRows.forEach(r => {
       const t = r.totals;
@@ -3350,11 +3350,12 @@ function renderHistoryCareerSection() {
       html += `<tr>`;
       html += `<td class="compare-col"><input type="checkbox" data-compare-key="${escHtml(compKey)}" data-compare-kind="batter" ${isChecked} onclick="toggleCompareSelection(event,this)"></td>`;
       html += `<td class="name-cell">${escHtml(r.name)}</td><td>${r.number}</td><td>${r.yearsCount}</td>`;
-      html += `<td>${fmtRate(t.AVG)}</td><td>${fmtRate(t.OBP)}</td><td>${fmtRate(t.SLG)}</td><td>${fmtRate(t.OPS)}</td>`;
+      html += `<td>${fmtRate(t.AVG)}</td>`;
       html += `<td>${t.G}</td><td>${t.PA}</td><td>${t.AB}</td><td>${t.H}</td>`;
       html += `<td>${t['2B']}</td><td>${t['3B']}</td><td>${fmtHR(t)}</td>`;
       html += `<td>${t.RBI}</td><td>${t.R}</td><td>${t.SB}</td>`;
-      html += `<td>${t.BB}</td><td>${t.HBP}</td><td>${t.SO}</td></tr>`;
+      html += `<td>${t.BB}</td><td>${t.HBP}</td><td>${t.SO}</td>`;
+      html += `<td>${fmtRate(t.OBP)}</td><td>${fmtRate(t.SLG)}</td><td>${fmtRate(t.OPS)}</td></tr>`;
     });
     html += '</tbody></table></div>';
   }
@@ -3370,7 +3371,6 @@ function renderHistoryCareerSection() {
     html += careerThHtml('pitcher','number','등번호');
     html += careerThHtml('pitcher','yearsCount','시즌');
     html += careerThHtml('pitcher','ERA','평균자책');
-    html += careerThHtml('pitcher','WPCT','승률');
     html += careerThHtml('pitcher','G','경기');
     html += careerThHtml('pitcher','W','승');
     html += careerThHtml('pitcher','L','패');
@@ -3384,6 +3384,7 @@ function renderHistoryCareerSection() {
     html += careerThHtml('pitcher','pHBP','사구');
     html += careerThHtml('pitcher','R','실점');
     html += careerThHtml('pitcher','ER','자책');
+    html += careerThHtml('pitcher','WPCT','승률');
     html += '</tr></thead><tbody>';
     pitcherRows.forEach(r => {
       const t = r.totals;
@@ -3392,11 +3393,12 @@ function renderHistoryCareerSection() {
       html += `<tr>`;
       html += `<td class="compare-col"><input type="checkbox" data-compare-key="${escHtml(compKey)}" data-compare-kind="pitcher" ${isChecked} onclick="toggleCompareSelection(event,this)"></td>`;
       html += `<td class="name-cell">${escHtml(r.name)}</td><td>${r.number}</td><td>${r.yearsCount}</td>`;
-      html += `<td>${t._ipThirds > 0 ? fmtERA(t.ERA) : '-'}</td><td>${(t.W + t.L) > 0 ? fmtRate(t.WPCT) : '-'}</td>`;
+      html += `<td>${t._ipThirds > 0 ? fmtERA(t.ERA) : '-'}</td>`;
       html += `<td>${t.G}</td><td>${t.W}</td><td>${t.L}</td><td>${t.SV}</td><td>${t.HD}</td>`;
       html += `<td>${t._ipThirds > 0 ? fmtIP(t.IP) : '-'}</td><td>${t.pH}</td><td>${t.pHR}</td>`;
       html += `<td>${t.K}</td><td>${t.pBB}</td><td>${t.pHBP}</td>`;
-      html += `<td>${t.R}</td><td>${t.ER}</td></tr>`;
+      html += `<td>${t.R}</td><td>${t.ER}</td>`;
+      html += `<td>${(t.W + t.L) > 0 ? fmtRate(t.WPCT) : '-'}</td></tr>`;
     });
     html += '</tbody></table></div>';
   }
