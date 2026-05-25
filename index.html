@@ -983,16 +983,35 @@ tr.highlight-row:hover{
   display:inline-block;padding:2px 8px;border-radius:6px;
   font-size:10px;font-weight:700;color:#fff;margin-left:4px;
   vertical-align:middle;letter-spacing:0.3px;
+  /* fallback: CSS 에 명시되지 않은 리그 키도 보이도록 기본 슬레이트 톤 */
+  background:linear-gradient(135deg, #64748b, #94a3b8);
+  box-shadow:0 2px 6px rgba(100,116,139,0.25);
 }
+/* 세종 계열 — 블루 톤 */
 .league-tag.sejong{background:linear-gradient(135deg, #3b82f6, #60a5fa);box-shadow:0 2px 6px rgba(59,130,246,0.25)}
+.league-tag.sejong_1{background:linear-gradient(135deg, #2563eb, #3b82f6);box-shadow:0 2px 6px rgba(37,99,235,0.25)}
+.league-tag.sejong_2{background:linear-gradient(135deg, #1d4ed8, #2563eb);box-shadow:0 2px 6px rgba(29,78,216,0.25)}
+.league-tag.sejong_weekday{background:linear-gradient(135deg, #0284c7, #0ea5e9);box-shadow:0 2px 6px rgba(2,132,199,0.25)}
 .league-tag.sejong_cup1{background:linear-gradient(135deg, #0ea5e9, #38bdf8);box-shadow:0 2px 6px rgba(14,165,233,0.25)}
 .league-tag.sejong_cup2{background:linear-gradient(135deg, #6366f1, #818cf8);box-shadow:0 2px 6px rgba(99,102,241,0.25)}
 .league-tag.sejong_inter{background:linear-gradient(135deg, #14b8a6, #2dd4bf);box-shadow:0 2px 6px rgba(20,184,166,0.25)}
 .league-tag.sejong_po{background:linear-gradient(135deg, #f43f5e, #fb7185);box-shadow:0 2px 6px rgba(244,63,94,0.25)}
+/* 동구 계열 — 그린 톤 */
 .league-tag.donggu{background:linear-gradient(135deg, #22c55e, #4ade80);box-shadow:0 2px 6px rgba(34,197,94,0.25)}
+.league-tag.donggu_taebaek{background:linear-gradient(135deg, #16a34a, #22c55e);box-shadow:0 2px 6px rgba(22,163,74,0.25)}
+/* 공주/금강 — 앰버 톤 */
 .league-tag.gongju{background:linear-gradient(135deg, #f59e0b, #fbbf24);box-shadow:0 2px 6px rgba(245,158,11,0.25)}
 .league-tag.geumgang{background:linear-gradient(135deg, #f59e0b, #fbbf24);box-shadow:0 2px 6px rgba(245,158,11,0.25)}
+/* 대전 계열 — 핫핑크/마젠타 톤 */
+.league-tag.daejeon{background:linear-gradient(135deg, #db2777, #ec4899);box-shadow:0 2px 6px rgba(219,39,119,0.25)}
+.league-tag.daejeon_geumgang{background:linear-gradient(135deg, #be185d, #db2777);box-shadow:0 2px 6px rgba(190,24,93,0.25)}
+/* 대덕 — 바이올렛 톤 */
 .league-tag.daedeok{background:linear-gradient(135deg, #8b5cf6, #a78bfa);box-shadow:0 2px 6px rgba(139,92,246,0.25)}
+/* 국민생활체육/명품 — 시안·틸·딥레드 */
+.league-tag.kukmin_nanum{background:linear-gradient(135deg, #0891b2, #06b6d4);box-shadow:0 2px 6px rgba(8,145,178,0.25)}
+.league-tag.kukmin_eoul{background:linear-gradient(135deg, #0e7490, #0891b2);box-shadow:0 2px 6px rgba(14,116,144,0.25)}
+.league-tag.kukmin_chugye{background:linear-gradient(135deg, #155e75, #0e7490);box-shadow:0 2px 6px rgba(21,94,117,0.25)}
+.league-tag.myeongpum{background:linear-gradient(135deg, #be123c, #f43f5e);box-shadow:0 2px 6px rgba(190,18,60,0.25)}
 
 /* ===== FUTURE GAME STYLES ===== */
 .game-row.future-game{
