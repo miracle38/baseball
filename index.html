@@ -3337,18 +3337,26 @@ function getCurrentTeamMembers() {
   const years = ALL_DATA.map(e => e.year).filter(y => typeof y === 'number');
   if (years.length === 0) return { batters: [], pitchers: [] };
   const latestYear = Math.max(...years);
-  const latestEntries = ALL_DATA.filter(e => e.year === latestYear);
+  // "현재 팀원" 을 최신 연도뿐 아니라 직전 연도까지(2개 시즌) 활동한 (name|number)
+  // 쌍의 합집합으로 본다. 동명이인이 다른 등번호로 한 해만 출전한 경우에도
+  // 통산표에 누락되지 않게 — 예: 99번/100번 김종원은 2025년만 출전했고
+  // 2026년 entry 에는 없지만 같은 인물 통산 행은 표시되어야 한다.
+  // 또 batter 표 후보에는 pitchers 등록된 선수도 포함(투수도 타석 가능). */
+  const recentEntries = ALL_DATA.filter(e => typeof e.year === 'number' && e.year >= latestYear - 1);
 
   const batterKeys = new Set(); // "name|number"
   const pitcherKeys = new Set();
-  latestEntries.forEach(e => {
+  recentEntries.forEach(e => {
     Object.values(e.players || {}).forEach(p => {
       const num = p.number || p.num || 0;
       if (p.name) batterKeys.add(`${p.name}|${num}`);
     });
     Object.values(e.pitchers || {}).forEach(p => {
       const num = p.number || p.num || 0;
-      if (p.name) pitcherKeys.add(`${p.name}|${num}`);
+      if (p.name) {
+        pitcherKeys.add(`${p.name}|${num}`);
+        batterKeys.add(`${p.name}|${num}`); // 투수도 타석 통산 후보
+      }
     });
   });
   return { batters: Array.from(batterKeys), pitchers: Array.from(pitcherKeys), latestYear };
