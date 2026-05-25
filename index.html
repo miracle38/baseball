@@ -335,7 +335,7 @@ button{cursor:pointer;font-family:inherit}
   content:'';position:absolute;inset:0;border-radius:14px;
   pointer-events:none;z-index:1;
 }
-/* 타자기록 / 투수기록 / 경기기록 — 표 내부 스크롤 + thead sticky */
+/* 타자기록 / 투수기록 / 경기기록 — 기본: 표 내부 스크롤 + thead wrapper-sticky */
 #tab-players .table-wrapper,
 #tab-pitchers .table-wrapper,
 #tab-games .table-wrapper{
@@ -349,6 +349,22 @@ button{cursor:pointer;font-family:inherit}
 #gameTable thead th{
   position:sticky;top:0;z-index:5;
   background:#8b1a1a;
+}
+/* 화면이 표 자연 폭(min-width 1500/1600px) 보다 충분히 클 때는
+   통산 표와 동일한 패턴으로 wrapper overflow 를 풀고 thead 를
+   페이지 viewport(top = 페이지 헤더 높이) 기준 sticky 로 만든다.
+   그러면 페이지 휠 스크롤만으로도 thead 가 항상 따라옴. */
+@media (min-width:1700px){
+  #tab-players .table-wrapper,
+  #tab-pitchers .table-wrapper,
+  #tab-games .table-wrapper{
+    max-height:none;overflow:visible;
+  }
+  #playerTable thead th,
+  #pitcherTable thead th,
+  #gameTable thead th{
+    top:var(--header-h, 100px);
+  }
 }
 /* 역대 기록 탭의 "현재 팀원 통산" 표.
    데스크탑: 페이지 viewport 가 스크롤 컨테이너 — wrapper overflow:visible 로 풀고,
