@@ -8,79 +8,86 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#faf7f5;
-  --navy:#1e293b;
-  --navy-light:#334155;
-  --navy-mid:#1e3a5f;
-  --red:#e94560;
-  --red-dark:#c73e54;
-  --red-glow:rgba(233,69,96,0.12);
-  --white:#1e293b;
-  --gray:#64748b;
-  --gray-light:#94a3b8;
-  --border:rgba(0,0,0,0.06);
-  --border-light:rgba(0,0,0,0.10);
-  --gold:#d97706;
-  --silver:#6b7280;
-  --bronze:#b45309;
-  --accent-blue:#3b82f6;
-  --accent-green:#16a34a;
-  --accent-cyan:#0891b2;
-  --card-bg:linear-gradient(145deg, rgba(255,255,255,0.85), rgba(248,250,252,0.85));
-  --card:#ffffff;
-  --card-border:rgba(0,0,0,0.05);
-  --shadow:0 4px 24px rgba(0,0,0,0.08);
-  --row-alt:rgba(0,0,0,0.02);
-  --row-hover:rgba(233,69,96,0.06);
+  /* === Modern Sport — Deep Navy + Lime === */
+  --bg:#0F1B2D;
+  --bg-deep:#0A1322;
+  --bg-mid:#1E3A5F;
+  --navy:#1E3A5F;
+  --navy-light:#2D4D78;
+  --navy-mid:#1E3A5F;
+  --red:#C8FF3E;            /* lime accent (변수명만 유지) */
+  --red-dark:#A8E020;
+  --red-glow:rgba(200,255,62,0.18);
+  --lime:#C8FF3E;
+  --lime-dark:#A8E020;
+  --white:#F1F5F9;          /* light text */
+  --text:#F1F5F9;
+  --text-dim:#CBD5E1;
+  --gray:#94A3B8;
+  --gray-light:#64748B;
+  --border:rgba(255,255,255,0.08);
+  --border-light:rgba(255,255,255,0.14);
+  --gold:#FFD600;
+  --silver:#94A3B8;
+  --bronze:#FB923C;
+  --accent-blue:#60A5FA;
+  --accent-green:#C8FF3E;
+  --accent-cyan:#22D3EE;
+  --card-bg:linear-gradient(145deg, rgba(30,58,95,0.55), rgba(15,27,45,0.55));
+  --card:rgba(30,58,95,0.85);
+  --card-border:rgba(255,255,255,0.08);
+  --shadow:0 8px 32px rgba(0,0,0,0.35);
+  --row-alt:rgba(255,255,255,0.025);
+  --row-hover:rgba(200,255,62,0.10);
   --transition:0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  /* === Glassmorphism === */
-  --glass-bg:rgba(255,255,255,0.7);
-  --glass-bg-strong:rgba(255,255,255,0.82);
-  --glass-border:rgba(255,255,255,0.55);
-  --glass-border-soft:rgba(255,255,255,0.35);
-  --glass-blur:saturate(180%) blur(20px);
-  --glass-shadow:0 8px 32px rgba(140,20,20,0.08), 0 2px 8px rgba(0,0,0,0.04);
-  --glass-shadow-strong:0 14px 40px rgba(140,20,20,0.12), 0 4px 12px rgba(0,0,0,0.06);
+  /* === Glassmorphism (dark) === */
+  --glass-bg:rgba(30,58,95,0.48);
+  --glass-bg-strong:rgba(30,58,95,0.68);
+  --glass-border:rgba(255,255,255,0.10);
+  --glass-border-soft:rgba(255,255,255,0.06);
+  --glass-blur:saturate(160%) blur(20px);
+  --glass-shadow:0 8px 32px rgba(0,0,0,0.40), 0 2px 8px rgba(0,0,0,0.20);
+  --glass-shadow-strong:0 14px 40px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.30);
 }
-html{scroll-behavior:smooth;overflow-x:hidden;overflow-x:clip;max-width:100%}
+html{scroll-behavior:smooth;overflow-x:hidden;overflow-x:clip;max-width:100%;background:var(--bg-deep)}
 body{
   font-family:'Segoe UI','Malgun Gothic','맑은 고딕',sans-serif;
   background:
-    linear-gradient(135deg, #fff5f5 0%, #fdf4f1 25%, #fffaf2 60%, #fef3f2 100%);
-  color:var(--white);line-height:1.6;
+    linear-gradient(135deg, #0A1322 0%, #0F1B2D 40%, #142a47 100%);
+  color:var(--text);line-height:1.6;
   min-height:100vh;
   overflow-x:hidden;
   overflow-x:clip;
   max-width:100%;
   position:relative;
 }
-/* 페이지 전체에 부드러운 컬러 블롭 — 글래스 카드 뒤에서 살짝 비쳐 깊이감 */
+/* 페이지 전체 컬러 블롭 — 다크 배경 위에 라임/시안 글로우로 깊이감과 에너지 */
 body::before{
   content:'';
   position:fixed;inset:0;pointer-events:none;z-index:-1;
   background:
-    radial-gradient(circle at 12% 18%, rgba(233,69,96,0.18) 0%, transparent 45%),
-    radial-gradient(circle at 88% 80%, rgba(217,119,6,0.14) 0%, transparent 45%),
-    radial-gradient(circle at 60% 50%, rgba(59,130,246,0.08) 0%, transparent 55%);
+    radial-gradient(circle at 10% 15%, rgba(200,255,62,0.16) 0%, transparent 42%),
+    radial-gradient(circle at 88% 85%, rgba(34,211,238,0.12) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(96,165,250,0.06) 0%, transparent 55%);
 }
 a{color:var(--red);text-decoration:none;transition:var(--transition)}
-a:hover{color:#ff6b8a}
+a:hover{color:#A8E020}
 button{cursor:pointer;font-family:inherit}
 
 /* ===== CUSTOM SCROLLBAR ===== */
 ::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:#f1f5f9}
-::-webkit-scrollbar-thumb{background:var(--red);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:#ff6b8a}
+::-webkit-scrollbar-track{background:rgba(15,27,45,0.5)}
+::-webkit-scrollbar-thumb{background:rgba(200,255,62,0.45);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(200,255,62,0.7)}
 
 /* ===== HEADER ===== */
 .header{
-  background:linear-gradient(135deg, rgba(139,26,26,0.92) 0%, rgba(192,40,46,0.92) 50%, rgba(160,32,32,0.92) 100%);
-  -webkit-backdrop-filter:saturate(180%) blur(16px);
-  backdrop-filter:saturate(180%) blur(16px);
-  border-bottom:1px solid rgba(255,215,0,0.55);
+  background:linear-gradient(135deg, rgba(10,19,34,0.85) 0%, rgba(15,27,45,0.85) 50%, rgba(30,58,95,0.85) 100%);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid rgba(200,255,62,0.32);
   position:sticky;top:0;z-index:100;
-  box-shadow:0 8px 28px rgba(140,20,20,0.28), 0 1px 0 rgba(255,215,0,0.15) inset;
+  box-shadow:0 8px 28px rgba(0,0,0,0.35), 0 1px 0 rgba(200,255,62,0.10) inset;
 }
 .header::before{
   content:'';position:absolute;inset:0;
@@ -117,12 +124,12 @@ button{cursor:pointer;font-family:inherit}
 /* ===== SEASON SELECTOR ===== */
 .season-selector{
   display:flex;flex-direction:column;align-items:center;
-  background:rgba(255,255,255,0.55);
+  background:rgba(15,27,45,0.55);
   -webkit-backdrop-filter:saturate(180%) blur(14px);
   backdrop-filter:saturate(180%) blur(14px);
   padding:14px 0 2px;
-  box-shadow:0 2px 8px rgba(140,20,20,0.04);
-  border-bottom:1px solid rgba(255,255,255,0.5);
+  box-shadow:0 2px 8px rgba(0,0,0,0.25);
+  border-bottom:1px solid rgba(255,255,255,0.06);
 }
 .year-controls{
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
@@ -132,58 +139,62 @@ button{cursor:pointer;font-family:inherit}
 }
 .career-btn{
   appearance:none;-webkit-appearance:none;
-  background:rgba(255,255,255,0.78);
+  background:rgba(30,58,95,0.55);
   -webkit-backdrop-filter:saturate(180%) blur(10px);
   backdrop-filter:saturate(180%) blur(10px);
-  color:#8b1a1a;
-  border:1.5px solid rgba(139,26,26,0.7);
+  color:#C8FF3E;
+  border:1.5px solid rgba(200,255,62,0.45);
   padding:9px 22px;border-radius:24px;
   font-size:15px;font-weight:700;
   cursor:pointer;font-family:inherit;
   transition:var(--transition);
-  box-shadow:0 2px 10px rgba(140,20,20,0.12);
+  box-shadow:0 2px 10px rgba(0,0,0,0.25);
   outline:none;
 }
 .career-btn:hover{
-  background:rgba(255,255,255,0.92);
+  background:rgba(30,58,95,0.75);
+  border-color:rgba(200,255,62,0.8);
   transform:translateY(-1px);
-  box-shadow:0 6px 18px rgba(140,20,20,0.22);
+  box-shadow:0 6px 22px rgba(200,255,62,0.18);
 }
 .career-btn:focus-visible{
-  box-shadow:0 0 0 3px rgba(255,215,0,0.3), 0 2px 8px rgba(140,20,20,0.2);
+  box-shadow:0 0 0 3px rgba(200,255,62,0.28), 0 2px 8px rgba(0,0,0,0.2);
 }
 .career-btn.active{
-  background:linear-gradient(135deg, #8b1a1a, #c0282e);
-  color:#fff;border-color:#ffd700;
-  box-shadow:0 4px 16px rgba(140,20,20,0.3);
+  background:linear-gradient(135deg, #C8FF3E, #A8E020);
+  color:#0F1B2D;border-color:#C8FF3E;
+  box-shadow:0 6px 22px rgba(200,255,62,0.40);
 }
 .year-select-wrap select{
   appearance:none;-webkit-appearance:none;
-  background:linear-gradient(135deg, #8b1a1a, #c0282e);
-  color:#fff;
-  border:2px solid #ffd700;
+  background:linear-gradient(135deg, rgba(30,58,95,0.85), rgba(45,77,120,0.85));
+  -webkit-backdrop-filter:saturate(180%) blur(10px);
+  backdrop-filter:saturate(180%) blur(10px);
+  color:#F1F5F9;
+  border:1.5px solid rgba(200,255,62,0.55);
   padding:9px 40px 9px 20px;
   border-radius:24px;
   font-size:15px;font-weight:700;
   cursor:pointer;
   font-family:inherit;
   transition:var(--transition);
-  box-shadow:0 4px 16px rgba(140,20,20,0.3);
+  box-shadow:0 4px 16px rgba(0,0,0,0.30);
   outline:none;
 }
 .year-select-wrap select:hover{
-  box-shadow:0 6px 20px rgba(140,20,20,0.4);
+  box-shadow:0 6px 22px rgba(200,255,62,0.18), 0 4px 14px rgba(0,0,0,0.30);
+  border-color:rgba(200,255,62,0.85);
 }
 .year-select-wrap select:focus{
-  box-shadow:0 0 0 3px rgba(255,215,0,0.3), 0 4px 16px rgba(140,20,20,0.3);
+  box-shadow:0 0 0 3px rgba(200,255,62,0.28), 0 4px 16px rgba(0,0,0,0.3);
 }
 .year-select-wrap::after{
   content:'\25BC';
   position:absolute;right:16px;top:50%;transform:translateY(-50%);
-  color:#ffd700;font-size:10px;pointer-events:none;
+  color:#C8FF3E;font-size:10px;pointer-events:none;
 }
 .year-select-wrap select option{
-  background:#fff;color:#1e293b;font-weight:600;
+  background:#0F1B2D;color:#F1F5F9;font-weight:600;
 }
 
 /* League pills */
@@ -191,11 +202,11 @@ button{cursor:pointer;font-family:inherit}
   display:flex;gap:0;padding:8px 0 12px;
 }
 .league-pill{
-  background:rgba(255,255,255,0.55);
+  background:rgba(30,58,95,0.45);
   -webkit-backdrop-filter:saturate(180%) blur(10px);
   backdrop-filter:saturate(180%) blur(10px);
-  border:1px solid rgba(255,255,255,0.55);
-  color:#64748b;padding:5px 18px;font-size:12px;font-weight:600;
+  border:1px solid rgba(255,255,255,0.10);
+  color:#CBD5E1;padding:5px 18px;font-size:12px;font-weight:600;
   cursor:pointer;transition:var(--transition);
   font-family:inherit;
 }
@@ -203,12 +214,12 @@ button{cursor:pointer;font-family:inherit}
 .league-pill:last-child{border-radius:0 16px 16px 0;border-left:none}
 .league-pill:only-child{border-radius:16px}
 .league-pill:not(:first-child):not(:last-child){border-left:none}
-.league-pill:hover{color:#1e293b;background:#f1f5f9;border-color:#cbd5e1}
+.league-pill:hover{color:#F1F5F9;background:rgba(45,77,120,0.55);border-color:rgba(200,255,62,0.35)}
 .league-pill.active{
-  background:linear-gradient(135deg, var(--red), #ff6b8a);
-  color:#ffffff;
+  background:linear-gradient(135deg, #C8FF3E, #A8E020);
+  color:#0F1B2D;
   border-color:transparent;
-  box-shadow:0 2px 8px rgba(233,69,96,0.25);
+  box-shadow:0 4px 14px rgba(200,255,62,0.32);
 }
 @media(max-width:480px){
   .year-select-wrap select{padding:7px 32px 7px 14px;font-size:13px}
@@ -229,42 +240,42 @@ button{cursor:pointer;font-family:inherit}
 .history-table{
   width:100%;border-collapse:collapse;font-size:14px;line-height:1.7;
 }
-.history-table thead{background:linear-gradient(135deg, #8b1a1a, #c0282e, #a02020)}
+.history-table thead{background:linear-gradient(135deg, #0F1B2D, #1E3A5F, #142a47)}
 .history-table th{
   padding:14px 12px;text-align:center;font-weight:700;font-size:12px;
-  color:#cbd5e1;text-transform:uppercase;letter-spacing:0.8px;
-  border-bottom:2px solid var(--red);white-space:nowrap;
+  color:#CBD5E1;text-transform:uppercase;letter-spacing:0.8px;
+  border-bottom:2px solid rgba(200,255,62,0.45);white-space:nowrap;
 }
 .history-table td{
   padding:12px 12px;text-align:center;
-  border-bottom:1px solid #e2e8f0;
-  color:#334155;font-variant-numeric:tabular-nums;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  color:#E2E8F0;font-variant-numeric:tabular-nums;
 }
 .history-table tbody tr{transition:var(--transition)}
-.history-table tbody tr:nth-child(even){background:#f8fafc}
-.history-table tbody tr:nth-child(odd){background:#ffffff}
+.history-table tbody tr:nth-child(even){background:rgba(255,255,255,0.025)}
+.history-table tbody tr:nth-child(odd){background:transparent}
 .history-table tbody tr.clickable-row{cursor:pointer}
 .history-table tbody tr.clickable-row:hover{
-  background:rgba(233,69,96,0.06);
-  border-left:3px solid var(--red);
+  background:rgba(200,255,62,0.08);
+  border-left:3px solid #C8FF3E;
 }
-/* 연도 그룹 시각화: 새 연도 시작 행 위에 두꺼운 가로선 */
+/* 연도 그룹 시각화: 새 연도 시작 행 위에 라임 가로선 */
 .history-table tbody tr.year-group-start td{
-  border-top:2px solid rgba(192,40,46,0.5);
+  border-top:2px solid rgba(200,255,62,0.45);
 }
 .history-table tbody tr.year-group-start:first-child td{
   border-top:none;
 }
 .history-table tbody tr.history-totals{
-  background:rgba(233,69,96,0.06)!important;
-  border-top:2px solid var(--red);
+  background:rgba(200,255,62,0.10)!important;
+  border-top:2px solid rgba(200,255,62,0.6);
   font-weight:700;
 }
 .history-table tbody tr.history-totals td{
-  border-bottom:none;color:#1e293b;font-weight:800;
+  border-bottom:none;color:#C8FF3E;font-weight:800;
 }
 .history-table tbody tr.expanded-row{
-  background:#fff7ed!important;
+  background:rgba(200,255,62,0.10)!important;
 }
 .history-table .year-cell{font-weight:700;color:#1e293b}
 .history-table .league-cell{text-align:left;padding-left:16px;font-weight:600}
@@ -308,27 +319,27 @@ button{cursor:pointer;font-family:inherit}
 /* ===== NAV TABS ===== */
 .nav-tabs{
   display:flex;justify-content:center;
-  background:linear-gradient(135deg, rgba(107,21,21,0.92) 0%, rgba(139,26,26,0.92) 50%, rgba(122,24,24,0.92) 100%);
-  -webkit-backdrop-filter:saturate(180%) blur(14px);
-  backdrop-filter:saturate(180%) blur(14px);
-  border-bottom:1px solid rgba(255,215,0,0.18);
+  background:linear-gradient(135deg, rgba(10,19,34,0.85) 0%, rgba(15,27,45,0.85) 50%, rgba(20,42,71,0.85) 100%);
+  -webkit-backdrop-filter:saturate(180%) blur(16px);
+  backdrop-filter:saturate(180%) blur(16px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
   overflow-x:auto;
   position:relative;
-  box-shadow:0 4px 16px rgba(140,20,20,0.18);
+  box-shadow:0 4px 16px rgba(0,0,0,0.30);
 }
 .nav-tab{
-  background:none;border:none;color:#94a3b8;
+  background:none;border:none;color:#94A3B8;
   padding:16px 30px;font-size:15px;font-weight:600;
   position:relative;transition:var(--transition);white-space:nowrap;
 }
-.nav-tab:hover{color:#f0f0f5;text-shadow:none}
-.nav-tab.active{color:#f0f0f5}
+.nav-tab:hover{color:#F1F5F9;text-shadow:none}
+.nav-tab.active{color:#C8FF3E}
 .nav-tab.active::after{
   content:'';position:absolute;bottom:0;left:20%;right:20%;
   height:3px;
-  background:linear-gradient(90deg, #ffd700, #ffed4a);
+  background:linear-gradient(90deg, #C8FF3E, #A8E020);
   border-radius:3px 3px 0 0;
-  box-shadow:0 0 8px rgba(255,215,0,0.3);
+  box-shadow:0 0 12px rgba(200,255,62,0.55);
 }
 .nav-tab + .nav-tab::before{
   content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
@@ -352,9 +363,9 @@ button{cursor:pointer;font-family:inherit}
 }
 .section-title::before{
   content:'';width:4px;height:28px;
-  background:linear-gradient(180deg, var(--red), #ff6b8a);
+  background:linear-gradient(180deg, #C8FF3E, #A8E020);
   border-radius:2px;
-  box-shadow:0 0 8px rgba(233,69,96,0.3);
+  box-shadow:0 0 10px rgba(200,255,62,0.45);
 }
 .hidden{display:none!important}
 
@@ -386,7 +397,7 @@ button{cursor:pointer;font-family:inherit}
 #pitcherTable thead th,
 #gameTable thead th{
   position:sticky;top:0;z-index:5;
-  background:#8b1a1a;
+  background:linear-gradient(135deg, #0F1B2D, #1E3A5F);
 }
 /* 화면이 표 자연 폭(min-width 1500/1600px) 보다 충분히 클 때는
    통산 표와 동일한 패턴으로 wrapper overflow 를 풀고 thead 를
@@ -423,7 +434,7 @@ button{cursor:pointer;font-family:inherit}
 #historyCareerSection thead th{
   position:sticky;top:var(--header-h, 100px);z-index:5;
 }
-#historyCareerSection thead th{background:#8b1a1a}
+#historyCareerSection thead th{background:linear-gradient(135deg, #0F1B2D, #1E3A5F)}
 @media (max-width:768px){
   #historyCareerSection .table-wrapper{
     overflow:auto !important;
@@ -453,20 +464,18 @@ th.compare-col:hover{color:#cbd5e1}
 
 .compare-fab{
   position:fixed;right:24px;bottom:24px;z-index:1500;
-  background:linear-gradient(135deg, rgba(139,26,26,0.92), rgba(192,40,46,0.92));
-  -webkit-backdrop-filter:saturate(180%) blur(14px);
-  backdrop-filter:saturate(180%) blur(14px);
-  color:#fff;border:1px solid rgba(255,215,0,0.35);border-radius:30px;
-  padding:14px 22px;font-size:14px;font-weight:700;font-family:inherit;
+  background:linear-gradient(135deg, #C8FF3E, #A8E020);
+  color:#0F1B2D;border:1px solid rgba(200,255,62,0.6);border-radius:30px;
+  padding:14px 22px;font-size:14px;font-weight:800;font-family:inherit;
   cursor:pointer;
-  box-shadow:0 12px 32px rgba(140,20,20,0.35), 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow:0 12px 32px rgba(200,255,62,0.35), 0 2px 8px rgba(0,0,0,0.20);
   display:none;align-items:center;gap:8px;
   transition:transform 0.15s, box-shadow 0.15s;
 }
 .compare-fab:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(140,20,20,0.5)}
 .compare-fab.active{display:inline-flex}
 .compare-fab .compare-count{
-  background:#fff;color:#8b1a1a;border-radius:999px;
+  background:#0F1B2D;color:#C8FF3E;border-radius:999px;
   padding:1px 8px;font-size:12px;font-weight:800;min-width:20px;
 }
 
@@ -543,39 +552,39 @@ table{width:100%;border-collapse:collapse;min-width:1100px;font-size:14px;line-h
 #pitcherTable{min-width:1600px}
 /* 1300px 이하에서 일부 컬럼을 hide 하던 규칙은 제거.
    좁은 화면에서도 모든 컬럼이 보이고 wrapper 가로 스크롤로 접근. */
-thead{background:linear-gradient(135deg, #8b1a1a, #c0282e, #a02020)}
+thead{background:linear-gradient(135deg, #0F1B2D, #1E3A5F, #142a47)}
 th{
   padding:14px 10px;text-align:center;font-weight:700;font-size:12px;
-  color:#cbd5e1;text-transform:uppercase;letter-spacing:0.8px;
+  color:#CBD5E1;text-transform:uppercase;letter-spacing:0.8px;
   cursor:pointer;user-select:none;position:relative;
-  border-bottom:2px solid var(--red);white-space:nowrap;
+  border-bottom:2px solid rgba(200,255,62,0.45);white-space:nowrap;
   transition:var(--transition);
 }
 th::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg, transparent, rgba(233,69,96,0.4), transparent);
+  background:linear-gradient(90deg, transparent, rgba(200,255,62,0.55), transparent);
   pointer-events:none;
 }
-th:hover{color:#f0f0f5}
+th:hover{color:#C8FF3E}
 th .sort-arrow{font-size:10px;margin-left:4px;opacity:0.4}
-th.sorted .sort-arrow{opacity:1;color:var(--red)}
+th.sorted .sort-arrow{opacity:1;color:#C8FF3E}
 td{
   padding:11px 10px;text-align:center;
-  border-bottom:1px solid #e2e8f0;
+  border-bottom:1px solid rgba(255,255,255,0.06);
   transition:var(--transition);
   font-variant-numeric:tabular-nums;
-  color:#334155;
+  color:#E2E8F0;
 }
 tbody tr{transition:var(--transition)}
-tbody tr:nth-child(even){background:#f8fafc}
-tbody tr:nth-child(odd){background:#ffffff}
+tbody tr:nth-child(even){background:rgba(255,255,255,0.025)}
+tbody tr:nth-child(odd){background:transparent}
 tbody tr:hover{
-  background:rgba(233,69,96,0.06);
-  border-left:3px solid var(--red);
+  background:rgba(200,255,62,0.08);
+  border-left:3px solid #C8FF3E;
 }
 td.name-cell{
   font-weight:600;text-align:left;padding-left:16px;white-space:nowrap;
-  color:#1e293b;font-size:14px;
+  color:#F1F5F9;font-size:14px;
 }
 td.name-cell:hover{text-decoration:underline;text-decoration-color:rgba(233,69,96,0.4);text-underline-offset:3px}
 td.stat-leader{
