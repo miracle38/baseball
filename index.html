@@ -317,6 +317,29 @@ button{cursor:pointer;font-family:inherit}
   position:sticky;top:0;z-index:5;
   background:#8b1a1a;
 }
+/* 역대 기록 탭의 "현재 팀원 통산" 표 — 페이지 스크롤 시 thead 가 viewport 상단에 고정.
+   .table-wrapper 의 기본 overflow:auto 가 sticky 기준을 wrapper 내부로 가두므로,
+   여기서는 모든 ancestor 의 overflow 를 visible 로 강제하여 viewport 가 스크롤 컨테이너가 되도록 한다.
+   top 값은 sticky 헤더(.header) 높이만큼 띄움. */
+#historyView,
+#historyCareerSection,
+#historyCareerSection .table-wrapper{
+  overflow:visible !important;
+}
+#historyCareerSection table{
+  border-collapse:separate !important;border-spacing:0 !important;
+}
+#historyCareerSection thead{
+  position:sticky;top:100px;z-index:5;
+}
+#historyCareerSection thead th{
+  position:sticky;top:100px;z-index:5;
+  background:#8b1a1a;
+}
+@media (max-width:768px){
+  #historyCareerSection thead,
+  #historyCareerSection thead th{top:75px}
+}
 .rank-col{
   width:42px;min-width:42px;
   color:#94a3b8;font-weight:600;text-align:center;
@@ -1890,6 +1913,7 @@ function detachFirebaseListeners() {
 let leagueDataCache = {};
 
 function getCombinedData() {
+  ensureAutoGHRComputed();
   const entries = getEntriesForYear(currentYear);
   const countingKeys = ['G','PA','AB','H','2B','3B','HR','GHR','RBI','R','SB','BB','HBP','SO'];
   const pitcherCountingKeys = ['G','W','L','SV','HD','pH','pHR','K','pBB','pIBB','pHBP','R','ER','BF','NP'];
@@ -2065,6 +2089,7 @@ function loadEntryFromFirebase(entry) {
 function loadEntryFromLocal(entry) {
   // ALL_DATA(index.html, 스크래퍼가 매일 자동 갱신) 를 최우선으로 사용.
   // localStorage 는 이전 UI 편집 기능의 잔여 캐시로 오래된 데이터를 가릴 수 있어 무시.
+  ensureAutoGHRComputed();
   playersData = entry.players || {};
   pitchersData = entry.pitchers || {};
   gamesData = entry.games || {};
