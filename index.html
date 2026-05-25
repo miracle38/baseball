@@ -233,6 +233,7 @@ button{cursor:pointer;font-family:inherit}
 }
 .history-table{
   width:100%;border-collapse:collapse;font-size:14px;line-height:1.7;
+  min-width:0;
 }
 .history-table thead{background:linear-gradient(135deg, #0F1B2D, #1E3A5F, #142a47)}
 .history-table th{
@@ -316,18 +317,27 @@ button{cursor:pointer;font-family:inherit}
   background:linear-gradient(135deg, #0F1B2D, #1E3A5F);
 }
 @media (max-width:768px){
-  /* 모바일도 데스크탑과 동일하게 페이지 viewport 기준 sticky.
-     wrapper overflow 가 hidden/auto/scroll 이면 sticky 가 wrapper 안에 갇혀서
-     페이지 스크롤 시 thead 가 같이 사라진다. overflow:visible 유지.
-     표 폭이 화면보다 크면 페이지 자체가 가로 스크롤되지만,
-     thead 는 viewport 기준 세로 sticky 로 따라옴. */
+  /* 모바일: html/body 에 overflow-x:clip 가 걸려있어 페이지 가로 스크롤 불가.
+     wrapper 를 자체 스크롤 컨테이너로 만들어서 안에서 가로+세로 스크롤.
+     상세 inner 는 max-width:calc(100vw - 패딩) 으로 viewport 폭에 묶고,
+     position:sticky left:0 로 메인 표 가로 스크롤과 무관하게 좌측 고정. */
+  .history-detail-row td.history-detail-cell{
+    padding:0 12px 12px;
+  }
+  .history-detail-inner{
+    position:sticky;left:12px;
+    max-width:calc(100vw - 24px);
+    box-sizing:border-box;
+  }
   .history-detail-inner .table-wrapper{
-    overflow:visible !important;
-    max-height:none;
+    overflow:auto !important;
+    max-width:100%;
+    max-height:calc(100vh - var(--header-h, 75px) - 40px);
+    -webkit-overflow-scrolling:touch;
   }
   .history-detail-inner thead,
   .history-detail-inner thead th{
-    top:var(--header-h, 75px);
+    top:0;
   }
 }
 .history-detail-tabs{
@@ -1142,6 +1152,8 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
   .stats-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
   .history-table{font-size:12px}
   .history-table th,.history-table td{padding:8px 6px}
+  /* 메인 역대 기록 표가 viewport 보다 넓을 때 history-container 안에서 가로 스크롤 */
+  .history-container{overflow-x:auto;-webkit-overflow-scrolling:touch}
   /* 모바일: 통산 표와 동일한 패턴 — wrapper 가 viewport 의 일정 영역을
      차지하는 자체 스크롤 컨테이너가 되어 thead 가 wrapper 내부 sticky 로
      따라옴. wrapper 안에서 가로/세로 모두 스크롤 가능. */
@@ -4584,6 +4596,27 @@ if (_origSwitchTab) {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.1.0',
+    date: '2026-05-26',
+    title: '역대 기록 UX 개선 — 인라인 펼침, 정렬/넘버링, sticky thead, 모바일 가로 스크롤',
+    added: [
+      '역대 기록 표에 순위 컬럼 — entry.seasonSummary.rank 기반, 상위 3위에 🏆/🥈/🥉 아이콘 표시',
+      '메인 역대 기록 표에 # 넘버링 + 모든 컬럼 헤더 클릭 정렬 (연도/리그/성적/승률/순위/경기/출처) — 같은 컬럼 재클릭 시 방향 토글',
+      '시즌 펼침 시 별도 패널이 아닌 클릭 행 바로 아래에 인라인 펼침 (UX 가시성 개선)',
+      '펼친 상세 (타자/투수) 표에 # 넘버링 + 컬럼 헤더 클릭 정렬 — 시즌·탭 전환해도 정렬 상태 유지',
+      '펼친 상세 thead sticky — 데스크탑/모바일 모두 페이지 헤더 바로 아래에 고정되어 스크롤 시 컬럼 타이틀 유지',
+      '모바일에서 메인 역대 기록 표·펼친 상세 표 각각 독립적으로 가로 스크롤 지원',
+    ],
+    changed: [
+      '시즌 행 옆의 ▶ 화살표 제거 — 클릭 액션을 인라인 펼침으로 명확히 보이게 변경',
+      '.history-container overflow:hidden → visible (sticky 컨테이너 충돌 회피)',
+      '.history-table 에 min-width:0 (전역 table min-width:1100px 오버라이드, 모바일에서 viewport 폭 준수)',
+    ],
+    fixed: [
+      '시즌 펼침 시 상세 영역이 표 전체 하단에 렌더링되어 사용자가 발견하지 못하던 문제',
+    ],
+  },
   {
     version: '1.0.13',
     date: '2026-04-29',
