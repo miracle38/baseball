@@ -13,6 +13,11 @@ on:
 permissions:
   contents: write
 
+# 당일 빠른 갱신(update-live.yml)과 같은 그룹 → 동시에 돌지 않고 순차 실행 (git push 충돌 방지)
+concurrency:
+  group: baseball-data
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
