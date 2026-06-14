@@ -6,6 +6,8 @@ on:
     # 주말 경기 후 빠르게 갱신 + 평일에도 DB 싱크
     - cron: '0 18 * * *'
     - cron: '0 6 * * *'
+    # 추가: 주말(토·일) 저녁 22:00 KST (UTC 13:00) — 당일 경기 결과를 더 빨리 반영
+    - cron: '0 13 * * 6,0'
   workflow_dispatch: # 수동 실행 가능
 
 permissions:

@@ -2690,6 +2690,16 @@ function renderPitchers() {
 function isScheduledGame(g) {
   return g.result === '예정' || (g.ourScore === null && g.theirScore === null);
 }
+// 결과가 없는데 경기 날짜가 이미 지났으면 '기록 대기'(소스에 결과 미등록), 미래면 '예정'
+function isPendingRecord(g) {
+  if (!isScheduledGame(g) || !g.date) return false;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const d = new Date(g.date + 'T00:00:00');
+  return !isNaN(d.getTime()) && d < today;
+}
+function scheduledLabel(g) {
+  return isPendingRecord(g) ? '기록 대기' : '예정';
+}
 
 function getSeasonSummaries() {
   const yearEntries = getEntriesForYear(currentYear);
@@ -2853,7 +2863,7 @@ function renderGames() {
 
     let result, resultCls, scoreHtml;
     if (isFuture) {
-      result = '예정'; resultCls = 'result-scheduled';
+      result = scheduledLabel(g); resultCls = 'result-scheduled';
       scoreHtml = '<span class="score-vs">vs</span>';
     } else if (g.ourScore > g.theirScore) {
       result = '승'; resultCls = 'result-win';
@@ -3171,7 +3181,7 @@ function renderCalendar() {
       const locHtml = game.location ? `<span class="game-location">${escHtml(game.location)}</span>` : '';
       const metaHtml = (timeHtml || locHtml) ? `<div class="game-meta" title="${escHtml((game.time || '') + ' ' + (game.location || ''))}">${timeHtml}${locHtml}</div>` : '';
       if (isFuture) {
-        html += `<div class="game-info"><div class="game-opponent">vs ${escHtml(game.opponent)}${leagueTag}</div><div class="game-score"><span class="game-badge scheduled">예정</span></div>${metaHtml}</div>`;
+        html += `<div class="game-info"><div class="game-opponent">vs ${escHtml(game.opponent)}${leagueTag}</div><div class="game-score"><span class="game-badge scheduled">${scheduledLabel(game)}</span></div>${metaHtml}</div>`;
       } else {
         let result, badgeCls;
         if (game.ourScore > game.theirScore) { result = '승'; badgeCls = 'win'; }
@@ -3866,7 +3876,7 @@ function openBoxScore(gameId, gameObj) {
   const noDataMode = !isFuture && !hasBoxData;
 
   let resultText = '', badgeCls = '';
-  if (isFuture) { resultText = '예정'; badgeCls = ''; }
+  if (isFuture) { resultText = scheduledLabel(gameObj); badgeCls = ''; }
   else if (gameObj.ourScore > gameObj.theirScore) { resultText = '승'; badgeCls = 'win'; }
   else if (gameObj.ourScore < gameObj.theirScore) { resultText = '패'; badgeCls = 'loss'; }
   else { resultText = '무'; badgeCls = 'draw'; }
