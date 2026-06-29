@@ -23,6 +23,8 @@ const TARGETS = [
   { id: '2025_gongju',  kind: 'gameone', clubIdx: 7734, year: 2025, leagueMatch: /금강토요/ }
 ];
 
+const CUR_YEAR = new Date().getFullYear();
+
 // ===== DBSA 계열 스크래핑 =====
 async function scrapeDbsaBatters(browser, base, teamSeq, year) {
   const page = await browser.newPage();
@@ -154,14 +156,109 @@ async function scrapeDbsaPitchers(browser, base, teamSeq, year) {
   } finally { await page.close(); }
 }
 
+// 월별 일정 캘린더(getGameSchedule)에서 와인드업 전 경기(점수/구장/결과) 수집.
+// getMain(최근만) / getGameRecord(박스스코어 등록분만)가 놓치는 경기까지 전부 잡는 완전 소스.
+async function scrapeDbsaCalendarGames(browser, base, teamSeq, year, fromMonth = 3, toMonth = 11) {
+  const page = await browser.newPage();
+  const games = [];
+  try {
+    for (let mo = fromMonth; mo <= toMonth; mo++) {
+      const url = `${base}/teamPage/scheduleRecord/getGameSchedule.hs?teamSeq=${teamSeq}&thisYear=${year}&thisMonth=${String(mo).padStart(2, '0')}`;
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.waitForTimeout(900);
+      const days = await page.evaluate(() => {
+        const ds = [];
+        document.querySelectorAll('td').forEach(td => {
+          const dp = td.querySelector('.date'); if (!dp) return;
+          if (td.innerHTML.includes('plan') || td.innerHTML.includes('finish')) {
+            const n = parseInt(dp.textContent.trim(), 10); if (!isNaN(n)) ds.push(n);
+          }
+        });
+        return [...new Set(ds)];
+      });
+      for (const d of days) {
+       try {
+        const ok = await page.evaluate((d) => {
+          const tds = [...document.querySelectorAll('td')];
+          for (const td of tds) {
+            const dp = td.querySelector('.date'); if (!dp) continue;
+            if (parseInt(dp.textContent.trim(), 10) !== d) continue;
+            if (td.innerHTML.includes('plan') || td.innerHTML.includes('finish')) {
+              const a = td.querySelector('a'); if (a) { a.click(); return true; }
+            }
+          }
+          return false;
+        }, d);
+        if (!ok) continue;
+        // 클릭이 네비게이션을 유발할 수 있으므로 안정화 대기 (race 로 컨텍스트 파괴 방지)
+        await page.waitForLoadState('domcontentloaded').catch(() => {});
+        await page.waitForSelector('.match-list .team-match', { timeout: 5000 }).catch(() => {});
+        await page.waitForTimeout(500);
+        const readDay = () => page.evaluate(() => {
+          const out = [];
+          document.querySelectorAll('.match-list .team-match').forEach(m => {
+            const lName = (m.querySelector('.l-team .team-name')?.textContent || '').trim();
+            const rName = (m.querySelector('.r-team .team-name')?.textContent || '').trim();
+            if (!/와인드업/.test(lName + rName)) return;
+            const lScore = (m.querySelector('.l-team .score')?.textContent || '').trim();
+            const rScore = (m.querySelector('.r-team .score')?.textContent || '').trim();
+            const md = (m.querySelector('.match-date')?.textContent || '').replace(/\s+/g, ' ').trim();
+            const finished = /경기종료/.test(m.textContent || '');
+            const detail = m.querySelector('.btn-match-detail')?.closest('a')?.getAttribute('href') || '';
+            out.push({ lName, rName, lScore, rScore, md, finished, detail });
+          });
+          return out;
+        });
+        let dayGames = [];
+        try { dayGames = await readDay(); }
+        catch { await page.waitForTimeout(800); try { dayGames = await readDay(); } catch { dayGames = []; } }
+        for (const g of dayGames) {
+          const dm = g.md.match(/(\d{4})년\s*(\d{2})월\s*(\d{2})일/);
+          if (!dm) continue;
+          const date = `${dm[1]}-${dm[2]}-${dm[3]}`;
+          const tmt = g.md.match(/(\d{2}):(\d{2})/);
+          const time = tmt ? `${tmt[1]}:${tmt[2]}` : '';
+          const location = g.md.replace(/\d{4}년\s*\d{2}월\s*\d{2}일/, '').replace(/\d{2}:\d{2}/, '').trim();
+          const isWindupL = /와인드업/.test(g.lName);
+          const opponent = isWindupL ? g.rName : g.lName;
+          const ls = parseInt(g.lScore), rs = parseInt(g.rScore);
+          let ourScore = null, theirScore = null, result = '예정';
+          if (g.finished && !isNaN(ls) && !isNaN(rs)) {
+            ourScore = isWindupL ? ls : rs;
+            theirScore = isWindupL ? rs : ls;
+            result = ourScore > theirScore ? '승' : ourScore < theirScore ? '패' : '무';
+          }
+          const boxScoreUrl = g.detail ? (g.detail.startsWith('http') ? g.detail : base + g.detail) : '';
+          games.push({ date, time, opponent, ourScore, theirScore, result, location, boxScoreUrl });
+        }
+       } catch (e) { /* 이 날짜 스킵하고 계속 */ }
+        // 다음 날짜를 위해 달력 재로드 (클릭으로 페이지가 바뀌었을 수 있음)
+        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
+        await page.waitForTimeout(500);
+      }
+    }
+  } finally { await page.close(); }
+  return games;
+}
+
 async function scrapeDbsaRecentGames(browser, base, teamSeq, year) {
-  // 두 소스에서 경기 수집:
-  // 1) getMain.hs의 .team-match (ksbsa 스타일, 스코어+박스스코어)
-  // 2) getGameRecord.hs의 경기기록 TR 행 (donggu 스타일)
+  // 경기 수집 (date+opponent 로 중복 제거, 캘린더가 가장 완전하므로 우선):
+  // 0) getGameSchedule 월별 캘린더 (현재 시즌) — 점수/구장 포함 전 경기
+  // 1) getMain.hs 의 .team-match (스코어+박스스코어)
+  // 2) getGameRecord.hs 의 경기기록 TR 행
   // 3) getMain.hs 상단 일정 테이블 (예정 경기)
-  // 결과를 date+opponent로 중복 제거
-  const pickGame = (list) => list;
   const all = [];
+  // 0) 현재 시즌은 캘린더로 전 경기 수집 (getMain/getGameRecord 가 놓치는 3월 경기 등 보강).
+  //    배열 앞쪽에 넣어 중복 제거 시 캘린더의 점수/결과가 우선되도록 함.
+  if (year >= CUR_YEAR) {
+    try {
+      const fromCal = await scrapeDbsaCalendarGames(browser, base, teamSeq, year);
+      all.push(...fromCal);
+      console.log(`    캘린더 경기 ${fromCal.length}건 수집`);
+    } catch (e) {
+      console.warn('    ⚠️ 캘린더 스크랩 실패(기존 소스로 진행):', e.message);
+    }
+  }
   const page = await browser.newPage();
   try {
     // 1) getMain.hs .team-match (과거 경기 + 박스스코어)
@@ -510,6 +607,27 @@ function extractExistingLocations(entryText) {
   }
   return map;
 }
+// 기존 games 블록을 객체로 파싱 (date|opponent → 전체 게임 객체). 완료 경기 보존용.
+function extractExistingGames(entryText) {
+  const map = new Map();
+  const gi = entryText.indexOf('games:');
+  if (gi < 0) return map;
+  let i = entryText.indexOf('{', gi);
+  if (i < 0) return map;
+  let depth = 0, j = i;
+  for (; j < entryText.length; j++) {
+    const c = entryText[j];
+    if (c === '{') depth++;
+    else if (c === '}') { depth--; if (depth === 0) { j++; break; } }
+  }
+  try {
+    const obj = eval('(' + entryText.slice(i, j) + ')');
+    Object.values(obj).forEach(g => {
+      if (g && g.date && g.opponent) map.set(`${g.date}|${g.opponent}`, g);
+    });
+  } catch { /* 파싱 실패 시 보존 생략 */ }
+  return map;
+}
 function pitcherToJs(p, i) {
   return `pt${i+1}:{name:'${p.name.replace(/'/g,"\\'")}',number:${p.num},G:${p.G},W:${p.W},L:${p.L},SV:${p.SV},HD:${p.HD},IP:${p.IP},pH:${p.pH},pHR:${p.pHR||0},K:${p.K},pBB:${p.pBB},pIBB:${p.pIBB||0},pHBP:${p.pHBP||0},R:${p.R},ER:${p.ER}}`;
 }
@@ -629,6 +747,15 @@ function updateEntryInHtml(html, entryId, data) {
         }
       });
     }
+    // 완료 경기 보존 — 이번 스크랩이 놓친 기존 완료 경기를 잃지 않도록 병합 (소스 일시 누락 방어)
+    const existingGames = extractExistingGames(entryText);
+    if (existingGames.size > 0) {
+      const haveKeys = new Set(data.games.map(g => `${g.date}|${g.opponent}`));
+      existingGames.forEach((g, k) => {
+        if (!haveKeys.has(k) && g.result && g.result !== '예정') data.games.push(g);
+      });
+    }
+    data.games.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
     const newText = replaceBalanced(entryText, 'games', 0, gamesBlock(data.games));
     if (newText) entryText = newText;
   }
