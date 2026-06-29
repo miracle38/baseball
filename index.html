@@ -722,7 +722,18 @@ td.stat-leader-low{
   color:#9ca3af;cursor:pointer;text-decoration:none;
 }
 .footer .footer-version:hover{ color:#6b7280;text-decoration:underline; }
-.footer #footerSourceWrap{ color:#9ca3af; }
+
+/* 데이터 출처 — 푸터 바로 위 상시 표시 (미니멀 회색) */
+.footer-source{
+  text-align:center;font-size:11px;color:#b6bcc6;
+  padding:14px 24px 0;margin-top:40px;
+}
+.footer-source .footer-source-label{ color:#cbd5e1;margin-right:4px; }
+.footer-source a{ color:#9ca3af;text-decoration:none; }
+.footer-source a:hover{ color:#6b7280;text-decoration:underline; }
+.footer-source .src-sep{ margin:0 7px;color:#e2e8f0; }
+/* 출처 줄이 바로 위에 있으니 푸터 상단 여백 축소 */
+.footer-source + .footer{ margin-top:10px;border-top:none; }
 
 /* ===== VERSION MODAL ===== */
 .version-overlay{
@@ -1592,9 +1603,12 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
   </div>
 </div>
 
+<!-- ===== 데이터 출처 (푸터 위 상시 표시) ===== -->
+<div class="footer-source"><span class="footer-source-label">데이터 출처</span> <span id="footerSourceWrap"></span></div>
+
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
-  <div>Windup Baseball Club · <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.3.4</span></a></div>
+  <div>Windup Baseball Club · <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.3.5</span></a></div>
   <div>&copy; 2026 KHS (miracle38)</div>
 </footer>
 
@@ -1993,30 +2007,16 @@ function updateSubtitle() {
 
 function updateFooter() {
   const wrap = document.getElementById('footerSourceWrap');
-  if (!wrap) return; // 푸터에서 출처 표기 제거됨 (다른 프로젝트와 동일한 2줄 푸터)
-  if (currentYear === 'career') {
-    wrap.innerHTML = '';
-    return;
-  }
-  const entries = getEntriesForYear(currentYear);
-  let sources = [];
-  if (currentLeague === 'all') {
-    sources = entries;
-  } else {
-    const e = entries.find(e => e.leagueKey === currentLeague);
-    if (e) sources = [e];
-  }
-  const unique = [];
-  const seen = new Set();
-  sources.forEach(s => {
-    if (!seen.has(s.source)) {
-      seen.add(s.source);
-      unique.push(s);
-    }
-  });
-  wrap.innerHTML = unique.map(s =>
-    `<a href="${escHtml(s.sourceUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--red);font-size:12px;margin-top:6px;display:inline-block;margin-right:12px">${escHtml(s.source)}</a>`
-  ).join('');
+  if (!wrap) return;
+  // 데이터 출처 — 전체 출처 사이트를 상시 표시 (ALL_DATA 의 source 에서 자동 수집)
+  const srcUrl = (s) => /ksbsa\.or\.kr/.test(s) ? 'https://www.ksbsa.or.kr'
+    : /gameone\.kr/.test(s) ? 'https://www.gameone.kr' : 'https://' + s;
+  const set = new Set();
+  ALL_DATA.forEach(e => { if (e.source) set.add(e.source); });
+  const sources = [...set].sort();
+  wrap.innerHTML = sources.map(s =>
+    `<a href="${srcUrl(s)}" target="_blank" rel="noopener noreferrer">${escHtml(s)}</a>`
+  ).join('<span class="src-sep">·</span>');
 }
 
 
@@ -4580,6 +4580,14 @@ if (_origSwitchTab) {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.3.5',
+    date: '2026-06-30',
+    title: '데이터 출처를 푸터 바로 위에 상시 표시',
+    changed: [
+      '데이터 출처를 버전 모달뿐 아니라 푸터 바로 위에 작게 상시 노출 — ksbsa.or.kr·dbsa·gameone 링크(회색 미니멀)',
+    ],
+  },
   {
     version: '1.3.4',
     date: '2026-06-30',
