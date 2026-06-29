@@ -638,7 +638,10 @@ function gameToJs(g, i) {
   const tsc = g.theirScore == null ? 'null' : g.theirScore;
   const time = g.time ? `,time:'${g.time.replace(/'/g,"\\'")}'` : '';
   const box = g.boxScoreUrl ? `,boxScoreUrl:'${g.boxScoreUrl.replace(/'/g,"\\'")}'` : '';
-  return `g${i+1}:{date:'${g.date}'${time},opponent:'${opp}',ourScore:${osc},theirScore:${tsc},result:'${g.result}',location:'${loc}'${box}}`;
+  // boxScore(이닝별 상세)는 별도 스크래퍼가 채우는 무거운 객체. 재구성 시 잃지 않도록
+  // 있으면 JSON 으로 그대로 직렬화해 보존 (eval/JSON 모두 파싱 가능).
+  const bs = g.boxScore ? `,boxScore:${JSON.stringify(g.boxScore)}` : '';
+  return `g${i+1}:{date:'${g.date}'${time},opponent:'${opp}',ourScore:${osc},theirScore:${tsc},result:'${g.result}',location:'${loc}'${box}${bs}}`;
 }
 
 function playersBlock(batters) {
@@ -750,6 +753,13 @@ function updateEntryInHtml(html, entryId, data) {
     // 완료 경기 보존 — 이번 스크랩이 놓친 기존 완료 경기를 잃지 않도록 병합 (소스 일시 누락 방어)
     const existingGames = extractExistingGames(entryText);
     if (existingGames.size > 0) {
+      // 기존 boxScore(상세)·boxScoreUrl 보존 — 캘린더 재구성이 상세를 날리지 않도록
+      data.games.forEach(g => {
+        const ex = existingGames.get(`${g.date}|${g.opponent}`);
+        if (!ex) return;
+        if (!g.boxScore && ex.boxScore) g.boxScore = ex.boxScore;
+        if (!g.boxScoreUrl && ex.boxScoreUrl) g.boxScoreUrl = ex.boxScoreUrl;
+      });
       const haveKeys = new Set(data.games.map(g => `${g.date}|${g.opponent}`));
       existingGames.forEach((g, k) => {
         if (!haveKeys.has(k) && g.result && g.result !== '예정') data.games.push(g);

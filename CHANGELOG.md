@@ -13,6 +13,11 @@
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-06-30
+
+### Fixed
+- **홈런 뱃지 복구** — 경기 목록 재구성(캘린더 스크랩) 시 `boxScore` 상세가 누락돼 2026 등 현재 시즌 홈런 경기에 뱃지가 안 뜨던 문제. boxScore 상세 재수집(`scrape-ksbsa-boxscore`) + `scrape-all`이 boxScore를 보존하도록 수정(`gameToJs` 직렬화 + 기존값 carry)
+
 ## [1.3.1] - 2026-06-30
 
 ### Changed
