@@ -1612,7 +1612,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
-  <strong>Windup Baseball Club</strong> · <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.1.1</span></a>
+  <strong>Windup Baseball Club</strong> · <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.1.2</span></a>
   <span id="footerSourceWrap"></span><br>
   &copy; 2026 KHS (miracle38)
 </footer>
@@ -4606,6 +4606,14 @@ if (_origSwitchTab) {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.1.2',
+    date: '2026-06-29',
+    title: '예정 경기 구장 보강을 dbsa(동구) 소스까지 확대',
+    fixed: [
+      '구장 보강 스크립트가 ksbsa(세종)만 처리하고 donggu.dbsa.kr(동구) 예정 경기는 건너뛰던 문제 — 소스별 base/teamSeq 매핑으로 일반화해 ksbsa·dbsa 동일 플랫폼을 모두 채움',
+    ],
+  },
   {
     version: '1.1.1',
     date: '2026-06-29',
