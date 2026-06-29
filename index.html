@@ -1612,7 +1612,7 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
-  <strong>Windup Baseball Club</strong> · <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.0.13</span></a>
+  <strong>Windup Baseball Club</strong> · <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.1.1</span></a>
   <span id="footerSourceWrap"></span><br>
   &copy; 2026 KHS (miracle38)
 </footer>
@@ -4606,6 +4606,15 @@ if (_origSwitchTab) {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.1.1',
+    date: '2026-06-29',
+    title: '예정 경기 구장 정보 누락 수정 — 자동 갱신 덮어쓰기 방지 + 빠른 갱신에도 구장 보강',
+    fixed: [
+      '당일 빠른 갱신(토요일 30분 주기)이 예정 경기 구장(location)을 빈값으로 덮어쓰던 문제 — scrape-all 에 기존 구장 보존 로직 추가(날짜+상대팀 기준)',
+      '예정 경기 구장 보강(fill-ksbsa-scheduled-locations)을 빠른 갱신 워크플로우에도 추가해 구장 발표 후 더 빨리 반영',
+    ],
+  },
   {
     version: '1.1.0',
     date: '2026-05-26',

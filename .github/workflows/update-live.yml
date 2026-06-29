@@ -18,7 +18,7 @@ concurrency:
 jobs:
   live-update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: 코드 체크아웃
@@ -37,6 +37,11 @@ jobs:
       - name: 전체 스크래핑 (2025 + 2026)
         timeout-minutes: 15
         run: node scripts/scrape-all.js
+
+      - name: 예정 경기 구장 보강 (ksbsa)
+        timeout-minutes: 5
+        run: node scripts/fill-ksbsa-scheduled-locations.js
+        continue-on-error: true
 
       - name: 엔트리 헤더 재계산 (record / W / L / D / G)
         timeout-minutes: 2

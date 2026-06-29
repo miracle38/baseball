@@ -495,6 +495,21 @@ function extractExistingGHR(entryText) {
   }
   return map;
 }
+// 기존 entryText 의 games 블록에서 date|opponent → location 매핑 추출 (보존용).
+// 예정 경기 구장은 fill-ksbsa-scheduled-locations.js 가 채워넣는데, 일반 스크랩은
+// 예정 경기 location 을 '' 로 만들므로, 비어있을 때 기존 값을 살려 덮어쓰기를 막는다.
+function extractExistingLocations(entryText) {
+  const map = new Map();
+  const re = /date:'((?:[^'\\]|\\.)*)'[^}]*?opponent:'((?:[^'\\]|\\.)*)'[^}]*?location:'((?:[^'\\]|\\.)*)'/g;
+  let m;
+  while ((m = re.exec(entryText)) !== null) {
+    const date = m[1].replace(/\\'/g, "'");
+    const opponent = m[2].replace(/\\'/g, "'");
+    const location = m[3].replace(/\\'/g, "'");
+    if (location) map.set(`${date}|${opponent}`, location);
+  }
+  return map;
+}
 function pitcherToJs(p, i) {
   return `pt${i+1}:{name:'${p.name.replace(/'/g,"\\'")}',number:${p.num},G:${p.G},W:${p.W},L:${p.L},SV:${p.SV},HD:${p.HD},IP:${p.IP},pH:${p.pH},pHR:${p.pHR||0},K:${p.K},pBB:${p.pBB},pIBB:${p.pIBB||0},pHBP:${p.pHBP||0},R:${p.R},ER:${p.ER}}`;
 }
@@ -604,6 +619,16 @@ function updateEntryInHtml(html, entryId, data) {
     if (newText) entryText = newText;
   }
   if (data.games && data.games.length > 0) {
+    // 기존에 채워진 예정 경기 구장 보존 — 새 스크랩이 location:'' 로 덮어쓰지 않도록
+    const existingLoc = extractExistingLocations(entryText);
+    if (existingLoc.size > 0) {
+      data.games.forEach(g => {
+        if (!g.location) {
+          const k = `${g.date}|${g.opponent}`;
+          if (existingLoc.has(k)) g.location = existingLoc.get(k);
+        }
+      });
+    }
     const newText = replaceBalanced(entryText, 'games', 0, gamesBlock(data.games));
     if (newText) entryText = newText;
   }
