@@ -711,36 +711,18 @@ td.stat-leader-low{
 .stat-card .stat-sub{font-size:12px;color:#64748b;margin-top:6px}
 
 
-/* ===== FOOTER ===== */
+/* ===== FOOTER (다른 프로젝트와 동일한 미니멀 스타일) ===== */
 .footer{
-  text-align:center;padding:40px 24px;
-  background:#f8fafc;
-  border-top:1px solid #e2e8f0;
-  margin-top:48px;color:#64748b;font-size:13px;
-  position:relative;
+  text-align:center;padding:20px 24px;
+  border-top:1px solid #f1f5f9;
+  margin-top:48px;color:#9ca3af;font-size:12px;line-height:1.6;
 }
-.footer::before{
-  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:60%;height:1px;
-  background:linear-gradient(90deg, transparent, rgba(233,69,96,0.3), transparent);
-}
-.footer strong{
-  color:var(--red);font-weight:700;
-}
-.footer a{
-  transition:var(--transition);
-  position:relative;
-}
-.footer a::after{
-  content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;
-  background:var(--red);transition:var(--transition);
-}
-.footer a:hover::after{width:100%}
+.footer strong{ font-weight:inherit; color:inherit; }
 .footer .footer-version{
-  display:inline-block;margin-left:8px;color:var(--red);font-weight:700;cursor:pointer;
-  text-decoration:none;
+  color:#9ca3af;cursor:pointer;text-decoration:none;
 }
-.footer .footer-version:hover{text-decoration:underline}
+.footer .footer-version:hover{ color:#6b7280;text-decoration:underline; }
+.footer #footerSourceWrap{ color:#9ca3af; }
 
 /* ===== VERSION MODAL ===== */
 .version-overlay{
@@ -1612,9 +1594,8 @@ tbody tr:nth-child(n+11){animation-delay:0.22s}
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
-  <strong>Windup Baseball Club</strong> · <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.3.2</span></a>
-  <span id="footerSourceWrap"></span><br>
-  &copy; 2026 KHS (miracle38)
+  <div>Windup Baseball Club · <a href="javascript:void(0)" class="footer-version" onclick="openVersionModal()" title="버전 정보 보기">v<span id="appVersionLabel">1.3.3</span></a></div>
+  <div>&copy; 2026 KHS (miracle38)</div>
 </footer>
 
 <!-- ===== VERSION MODAL ===== -->
@@ -2012,6 +1993,7 @@ function updateSubtitle() {
 
 function updateFooter() {
   const wrap = document.getElementById('footerSourceWrap');
+  if (!wrap) return; // 푸터에서 출처 표기 제거됨 (다른 프로젝트와 동일한 2줄 푸터)
   if (currentYear === 'career') {
     wrap.innerHTML = '';
     return;
@@ -4598,6 +4580,14 @@ if (_origSwitchTab) {
 
 // === 버전 정보 모달 ===
 const VERSION_HISTORY = [
+  {
+    version: '1.3.3',
+    date: '2026-06-30',
+    title: '하단 푸터 UI를 다른 프로젝트와 동일한 미니멀 2줄 스타일로 통일',
+    changed: [
+      '푸터를 다른 프로젝트와 동일한 스타일로 정리 — 빨강 강조/그라데이션/볼드 제거, 회색 미니멀(12px), 2줄(앱명·버전 / © 크레딧). 푸터 데이터 출처 표기는 제거',
+    ],
+  },
   {
     version: '1.3.2',
     date: '2026-06-30',
