@@ -13,6 +13,13 @@
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-06-30
+
+### Added
+- 팀 순위표를 소스(KSBSA 기본기록)와 동일한 **16컬럼**으로 확장 — 기존 9개(순위·팀명·승점·경기·승·패·무·득점·실점)에 **안타·실책·사사구·최근 10경기·연속·선공·후공** 추가
+- `rankings`/`seasonSummary`에 `H·E·BBHBP·recent10·streak·away·home` 필드 저장, 순위 스크래퍼(`scrape-rankings-ksbsa-dbsa.js`)가 16컬럼 전체 파싱
+- gameone 등 해당 필드가 없는 엔트리는 `-`로 표시(그레이스풀 폴백)
+
 ## [1.2.0] - 2026-06-29
 
 ### Fixed

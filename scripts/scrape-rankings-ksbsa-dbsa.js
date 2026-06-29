@@ -84,6 +84,7 @@ function parseRow(prevRank, index, cells) {
     const n = parseInt(String(v).replace(/,/g, ''));
     return isNaN(n) ? 0 : n;
   };
+  const str = (v) => (v === undefined || v === null) ? '' : String(v).trim();
   return {
     rank,
     team,
@@ -94,6 +95,13 @@ function parseRow(prevRank, index, cells) {
     D:   numOrNull(cells[6]),
     RS:  numOrNull(cells[7]),
     RA:  numOrNull(cells[8]),
+    H:   numOrNull(cells[9]),   // 안타
+    E:   numOrNull(cells[10]),  // 실책
+    BBHBP: numOrNull(cells[11]),// 사사구
+    recent10: str(cells[12]),   // 최근 10경기 (문자열)
+    streak:   str(cells[13]),   // 연속
+    away:     str(cells[14]),   // 선공
+    home:     str(cells[15]),   // 후공
   };
 }
 
@@ -125,9 +133,11 @@ function rowsToRankings(rawRows) {
 // ---------- index.html 주입 로직 (gameone 버전과 동일) ----------
 
 function rankArrayToJs(rankings) {
+  const s = (v) => `'${String(v == null ? '' : v).replace(/'/g, "\\'")}'`;
   return '[' + rankings.map(r => {
     const team = String(r.team).replace(/'/g, "\\'");
-    return `{rank:${r.rank},team:'${team}',pts:${r.pts},G:${r.G},W:${r.W},L:${r.L},D:${r.D},RS:${r.RS||0},RA:${r.RA||0}}`;
+    return `{rank:${r.rank},team:'${team}',pts:${r.pts},G:${r.G},W:${r.W},L:${r.L},D:${r.D},RS:${r.RS||0},RA:${r.RA||0}`
+      + `,H:${r.H||0},E:${r.E||0},BBHBP:${r.BBHBP||0},recent10:${s(r.recent10)},streak:${s(r.streak)},away:${s(r.away)},home:${s(r.home)}}`;
   }).join(',') + ']';
 }
 
@@ -170,7 +180,9 @@ function updateEntrySeasonSummary(html, entryId, summary) {
   const span = findEntrySpan(html, entryId);
   if (!span) return html;
   let entryText = html.substring(span.start, span.end);
-  const ssJs = `{rank:${summary.rank},G:${summary.G},W:${summary.W},L:${summary.L},D:${summary.D},RS:${summary.RS},RA:${summary.RA}}`;
+  const s = (v) => `'${String(v == null ? '' : v).replace(/'/g, "\\'")}'`;
+  const ssJs = `{rank:${summary.rank},G:${summary.G},W:${summary.W},L:${summary.L},D:${summary.D},RS:${summary.RS},RA:${summary.RA}`
+    + `,H:${summary.H||0},E:${summary.E||0},BBHBP:${summary.BBHBP||0},recent10:${s(summary.recent10)},streak:${s(summary.streak)},away:${s(summary.away)},home:${s(summary.home)}}`;
 
   const re = /seasonSummary\s*:\s*\{/;
   const m = re.exec(entryText);
@@ -305,7 +317,10 @@ async function main() {
         html = updateEntrySeasonSummary(html, t.id, {
           rank: windupRow.rank,
           G: windupRow.G, W: windupRow.W, L: windupRow.L, D: windupRow.D,
-          RS: windupRow.RS || 0, RA: windupRow.RA || 0
+          RS: windupRow.RS || 0, RA: windupRow.RA || 0,
+          H: windupRow.H || 0, E: windupRow.E || 0, BBHBP: windupRow.BBHBP || 0,
+          recent10: windupRow.recent10 || '', streak: windupRow.streak || '',
+          away: windupRow.away || '', home: windupRow.home || ''
         });
       }
 
