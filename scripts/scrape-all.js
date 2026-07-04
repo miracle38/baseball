@@ -385,8 +385,12 @@ async function scrapeDbsaRecentGames(browser, base, teamSeq, year) {
     all.push(...fromRecord);
 
     // 중복 제거: date+opponent 키, boxScoreUrl 있는 쪽 우선
+    // 상대팀명에 붙은 승패 키워드(콜드승/몰수승 등)는 소스마다 유무가 달라
+    // 같은 경기가 다른 키로 중복 등록되므로 제거 후 매칭한다.
+    const OPP_RESULT_KW = /\s*(콜드승|콜드패|몰수승|몰수패|포기승|포기패|기권승|기권패|추첨승|추첨패)\s*$/;
     const map = new Map();
     all.forEach(g => {
+      g.opponent = (g.opponent || '').replace(OPP_RESULT_KW, '').trim();
       const key = g.date + '|' + g.opponent;
       const existing = map.get(key);
       if (!existing) map.set(key, g);
