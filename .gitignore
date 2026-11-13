@@ -7,3 +7,4 @@ scrape_log.txt
 scrape_*.log
 data.json
 node_modules/
+.omc/
